@@ -14,4 +14,10 @@ class AdminController extends Controller
             'data'=> $users,
         ]);
     }
+
+    public function Hello(){
+        return response()->json([
+            'message'=> 'Hello World',
+        ]);
+    }
 }

@@ -33,12 +33,9 @@ class AuthController extends Controller
             'role'=> $request->role,
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'data'=> $user,
-            'access_token'=> $token,
-            'token_type'=> 'Bearer',
         ]);
      }
 
@@ -75,6 +72,7 @@ class AuthController extends Controller
                 return response()->json(['message' => 'Logged out successfully']);
 
             }
+            dd($user);
 
             return response()->json(['message' => 'User not found'], 404);
         }
