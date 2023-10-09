@@ -4,6 +4,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Perawat\PerawatController;
 use Illuminate\Http\Request;
 
 
@@ -22,10 +23,22 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:sanctum')->group(function () {
-    route::get('/admin/hello', [AdminController::class, 'Hello']);
+Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
+
+    Route::prefix('admin')->group(function(){
+        Route::get('/hello', [AdminController::class, 'hello']);
+    });
+
+});
+
+Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
+
+    Route::prefix('perawat')->group(function(){
+        Route::get('/hello', [PerawatController::class, 'hello']);
+    });
+    
 });
 
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
