@@ -27,6 +27,7 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
 
     Route::prefix('admin')->group(function(){
         Route::get('/hello', [AdminController::class, 'hello']);
+        Route::get('/view', [AdminController::class, 'getAll']);
     });
 
 });
@@ -35,10 +36,12 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 
     Route::prefix('perawat')->group(function(){
         Route::get('/hello', [PerawatController::class, 'hello']);
+        Route::get('/implementasi', [DeclensionController::class,'peluruhan']);
     });
-    
+
 });
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
+Route::post('/upload-photo', 'Auth\AuthController@uploadPhoto');

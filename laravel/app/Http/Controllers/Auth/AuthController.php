@@ -15,10 +15,16 @@ class AuthController extends Controller
         // validation
 
         $validator = Validator::make($request->all(), [
-            'name'=> 'required|string|max:255',
+            'nama'=> 'required|string|max:255',
+            'tanggal_lahir'=>'required|date',
+            'jenis_kelamin' =>'required|boolean',
+            'alamat'=> 'required|string|max:255',
+            'no_telepon'=> 'required|string|max:255',
             'email'=> 'required|string|email|max:255|unique:users',
             'password'=> 'required|string|max:20|',
-           'no_karyawan'=> 'required|int|min:20|unique:users',
+            'no_karyawan'=> 'required|int|min:20|unique:users',
+            'role' =>'required|string|max:10',
+            'photo_path' => 'required|string|max:255',
         ]);
 
         if($validator->fails()){
@@ -26,11 +32,16 @@ class AuthController extends Controller
         }
 
         $user = User::create([
-            'name'=> $request->name,
+            'nama'=> $request->nama,
+            'tanggal_lahir'=> $request->tanggal_lahir,
+            'jenis_kelamin'=> $request->jenis_kelamin,
+            'alamat'=> $request->alamat,
+            'no_telepon'=> $request->no_telepon,
             'email'=> $request->email,
             'password'=> bcrypt($request->password),
             'no_karyawan'=> $request->no_karyawan,
             'role'=> $request->role,
+            'photo_path'=> $request->photo_path,
         ]);
 
 
