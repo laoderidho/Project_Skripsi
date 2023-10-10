@@ -19,8 +19,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function(){
+    Route::get('/profile', [AuthController::class, 'profile']);
+    Route::get('/logout', [AuthController::class, 'logout']);
 });
 
 Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
@@ -36,9 +37,8 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
     Route::prefix('perawat')->group(function(){
         Route::get('/hello', [PerawatController::class, 'hello']);
     });
-    
+
 });
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout']);
