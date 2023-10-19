@@ -17,6 +17,11 @@ class AuthController extends Controller
 
         $validator = Validator::make($request->all(), [
             'nama'=> 'required|string|max:255',
+            'tanggal_lahir'=> 'required|date',
+            'jenis_kelamin'=> 'required|boolean',
+            'alamat'=> 'required|string|max:255',
+            'no_telepon'=> 'required|string|max:255',
+            'nama'=> 'required|string|max:255',
             'tanggal_lahir'=>'required|date',
             'jenis_kelamin' =>'required|boolean',
             'alamat'=> 'required|string|max:255',
@@ -30,7 +35,7 @@ class AuthController extends Controller
         ]);
 
         if($validator->fails()){
-            return response()->json($validator->errors());
+            return response()->json($validator->errors(), 400);
         }
 
         if($request->hasFile('photo')){
@@ -52,6 +57,7 @@ class AuthController extends Controller
         ]);
 
         return response()->json([
+            'message'=> 'Registration Success',
             'data'=> $user,
         ]);
     }
@@ -66,31 +72,51 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->firstOrFail();
 
+        $role = $user->role;
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'data'=> $user,
             'access_token'=> $token,
             'token_type'=> 'Bearer',
+            'role'=> $role
         ]);
      }
 
 
-        public function logout(Request $request){
+    public function logout(){
 
-            $user = $request->user();
+        $user = Auth::user();
 
-            if ($user) {
-                $user->tokens->each(function ($token, $key){
-                    $token->delete();
-                });
+        if ($user) {
+            $user->tokens->each(function ($token, $key){
+                $token->delete();
+            });
 
-                return response()->json(['message' => 'Logged out successfully']);
+            return response()->json(['message' => 'Logged out successfully']);
 
-            }
-            dd($user);
-
-            return response()->json(['message' => 'User not found'], 404);
         }
+
+        return response()->json(['message' => 'User not found'], 404);
+    }
+
+    public function viewLogin(){
+        return redirect('/login');
+    }
+
+    public function profile(){
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json([
+                'message'=> 'User not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'message'=> 'success',
+            'data'=> $user
+        ]);
+    }
 
 }
