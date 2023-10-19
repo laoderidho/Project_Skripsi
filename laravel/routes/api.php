@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Perawat\PerawatController;
-use Illuminate\Http\Request;
 
 
 /*
@@ -19,13 +18,16 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function(){
+    Route::get('/profile', [AuthController::class, 'profile']);
+    Route::get('/logout', [AuthController::class, 'logout']);
 });
 
 Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
 
     Route::prefix('admin')->group(function(){
+        Route::get('/', [AdminController::class, 'getAll']);
+        Route::get('/getAll', [AdminController::class, 'getAll']);
         Route::get('/hello', [AdminController::class, 'hello']);
         Route::get('/view', [AdminController::class, 'getAll']);
     });
@@ -38,10 +40,8 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
         Route::get('/hello', [PerawatController::class, 'hello']);
         Route::get('/implementasi', [DeclensionController::class,'peluruhan']);
     });
-
 });
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout']);
-Route::post('/upload-photo', 'Auth\AuthController@uploadPhoto');
+Route::get('/login', [AuthController::class, 'viewLogin'])->name('login');
