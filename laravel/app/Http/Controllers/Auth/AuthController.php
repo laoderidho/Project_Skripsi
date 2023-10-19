@@ -60,18 +60,21 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->firstOrFail();
 
+        $role = $user->role;
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'access_token'=> $token,
             'token_type'=> 'Bearer',
+            'role'=> $role
         ]);
      }
 
 
     public function logout(){
 
-        $user = Auth::user(); 
+        $user = Auth::user();
 
         if ($user) {
             $user->tokens->each(function ($token, $key){
@@ -85,6 +88,9 @@ class AuthController extends Controller
         return response()->json(['message' => 'User not found'], 404);
     }
 
+    public function viewLogin(){
+        return redirect('/login');
+    }
 
     public function profile(){
         $user = Auth::user();
