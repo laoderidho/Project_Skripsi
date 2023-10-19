@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Perawat\PerawatController;
+use App\Http\Controllers\PasienController;
 use Illuminate\Http\Request;
 
 
@@ -28,6 +29,8 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
     Route::prefix('admin')->group(function(){
         Route::get('/hello', [AdminController::class, 'hello']);
         Route::get('/view', [AdminController::class, 'getAll']);
+        Route::get('/pasien', [PasienController::class,'index']);
+        Route::post('/pasien/create', [PasienController::class, 'store']);
     });
 
 });
