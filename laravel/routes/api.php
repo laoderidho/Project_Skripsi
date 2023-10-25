@@ -40,8 +40,7 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
 Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 
     Route::prefix('perawat')->group(function(){
-        Route::get('/hello', [PerawatController::class, 'hello']);
-        Route::get('/implementasi', [DeclensionController::class,'peluruhan']);
+        Route::get('/', [PerawatController::class, 'hello']);
     });
 });
 
