@@ -20,10 +20,10 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Schema::table('evaluasi', function (Blueprint $table) {
-        //     $table->foreign('id_luaran')->references('id_luaran')->on('luaran');
-        //     $table->foreign('id_kriteria_luaran')->references('id_kriteria_luaran')->on('kriteria_luaran');
-        // });
+        Schema::table('evaluasi', function (Blueprint $table) {
+            $table->foreign('id_luaran')->references('id_luaran')->on('luaran');
+            $table->foreign('id_kriteria_luaran')->references('id_kriteria_luaran')->on('kriteria_luaran');
+        });
     }
 
     public function down()

@@ -17,11 +17,11 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Schema::table('gejala', function (Blueprint $table) {
-        //     $table->foreign('id_diagnosa')->references('id_diagnosa')->on('diagnosa');
-        //     $table->foreign('id_kategori_gejala')->references('id_kategori_gejala')->on('kategori_gejala');
-        //     $table->foreign('id_jenis_gejala')->references('id_jenis_gejala')->on('jenis_gejala');
-        // });
+        Schema::table('gejala', function (Blueprint $table) {
+            $table->foreign('id_diagnosa')->references('id_diagnosa')->on('diagnosa');
+            $table->foreign('id_kategori_gejala')->references('id_kategori_gejala')->on('kategori_gejala');
+            $table->foreign('id_jenis_gejala')->references('id_jenis_gejala')->on('jenis_gejala');
+        });
     }
 
     public function down()

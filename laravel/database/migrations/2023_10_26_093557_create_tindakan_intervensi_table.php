@@ -16,10 +16,10 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Schema::table('tindakan_intervensi', function (Blueprint $table) {
-        //     $table->foreign('id_kategori_tindakan')->references('id_kategori_tindakan')->on('kategori_tindakan');
-        //     $table->foreign('id_intervensi')->references('id_intervensi')->on('intervensi');
-        // });
+        Schema::table('tindakan_intervensi', function (Blueprint $table) {
+            $table->foreign('id_kategori_tindakan')->references('id_kategori_tindakan')->on('kategori_tindakan');
+            $table->foreign('id_intervensi')->references('id_intervensi')->on('intervensi');
+        });
     }
 
     public function down()

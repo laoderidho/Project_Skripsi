@@ -15,9 +15,9 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Schema::table('faktor_resiko', function (Blueprint $table) {
-        //     $table->foreign('id_diagnosa')->references('id_diagnosa')->on('diagnosa');
-        // });
+        Schema::table('faktor_resiko', function (Blueprint $table) {
+            $table->foreign('id_diagnosa')->references('id_diagnosa')->on('diagnosa');
+        });
     }
 
     public function down()

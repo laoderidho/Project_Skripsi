@@ -16,10 +16,10 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Schema::table('perawat', function(Blueprint $table) {
-        //     $table->foreign('id_user')->references('id_user')->on('user');
-        //     $table->foreign('id_waktu_shift')->references('id_waktu_shift')->on('waktu_shift');
-        // });
+        Schema::table('perawat', function(Blueprint $table) {
+            $table->foreign('id_user')->references('id_user')->on('user');
+            $table->foreign('id_waktu_shift')->references('id_waktu_shift')->on('waktu_shift');
+        });
     }
 
     public function down()

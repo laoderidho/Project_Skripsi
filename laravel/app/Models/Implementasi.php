@@ -9,3 +9,4 @@ class Implementasi extends Model
 {
     use HasFactory;
 }
+

@@ -15,9 +15,9 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Schema::table('kriteria_luaran', function (Blueprint $table) {
-        //     $table->foreign('id_luaran')->references('id_luaran')->on('luaran');
-        // });
+        Schema::table('kriteria_luaran', function (Blueprint $table) {
+            $table->foreign('id_luaran')->references('id_luaran')->on('luaran');
+        });
     }
 
     public function down()

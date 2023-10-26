@@ -15,9 +15,9 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Schema::table('tindakan_implementasi', function (Blueprint $table) {
-        //     $table->foreign('id_tindakan_intervensi')->references('id_tindakan_intervensi')->on('tindakan_intervensi');
-        // });
+        Schema::table('tindakan_implementasi', function (Blueprint $table) {
+            $table->foreign('id_tindakan_intervensi')->references('id_tindakan_intervensi')->on('tindakan_intervensi');
+        });
     }
 
     public function down()
