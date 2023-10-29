@@ -1,64 +1,80 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Admin\TindakanImplementasi;
+use Illuminate\Support\Facades\Validator;
 
 class TindakanImplementasiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $tindakanImplementasi = TindakanImplementasi::all();
+        return response()->json($tindakanImplementasi);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        $tindakanImplementasi = TindakanImplementasi::find($id);
+
+        if ($tindakanImplementasi) {
+            return response()->json($tindakanImplementasi);
+        } else {
+            return response()->json(['message' => 'Tindakan Implementasi tidak ditemukan'], 404);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'id_tindakan_intervensi' => 'required|int',
+            'kalimat_implementasi' => 'required|int',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $tindakanImplementasi = new TindakanImplementasi();
+        $tindakanImplementasi->fill($request->all());
+        $tindakanImplementasi->save();
+
+        return response()->json(['message' => 'Tindakan Implementasi berhasil ditambahkan', 'data' => $tindakanImplementasi]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'id_tindakan_intervensi' => 'required|int',
+            'kalimat_implementasi' => 'required|int',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $tindakanImplementasi = TindakanImplementasi::find($id);
+
+        if ($tindakanImplementasi) {
+            $tindakanImplementasi->fill($request->all());
+            $tindakanImplementasi->save();
+
+            return response()->json(['message' => 'Tindakan Implementasi berhasil diperbarui', 'data' => $tindakanImplementasi]);
+        } else {
+            return response()->json(['message' => 'Tindakan Implementasi tidak ditemukan'], 404);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function destroy($id)
     {
-        //
-    }
+        $tindakanImplementasi = TindakanImplementasi::find($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        if ($tindakanImplementasi) {
+            $tindakanImplementasi->delete();
+            return response()->json(['message' => 'Tindakan Implementasi berhasil dihapus']);
+        } else {
+            return response()->json(['message' => 'Tindakan Implementasi tidak ditemukan'], 404);
+        }
     }
 }

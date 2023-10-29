@@ -1,64 +1,80 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Admin\Luaran;
+use Illuminate\Support\Facades\Validator;
 
 class LuaranController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $luaran = Luaran::all();
+        return response()->json($luaran);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        $luaran = Luaran::find($id);
+
+        if ($luaran) {
+            return response()->json($luaran);
+        } else {
+            return response()->json(['message' => 'Luaran tidak ditemukan'], 404);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'kode_luaran' => 'required|string|max:255',
+            'nama_luaran' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $luaran = new Luaran();
+        $luaran->fill($request->all());
+        $luaran->save();
+
+        return response()->json(['message' => 'Luaran berhasil ditambahkan', 'data' => $luaran]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'kode_luaran' => 'required|string|max:255',
+            'nama_luaran' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $luaran = Luaran::find($id);
+
+        if ($luaran) {
+            $luaran->fill($request->all());
+            $luaran->save();
+
+            return response()->json(['message' => 'Luaran berhasil diperbarui', 'data' => $luaran]);
+        } else {
+            return response()->json(['message' => 'Luaran tidak ditemukan'], 404);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function destroy($id)
     {
-        //
-    }
+        $luaran = Luaran::find($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        if ($luaran) {
+            $luaran->delete();
+            return response()->json(['message' => 'Luaran berhasil dihapus']);
+        } else {
+            return response()->json(['message' => 'Luaran tidak ditemukan'], 404);
+        }
     }
 }

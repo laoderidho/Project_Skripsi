@@ -1,64 +1,82 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Perawat\TindakanIntervensi;
+use Illuminate\Support\Facades\Validator;
 
 class TindakanIntervensiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $tindakanIntervensi = TindakanIntervensi::all();
+        return response()->json($tindakanIntervensi);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        $tindakanIntervensi = TindakanIntervensi::find($id);
+
+        if ($tindakanIntervensi) {
+            return response()->json($tindakanIntervensi);
+        } else {
+            return response()->json(['message' => 'Tindakan Intervensi tidak ditemukan'], 404);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'id_kategori_tindakan' => 'required|int',
+            'id_intervensi' => 'required|string|max:255',
+            'nama_tindakan_intervensi' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $tindakanIntervensi = new TindakanIntervensi();
+        $tindakanIntervensi->fill($request->all());
+        $tindakanIntervensi->save();
+
+        return response()->json(['message' => 'Tindakan Intervensi berhasil ditambahkan', 'data' => $tindakanIntervensi]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'id_kategori_tindakan' => 'required|int',
+            'id_intervensi' => 'required|string|max:255',
+            'nama_tindakan_intervensi' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $tindakanIntervensi = TindakanIntervensi::find($id);
+
+        if ($tindakanIntervensi) {
+            $tindakanIntervensi->fill($request->all());
+            $tindakanIntervensi->save();
+
+            return response()->json(['message' => 'Tindakan Intervensi berhasil diperbarui', 'data' => $tindakanIntervensi]);
+        } else {
+            return response()->json(['message' => 'Tindakan Intervensi tidak ditemukan'], 404);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function destroy($id)
     {
-        //
-    }
+        $tindakanIntervensi = TindakanIntervensi::find($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        if ($tindakanIntervensi) {
+            $tindakanIntervensi->delete();
+            return response()->json(['message' => 'Tindakan Intervensi berhasil dihapus']);
+        } else {
+            return response()->json(['message' => 'Tindakan Intervensi tidak ditemukan'], 404);
+        }
     }
 }

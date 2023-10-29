@@ -1,64 +1,90 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Perawat\Evaluasi;
+use Illuminate\Support\Facades\Validator;
 
 class EvaluasiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $evaluasi = Evaluasi::all();
+        return response()->json($evaluasi);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        $evaluasi = Evaluasi::find($id);
+
+        if ($evaluasi) {
+            return response()->json($evaluasi);
+        } else {
+            return response()->json(['message' => 'Evaluasi tidak ditemukan'], 404);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'id_luaran' => 'required|int',
+            'id_penilaian_kriteria' => 'required|int',
+            'subjektif' => 'required|string|max:255',
+            'objektif' => 'required|string|max:255',
+            'pencapaian' => 'required|string|max:255',
+            'perencanaan' => 'required|string|max:255',
+            'catatan_evaluasi' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $evaluasi = new Evaluasi();
+        $evaluasi->fill($request->all());
+        $evaluasi->save();
+
+        return response()->json(['message' => 'Evaluasi berhasil ditambahkan', 'data' => $evaluasi]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'id_luaran' => 'required|int',
+            'id_penilaian_kriteria' => 'required|int',
+            'subjektif' => 'required|string|max:255',
+            'objektif' => 'required|string|max:255',
+            'pencapaian' => 'required|string|max:255',
+            'perencanaan' => 'required|string|max:255',
+            'catatan_evaluasi' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $evaluasi = Evaluasi::find($id);
+
+        if ($evaluasi) {
+            $evaluasi->fill($request->all());
+            $evaluasi->save();
+
+            return response()->json(['message' => 'Evaluasi berhasil diperbarui', 'data' => $evaluasi]);
+        } else {
+            return response()->json(['message' => 'Evaluasi tidak ditemukan'], 404);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function destroy($id)
     {
-        //
-    }
+        $evaluasi = Evaluasi::find($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        if ($evaluasi) {
+            $evaluasi->delete();
+            return response()->json(['message' => 'Evaluasi berhasil dihapus']);
+        } else {
+            return response()->json(['message' => 'Evaluasi tidak ditemukan'], 404);
+        }
     }
 }
