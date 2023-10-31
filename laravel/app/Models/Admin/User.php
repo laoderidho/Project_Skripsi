@@ -27,7 +27,9 @@ class User extends Authenticatable
         'email',
         'password',
         'no_karyawan',
-        'role'
+        'status',
+        'role',
+        'photo',
     ];
 
     /**
@@ -49,4 +51,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function perawat()
+    {
+        return $this->hasOne(Perawat::class, 'id_user');
+    }
 }

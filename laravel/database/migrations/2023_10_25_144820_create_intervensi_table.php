@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gejala', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('id_diagnosa');
+        Schema::create('intervensi', function (Blueprint $table) {
+            $table->string('id_intervensi', 255)->primary();
+            $table->string('nama_intervensi', 255);
         });
     }
 
@@ -22,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('gejala');
+        Schema::dropIfExists('intervensi');
     }
 };

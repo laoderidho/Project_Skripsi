@@ -1,22 +1,22 @@
 <?php
 
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Perawat\PerawatController;
+use App\Http\Controllers\PasienController;
+
+//Controller Admin
+use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\DetailPenyebab;
+use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Diagnosa;
+use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\FaktorResiko;
+use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Gejala;
+use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Jenis;
 
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+//Controller Perawat
+
+//
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('/profile', [AuthController::class, 'profile']);
@@ -30,6 +30,9 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         Route::post('/', [AdminController::class, 'getAll']);
         Route::get('/getAll', [AdminController::class, 'getAll']);
         Route::get('/hello', [AdminController::class, 'hello']);
+        Route::get('/view', [AdminController::class, 'getAll']);
+        Route::get('/pasien', [PasienController::class,'index']);
+        Route::post('/pasien/create', [PasienController::class, 'store']);
     });
 
 });
@@ -38,6 +41,7 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 
     Route::prefix('perawat')->group(function(){
         Route::get('/', [PerawatController::class, 'hello']);
+        // Route::get('/add_diagnosa'[])
     });
 });
 
