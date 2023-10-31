@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -54,7 +55,7 @@ class AuthController extends Controller
      {
         if(!Auth::attempt($request->only('email', 'password'))){
             return response()->json([
-                'message'=> 'Invalid login details'
+                'message'=> 'Your Password or Email is wrong'
             ], 401);
         }
 
@@ -103,6 +104,43 @@ class AuthController extends Controller
 
         return response()->json([
             'message'=> 'success',
+            'data'=> $user
+        ]);
+    }
+
+    public function changePassword(Request $request)
+    {
+
+        $user = Auth::user();
+        $actualPassword = $user->password;
+        $currentPassword = $request->currentpassword;
+        $password = $request->password;
+        $confirmPassword = $request->confirmpassword;
+
+        if (!$user) {
+            return response()->json([
+                'message'=> 'User not found'
+            ], 404);
+        }
+
+        if(!Hash::check($currentPassword, $actualPassword)){
+            return response()->json([
+                'message'=> 'Current password not match'
+            ], 400);
+        }
+
+        if ($password != $confirmPassword) {
+            return response()->json([
+                'message'=> 'Password not match'
+            ], 400);
+        }
+
+        $user->password = bcrypt($password);
+
+        $user->update();
+
+        return response()->json([
+            'message'=> 'success change password',
             'data'=> $user
         ]);
     }

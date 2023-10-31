@@ -21,12 +21,13 @@ use App\Http\Controllers\Perawat\PerawatController;
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::get('/logout', [AuthController::class, 'logout']);
+    Route::post('/update-password', [AuthController::class, 'changePassword']);
 });
 
 Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
 
     Route::prefix('admin')->group(function(){
-        Route::get('/', [AdminController::class, 'getAll']);
+        Route::post('/', [AdminController::class, 'getAll']);
         Route::get('/getAll', [AdminController::class, 'getAll']);
         Route::get('/hello', [AdminController::class, 'hello']);
     });
