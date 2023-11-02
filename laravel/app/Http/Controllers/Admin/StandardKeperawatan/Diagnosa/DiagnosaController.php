@@ -18,7 +18,7 @@ class DiagnosaController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'id_diagnosa' => 'required|string|max:255',
+            'kode_diagnosa' => 'required|string|max:255',
             'nama_diagnosa' => 'required|string|max:255',
         ]);
 
@@ -30,7 +30,6 @@ class DiagnosaController extends Controller
         $diagnosa->fill($request->all());
         $diagnosa->save();
 
-        return response()->json(['message' => 'Diagnosa berhasil ditambahkan']);
     }
 
     public function show(string $id)
@@ -59,7 +58,7 @@ class DiagnosaController extends Controller
     public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(),[
-            'id_diagnosa' => 'required|string|max:255',
+            'kode_diagnosa' => 'required|string|max:20',
             'nama_diagnosa' => 'required|string|max:255',
         ]);
 

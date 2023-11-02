@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,13 +15,12 @@ class Pasien extends Model
         'tanggal_lahir',
         'jenis_kelamin',
         'alamat',
-        'no_telepon',
+        'no_telp',
         'status_pernikahan',
         'nik',
-        'penyedia_asuransi',
+        'alergi',
+        'nama_asuransi',
         'no_asuransi',
         'no_medical_record',
-        'bed',
-        'alergi',
     ];
 }

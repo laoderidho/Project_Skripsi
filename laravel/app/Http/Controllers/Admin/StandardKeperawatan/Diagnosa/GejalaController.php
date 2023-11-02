@@ -28,7 +28,7 @@ class GejalaController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id_diagnosa' => 'required|string|max:255',
+            'id_diagnosa' => 'required|bigInt|max:20',
             'id_kategori_gejala' => 'required|int',
             'id_jenis_gejala' => 'required|int',
             'nama_gejala' => 'required|string|max:255',
@@ -48,7 +48,7 @@ class GejalaController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'id_diagnosa' => 'required|string|max:255',
+            'id_diagnosa' => 'required|bigInt|max:20',
             'id_kategori_gejala' => 'required|int',
             'id_jenis_gejala' => 'required|int',
             'nama_gejala' => 'required|string|max:255',

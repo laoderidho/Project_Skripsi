@@ -1,5 +1,5 @@
 <?php
-namespace App\Models;
+namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +11,6 @@ class JenisPenyebab extends Model
     protected $table = 'jenis_penyebab';
 
     protected $fillable = [
-        'id_jenis_penyebab',
         'nama_jenis_penyebab',
     ];
 }

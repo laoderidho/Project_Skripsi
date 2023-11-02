@@ -11,7 +11,7 @@ class Diagnosa extends Model
     protected $table = 'diagnosa'; // Menyesuaikan nama tabel di database
 
     protected $fillable = [
-        'id_diagnosa', // Menyertakan kolom id_diagnosa dalam $fillable agar dapat diisi
+        'kode_diagnosa',
         'nama_diagnosa',
     ];
 }

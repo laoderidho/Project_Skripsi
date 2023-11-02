@@ -12,20 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pasien', function (Blueprint $table) {
-            $table->id('id_pasien');
+            $table->id();
             $table->string('nama');
             $table->date('tanggal_lahir');
             $table->boolean('jenis_kelamin');
+            $table->string('no_telp');
             $table->string('alamat');
-            $table->string('no_telepon');
             $table->boolean('status_pernikahan');
             $table->string('nik');
-            $table->string('penyedia_asuransi')->nullable;
-            $table->string('no_asuransi')->nullable;
+            $table->string('alergi')->nullable();
+            $table->string('nama_asuransi')->nullable();
+            $table->string('no_asuransi')->nullable();
             $table->string('no_medical_record');
-            $table->string('bed');
-            $table->string('alergi');
+
             $table->timestamps();
+
         });
     }
 

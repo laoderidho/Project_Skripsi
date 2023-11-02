@@ -28,7 +28,7 @@ class LuaranController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'kode_luaran' => 'required|string|max:255',
+            'kode_luaran' => 'required|string|max:255|unique',
             'nama_luaran' => 'required|string|max:255',
         ]);
 

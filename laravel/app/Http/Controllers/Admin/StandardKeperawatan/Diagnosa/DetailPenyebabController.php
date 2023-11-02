@@ -28,7 +28,7 @@ class DetailPenyebabController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id_diagnosa' => 'required|string|max:255',
+            'id_diagnosa' => 'required|bigInt|max:20',
             'id_jenis_penyebab' => 'required|int',
             'nama_penyebab' => 'required|string|max:255',
         ]);
@@ -47,7 +47,7 @@ class DetailPenyebabController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'id_diagnosa' => 'required|string|max:255',
+            'id_diagnosa' => 'required|bigInt|max:20',
             'id_jenis_penyebab' => 'required|int',
             'nama_penyebab' => 'required|string|max:255',
         ]);

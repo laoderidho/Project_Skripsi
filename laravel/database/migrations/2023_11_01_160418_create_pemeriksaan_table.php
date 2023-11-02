@@ -6,10 +6,13 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
         Schema::create('pemeriksaan', function (Blueprint $table) {
-            $table->id('id_pemeriksaan');
+            $table->id();
             $table->unsignedBigInteger('id_perawat');
             $table->unsignedBigInteger('id_form_diagnosa');
             $table->unsignedBigInteger('id_tindakan_intervensi');
@@ -20,18 +23,20 @@ return new class extends Migration
             $table->time('jam_pemberian_implementasi');
             $table->time('jam_penilaian_evaluasi');
             $table->timestamps();
-        });
 
-        Schema::table('pemeriksaan', function (Blueprint $table) {
-            $table->foreign('id_perawat')->references('id_perawat')->on('perawat');
-            $table->foreign('id_form_diagnosa')->references('id_form_diagnosa')->on('form_diagnosa');
-            $table->foreign('id_tindakan_intervensi')->references('id_tindakan_intervensi')->on('tindakan_intervensi');
-            $table->foreign('id_implementasi')->references('id_implementasi')->on('implementasi');
-            $table->foreign('id_evaluasi')->references('id_evaluasi')->on('evaluasi');
+            $table->foreign('id_perawat')->references('id')->on('perawat');
+            $table->foreign('id_form_diagnosa')->references('id')->on('form_diagnosa');
+            $table->foreign('id_tindakan_intervensi')->references('id')->on('tindakan_intervensi');
+            $table->foreign('id_implementasi')->references('id')->on('implementasi');
+            $table->foreign('id_evaluasi')->references('id')->on('evaluasi');
+
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         Schema::dropIfExists('pemeriksaan');
     }

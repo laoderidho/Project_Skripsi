@@ -6,23 +6,28 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
         Schema::create('tindakan_intervensi', function (Blueprint $table) {
-            $table->id('id_tindakan_intervensi');
+            $table->id();
             $table->unsignedBigInteger('id_kategori_tindakan');
-            $table->string('id_intervensi', 255);
+            $table->unsignedBigInteger('id_intervensi');
             $table->string('nama_tindakan_intervensi', 255);
             $table->timestamps();
-        });
 
-        Schema::table('tindakan_intervensi', function (Blueprint $table) {
-            $table->foreign('id_kategori_tindakan')->references('id_kategori_tindakan')->on('kategori_tindakan');
-            $table->foreign('id_intervensi')->references('id_intervensi')->on('intervensi');
+            $table->foreign('id_kategori_tindakan')->references('id')->on('kategori_tindakan');
+            $table->foreign('id_intervensi')->references('id')->on('intervensi');
+
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         Schema::dropIfExists('tindakan_intervensi');
     }

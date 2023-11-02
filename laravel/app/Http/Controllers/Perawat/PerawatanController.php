@@ -30,6 +30,7 @@ class PerawatanController extends Controller
         $validator = Validator::make($request->all(), [
             'id_perawat' => 'required|int',
             'id_data_diagnostik' => 'required|int',
+            'bed' => 'required|string|max:3',
             'waktu_pencatatan' => 'required|date_format:H:i',
         ]);
 
@@ -49,6 +50,7 @@ class PerawatanController extends Controller
         $validator = Validator::make($request->all(), [
             'id_perawat' => 'required|int',
             'id_data_diagnostik' => 'required|int',
+            'bed' => 'required|string|max:3',
             'waktu_pencatatan' => 'required|date_format:H:i',
         ]);
 

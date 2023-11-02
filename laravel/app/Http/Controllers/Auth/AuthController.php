@@ -6,8 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Admin\User;
 use Illuminate\Support\Facades\Validator;
-use Kreait\Firebase\Factory;
-use Kreait\Firebase\ServiceAccount;
 
 class AuthController extends Controller
 {
@@ -28,8 +26,7 @@ class AuthController extends Controller
             'no_telepon'=> 'required|string|max:255',
             'email'=> 'required|string|email|max:255|unique:users',
             'password'=> 'required|string|max:20|',
-            'no_karyawan'=> 'required|int|min:20|unique:users',
-            'status' =>'required|boolean',
+            'no_karyawan'=> 'required|string|max:20|unique:users',
             'role' =>'required|string|max:10',
             'photo' =>'image|file|max:2048',
         ]);

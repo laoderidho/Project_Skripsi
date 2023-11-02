@@ -6,10 +6,13 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
         Schema::create('waktu_shift', function (Blueprint $table) {
-            $table->id('id_waktu_shift');
+            $table->id();
             $table->date('hari');
             $table->date('tanggal');
             $table->integer('shift');
@@ -17,7 +20,10 @@ return new class extends Migration
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         Schema::dropIfExists('waktu_shift');
     }

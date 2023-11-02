@@ -7,6 +7,7 @@ use App\Http\Controllers\Perawat\PerawatController;
 use App\Http\Controllers\PasienController;
 
 //Controller Admin
+use App\Http\Controllers\Admin\InputDiagnosaController;
 use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\DetailPenyebab;
 use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Diagnosa;
 use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\FaktorResiko;
@@ -31,6 +32,7 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         Route::get('/hello', [AdminController::class, 'hello']);
         Route::get('/view', [AdminController::class, 'getAll']);
         Route::get('/pasien', [PasienController::class,'index']);
+        Route::post('/diagnosa/add', [InputDiagnosaController::class,'tambahDiagnosa']);
         Route::post('/pasien/create', [PasienController::class, 'store']);
     });
 

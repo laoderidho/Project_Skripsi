@@ -6,10 +6,13 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
         Schema::create('data_diagnostik', function (Blueprint $table) {
-            $table->id('id_data_diagnostik');
+            $table->id();
             $table->unsignedBigInteger('id_pasien');
             $table->string('keluhan_utama', 255);
             $table->string('riwayat_penyakit', 255);
@@ -26,14 +29,16 @@ return new class extends Migration
             $table->string('gcs_visual', 255);
             $table->string('pemeriksaan_fisik', 255);
             $table->timestamps();
-        });
 
-        Schema::table('data_diagnostik', function (Blueprint $table) {
-            $table->foreign('id_pasien')->references('id_pasien')->on('pasien');
+            $table->foreign('id_pasien')->references('id')->on('pasien');
+
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         Schema::dropIfExists('data_diagnostik');
     }

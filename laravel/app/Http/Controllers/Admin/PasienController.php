@@ -30,7 +30,6 @@ class PasienController extends Controller
         'penyedia_asuransi' => 'string|max:255|nullable',
         'no_asuransi' => 'string|max:255|nullable',
         'no_medical_record' => 'require|string|max:9|unique',
-        'bed' => 'require|string|max:3',
         'alergi' =>'string|max:255',
         ]);
 

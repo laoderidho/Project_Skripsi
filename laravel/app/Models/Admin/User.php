@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Admin;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,7 +27,6 @@ class User extends Authenticatable
         'email',
         'password',
         'no_karyawan',
-        'status',
         'role',
         'photo',
     ];

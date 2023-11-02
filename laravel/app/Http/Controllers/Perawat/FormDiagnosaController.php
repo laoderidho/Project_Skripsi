@@ -28,7 +28,7 @@ class FormDiagnosaController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id_diagnosa' => 'required|string|max:255',
+            'id_diagnosa' => 'required|bigInt|max:20',
             'id_gejala' => 'required|int',
             'id_detail_penyebab' => 'required|int',
             'id_faktor_resiko' => 'required|int',
@@ -49,7 +49,7 @@ class FormDiagnosaController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'id_diagnosa' => 'required|string|max:255',
+            'id_diagnosa' => 'required|bigInt|max:20',
             'id_gejala' => 'required|int',
             'id_detail_penyebab' => 'required|int',
             'id_faktor_resiko' => 'required|int',
