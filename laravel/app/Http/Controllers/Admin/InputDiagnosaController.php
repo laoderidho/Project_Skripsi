@@ -19,8 +19,8 @@ class InputDiagnosaController extends Controller
     public function tambahDiagnosa(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'kode_diagnosa' => 'required|string|max:255',
-            'nama_diagnosa' => 'required|string|max:255',
+            'kode_diagnosa' => 'required|string|max:255|unique:diagnosa,kode_diagnosa',
+            'nama_diagnosa' => 'required|string|max:255|unique:diagnosa,nama_diagnosa',
             'faktor_resiko' => 'string|nullable',
             'gejala_mayor_subjektif' => 'string|nullable',
             'gejala_mayor_objektif' => 'string|nullable',
@@ -31,8 +31,8 @@ class InputDiagnosaController extends Controller
             'penyebab_fisiologis' => 'string|nullable',
         ]);
 
+//  Debugging
         // dd($request->all());
-
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
