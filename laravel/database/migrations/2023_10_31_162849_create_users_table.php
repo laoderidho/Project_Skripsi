@@ -16,13 +16,18 @@ return new class extends Migration
             $table->string('nama');
             $table->date('tanggal_lahir');
             $table->boolean('jenis_kelamin');
-            $table->string('alamat');
+            $table->text('alamat');
             $table->string('no_telepon');
             $table->string('email')->unique();
             $table->string('password');
-            $table->integer('no_karyawan')->unique();
+            $table->string('no_karyawan');
             $table->string('role');
+<<<<<<< HEAD:laravel/database/migrations/2023_09_23_090239_create_user_table.php
+=======
+            $table->string('photo');
+>>>>>>> 73ff3bc34597ed1a4a22d609c381f25eb60395d3:laravel/database/migrations/2023_10_31_162849_create_users_table.php
             $table->timestamps();
+
         });
     }
 

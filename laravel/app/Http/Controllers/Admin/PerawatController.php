@@ -34,7 +34,7 @@ class PerawatController extends Controller
     {
         // Validasi input
         $validator = Validator::make($request->all(), [
-            'id_user' => 'required|string|max:255',
+            'id_user' => 'required|int|',
             'id_waktu_shift' => 'required|int',
             'status' => 'required|boolean',
         ]);

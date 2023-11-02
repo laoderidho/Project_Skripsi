@@ -12,6 +12,12 @@ use App\Http\Controllers\Admin\Data\PasienController;
 // use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\FaktorResiko;
 // use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Gejala;
 // use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Jenis;
+use App\Http\Controllers\Admin\InputDiagnosaController;
+use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\DetailPenyebab;
+use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Diagnosa;
+use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\FaktorResiko;
+use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Gejala;
+use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Jenis;
 
 
 //Controller Perawat
@@ -39,6 +45,9 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/detail/{id}', [PasienController::class, 'getDetail']);
             Route::post('/delete/{id}', [PasienController::class, 'delete']);
         });
+        Route::get('/pasien', [PasienController::class,'index']);
+        Route::post('/diagnosa/add', [InputDiagnosaController::class,'tambahDiagnosa']);
+        Route::post('/pasien/create', [PasienController::class, 'store']);
     });
 
 });

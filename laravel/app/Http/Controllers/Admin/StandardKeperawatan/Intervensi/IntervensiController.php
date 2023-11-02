@@ -10,8 +10,7 @@ use Illuminate\Support\Facades\Validator;
 class IntervensiController extends Controller
 {
    public function AddIntervensi(Request $request){
-        
-   }
 
+   }
 
 }

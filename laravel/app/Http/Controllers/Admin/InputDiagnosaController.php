@@ -1,16 +1,18 @@
 <?php
-namespace App\Http\Controllers;
+
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Diagnosa;
-use App\Models\FaktorResiko;
-use App\Models\Gejala;
-use App\Models\JenisGejala;
-use App\Models\KategoriGejala;
-use App\Models\JenisPenyebab;
-use App\Models\DetailPenyebab;
+use App\Models\Admin\Diagnosa;
+use App\Models\Admin\FaktorResiko;
+use App\Models\Admin\DetailPenyebab;
+use App\Models\Admin\JenisPenyebab;
+use App\Models\Admin\JenisGejala;
+use App\Models\Admin\KategoriGejala;
+use App\Models\Admin\Gejala;
+
 
 class InputDiagnosaController extends Controller
 {
@@ -19,45 +21,93 @@ class InputDiagnosaController extends Controller
         $validator = Validator::make($request->all(), [
             'kode_diagnosa' => 'required|string|max:255',
             'nama_diagnosa' => 'required|string|max:255',
-            'id_faktor_resiko' => 'required|exists:faktor_resiko,id_faktor_resiko',
-            'id_gejala' => 'required|exists:gejala,id_gejala',
-            'id_kategori_gejala' => 'required|exists:kategori_gejala,id_kategori_gejala',
-            'id_jenis_gejala' => 'required|exists:jenis_gejala,id_jenis_gejala',
-            'id_jenis_penyebab' => 'required|exists:jenis_penyebab,id_jenis_penyebab',
-            'gejala_nama' => 'required|string|max:255',
-            'penyebab_psikologis' => 'required|string|max:255',
-            'penyebab_situasional' => 'required|string|max:255',
-            'penyebab_fisiologis' => 'required|string|max:255',
+            'faktor_resiko' => 'string|nullable',
+            'gejala_mayor_subjektif' => 'string|nullable',
+            'gejala_mayor_objektif' => 'string|nullable',
+            'gejala_minor_subjektif' => 'string|nullable',
+            'gejala_minor_objektif' => 'string|nullable',
+            'penyebab_psikologis' => 'string|nullable',
+            'penyebab_situasional' => 'string|nullable',
+            'penyebab_fisiologis' => 'string|nullable',
         ]);
+
+        // dd($request->all());
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
+        // Simpan diagnosa ke dalam tabel diagnosa
         $diagnosa = new Diagnosa();
         $diagnosa->kode_diagnosa = $request->input('kode_diagnosa');
         $diagnosa->nama_diagnosa = $request->input('nama_diagnosa');
         $diagnosa->save();
+        $diagnosaId = $diagnosa->id; // Ambil ID diagnosa yang baru dibuat
 
-        $gejala = new Gejala();
-        $gejala->id_diagnosa = $diagnosa->id;
-        $gejala->id_jenis_gejala = $request->input('id_jenis_gejala');
-        $gejala->id_kategori_gejala = $request->input('id_kategori_gejala');
-        $gejala->nama_gejala = $request->input('gejala_nama');
-        $gejala->save();
+        // Faktor Resiko
+        $this->saveFaktorResiko($request->input('faktor_resiko'), $diagnosaId);
 
-        $jenisPenyebab = new JenisPenyebab();
-        $jenisPenyebab->id_diagnosa = $diagnosa->id;
-        $jenisPenyebab->id_jenis_penyebab = $request->input('id_jenis_penyebab');
-        $jenisPenyebab->save();
+//private function saveGejala($gejalaInput, $jenisGejala, $kategoriGejala, $diagnosaId)
 
-        $detailPenyebab = new DetailPenyebab();
-        $detailPenyebab->id_diagnosa = $diagnosa->id;
-        $detailPenyebab->penyebab_psikologis = $request->input('penyebab_psikologis');
-        $detailPenyebab->penyebab_situasional = $request->input('penyebab_situasional');
-        $detailPenyebab->penyebab_fisiologis = $request->input('penyebab_fisiologis');
-        $detailPenyebab->save();
+        // Gejala Mayor Subjektif
+        $this->saveGejala($request->input('gejala_mayor_subjektif'), 'Mayor', 'Subjektif', $diagnosaId);
+
+        // Gejala Mayor Objektif
+        $this->saveGejala($request->input('gejala_mayor_objektif'), 'Mayor', 'Objektif', $diagnosaId);
+
+        // Gejala Minor Subjektif
+        $this->saveGejala($request->input('gejala_minor_subjektif'), 'Minor', 'Subjektif', $diagnosaId);
+
+        // Gejala Minor Objektif
+        $this->saveGejala($request->input('gejala_minor_objektif'), 'Minor', 'Objektif', $diagnosaId);
+
+        // Penyebab Psikologis
+        $this->savePenyebab($request->input('penyebab_psikologis'), 'Psikologis', $diagnosaId);
+
+        // Penyebab Situasional
+        $this->savePenyebab($request->input('penyebab_situasional'), 'Situasional', $diagnosaId);
+
+        // Penyebab Fisiologis
+        $this->savePenyebab($request->input('penyebab_fisiologis'), 'Fisiologis', $diagnosaId);
 
         return response()->json(['message' => 'Diagnosa berhasil ditambahkan', 'data' => $diagnosa]);
+    }
+
+    private function saveFaktorResiko($faktorResiko, $diagnosaId)
+    {
+        $faktorResikoArray = explode(PHP_EOL, $faktorResiko);
+        foreach ($faktorResikoArray as $item) {
+            $faktorResikoModel = new FaktorResiko();
+            $faktorResikoModel->id_diagnosa = $diagnosaId;
+            $faktorResikoModel->nama = $item;
+            $faktorResikoModel->save();
+        }
+    }
+
+    private function saveGejala($gejalaInput, $jenisGejala, $kategoriGejala, $diagnosaId)
+    {
+        $gejalaArray = explode(PHP_EOL, $gejalaInput);
+        foreach ($gejalaArray as $item) {
+            $gejalaModel = new Gejala();
+            $gejalaModel->id_diagnosa = $diagnosaId;
+            $gejalaModel->id_jenis_gejala = JenisGejala::where('nama_jenis_gejala', $jenisGejala)->first()->id;
+            $gejalaModel->id_kategori_gejala = KategoriGejala::where('nama_kategori_gejala', $kategoriGejala)->first()->id;
+            $gejalaModel->nama_gejala = $item;
+            $gejalaModel->save();
+        }
+    }
+
+    private function savePenyebab($penyebabInput, $jenisPenyebab, $diagnosaId)
+    {
+        $penyebabArray = explode(PHP_EOL, $penyebabInput);
+        $jenisPenyebabId = JenisPenyebab::where('nama_jenis_penyebab', $jenisPenyebab)->first()->id;
+
+        foreach ($penyebabArray as $item) {
+            $penyebabModel = new DetailPenyebab();
+            $penyebabModel->id_diagnosa = $diagnosaId;
+            $penyebabModel->id_jenis_penyebab = $jenisPenyebabId;
+            $penyebabModel->nama_penyebab = $item;
+            $penyebabModel->save();
+        }
     }
 }
