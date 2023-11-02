@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::create('waktu_shift', function (Blueprint $table) {
             $table->id();
-            $table->date('hari');
-            $table->date('tanggal');
             $table->integer('shift');
             $table->timestamps();
         });

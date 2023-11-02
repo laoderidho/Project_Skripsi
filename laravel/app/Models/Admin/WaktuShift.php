@@ -11,8 +11,6 @@ class WaktuShift extends Model
     protected $table = 'waktu_shift';
 
     protected $fillable = [
-        'hari',
-        'tanggal',
         'shift',
     ];
 }

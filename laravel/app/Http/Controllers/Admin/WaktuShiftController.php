@@ -28,8 +28,6 @@ class WaktuShiftController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'hari' => 'required|date',
-            'tanggal' => 'required|date',
             'shift' => 'required|int',
         ]);
 
@@ -47,8 +45,6 @@ class WaktuShiftController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'hari' => 'required|date',
-            'tanggal' => 'required|date',
             'shift' => 'required|int',
         ]);
 
