@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
+            $table->string('nama_lengkap');
             $table->date('tanggal_lahir');
             $table->boolean('jenis_kelamin');
             $table->text('alamat');
@@ -22,10 +22,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('no_karyawan');
             $table->string('role');
-<<<<<<< HEAD:laravel/database/migrations/2023_09_23_090239_create_user_table.php
-=======
-            $table->string('photo');
->>>>>>> 73ff3bc34597ed1a4a22d609c381f25eb60395d3:laravel/database/migrations/2023_10_31_162849_create_users_table.php
+            $table->string('photo')->nullable();
             $table->timestamps();
 
         });

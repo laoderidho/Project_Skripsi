@@ -7,12 +7,8 @@ use App\Http\Controllers\Perawat\PerawatController;
 
 //Controller Admin
 use App\Http\Controllers\Admin\Data\PasienController;
-// use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\DetailPenyebab;
-// use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Diagnosa;
-// use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\FaktorResiko;
-// use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Gejala;
-// use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Jenis;
 use App\Http\Controllers\Admin\InputDiagnosaController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\DetailPenyebab;
 use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Diagnosa;
 use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\FaktorResiko;
@@ -38,6 +34,12 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         Route::get('/hello', [AdminController::class, 'hello']);
         Route::get('/view', [AdminController::class, 'getAll']);
 
+        Route::prefix('user')->group(function(){
+            Route::post('/tambah', [UserController::class, 'addUser']);
+            Route::post('/delete/{id}', [UserController::class, 'delete']);
+        });
+
+
         Route::prefix('daftarpasien')->group(function () {
             Route::post('/', [PasienController::class, 'getPasien']);
             Route::post('/tambah', [PasienController::class, 'addPasien']);
@@ -60,6 +62,5 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
     });
 });
 
-Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/login', [AuthController::class, 'viewLogin'])->name('login');

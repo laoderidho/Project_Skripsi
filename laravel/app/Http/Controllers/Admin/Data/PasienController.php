@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin\Data;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Data\Pasien\Pasien;
+use App\Models\Admin\Pasien;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,7 +30,7 @@ class PasienController extends Controller
             'jenis_kelamin' => 'required|boolean',
             'no_telepon' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
-            'status_pernikahan' => 'required|string|max:255',
+            'status_pernikahan' => 'required|boolean',
             'nik' => 'required|string|max:255',
             'nama_asuransi' => 'nullable|string|max:255',
             'no_asuransi' => 'nullable|string|max:255',
