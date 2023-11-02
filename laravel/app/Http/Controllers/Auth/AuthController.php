@@ -43,6 +43,8 @@ class AuthController extends Controller
             'role'=> $request->role,
         ]);
 
+        
+
         return response()->json([
             'message'=> 'Registration Success',
             'data'=> $user,
