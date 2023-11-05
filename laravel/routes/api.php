@@ -35,6 +35,7 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         Route::get('/view', [AdminController::class, 'getAll']);
 
         Route::prefix('user')->group(function(){
+            Route::post('/', [UserController::class, 'getUsers']);
             Route::post('/delete/{id}', [UserController::class, 'delete']);
             Route::post('/update/{id}', [UserController::class, 'updateUser']);
         });
@@ -50,7 +51,6 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
 
         Route::get('/pasien', [PasienController::class,'index']);
         Route::post('/diagnosa/add', [InputDiagnosaController::class,'tambahDiagnosa']);
-        Route::post('/pasien/create', [PasienController::class, 'store']);
     });
 
 });

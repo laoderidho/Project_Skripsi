@@ -10,7 +10,10 @@ class Intervensi extends Model
 
     protected $table = 'intervensi';
     protected $fillable = [
-       'nama_intervensi'
+       'kode_intervensi',
+       'nama_intervensi',
+       'definisi_intervensi'
     ];
 
+ 
 }

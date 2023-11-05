@@ -16,10 +16,24 @@ class UserController extends Controller
     public function getUsers(){
         $users = User::all();
 
+        foreach($users as $user){
+            if($user->role == 'perawat'){
+              $perawatData =   $this->getPerawat($user->id);
+              $user->perawat = $perawatData;
+            }
+        }
+
         return response()->json([
             'message' => 'Success',
             'data' => $users,
         ]);
+    }
+
+    private function getPerawat($id_user){
+
+        $perawat = Perawat::where('id_user', $id_user)->first();
+
+        return $perawat;
     }
 
     public function addUser(Request $request)

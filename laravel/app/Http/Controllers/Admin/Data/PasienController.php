@@ -32,6 +32,7 @@ class PasienController extends Controller
             'alamat' => 'required|string|max:255',
             'status_pernikahan' => 'required|boolean',
             'nik' => 'required|string|max:255',
+            'alergi' => 'nullable|string|max:255',
             'nama_asuransi' => 'nullable|string|max:255',
             'no_asuransi' => 'nullable|string|max:255',
             'no_medical_record' => 'required|string|max:255',
@@ -49,6 +50,7 @@ class PasienController extends Controller
             'alamat'=> $request->alamat,
             'status_pernikahan'=> $request->status_pernikahan,
             'nik'=> $request->nik,
+            'alergi'=> $request->alergi,
             'nama_asuransi'=> $request->nama_asuransi,
             'no_asuransi'=> $request->no_asuransi,
             'no_medical_record'=> $request->no_medical_record,
@@ -93,8 +95,9 @@ class PasienController extends Controller
             'jenis_kelamin' => 'required|boolean',
             'no_telepon' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
-            'status_pernikahan' => 'required|string|max:255',
+            'status_pernikahan' => 'required|boolean',
             'nik' => 'required|string|max:255',
+            'alergi' => 'nullable|string|max:255',
             'nama_asuransi' => 'nullable|string|max:255',
             'no_asuransi' => 'nullable|string|max:255',
             'no_medical_record' => 'required|string|max:255',
@@ -112,6 +115,7 @@ class PasienController extends Controller
         $pasien->alamat = $request->alamat;
         $pasien->status_pernikahan = $request->status_pernikahan;
         $pasien->nik = $request->nik;
+        $pasien->alergi = $request->alergi;
         $pasien->nama_asuransi = $request->nama_asuransi;
         $pasien->no_asuransi = $request->no_asuransi;
         $pasien->no_medical_record = $request->no_medical_record;
