@@ -1,0 +1,237 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use App\Models\User;
+use App\Models\Admin\Perawat;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
+
+
+class UserController extends Controller
+{
+
+    public function getUsers(){
+        $users = User::all();
+
+        foreach($users as $user){
+            if($user->role == 'perawat'){
+              $perawatData =   $this->getPerawat($user->id);
+              $user->perawat = $perawatData;
+            }
+        }
+
+        return response()->json([
+            'message' => 'Success',
+            'data' => $users,
+        ]);
+    }
+
+    private function getPerawat($id_user){
+
+        $perawat = Perawat::where('id_user', $id_user)->first();
+
+        return $perawat;
+    }
+
+    public function addUser(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nama_lengkap' => 'required|string|max:255',
+            'tanggal_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|boolean',
+            'alamat' => 'required|string|max:255',
+            'no_telepon' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|max:20|',
+            'no_karyawan' => 'required|string|max:20|unique:users',
+            'role' => 'required|string|max:10',
+            'photo' => 'nullable|image|file|max:2048',
+            'shift' => 'required_if:role,perawat',
+            'status' => 'required_if:role,perawat',
+        ]);
+
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        if ($request->hasFile('photo')) {
+            $request->file('photo');
+            $photo = $request->file('photo');
+            $photoPath = $photo->store('post-images');
+        }else{
+            $photoPath = null;
+        }
+
+
+        // Update data user dengan alamat foto
+        $user = User::create([
+            'nama_lengkap' => $request->nama_lengkap,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'alamat' => $request->alamat,
+            'no_telepon' => $request->no_telepon,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'no_karyawan' => $request->no_karyawan,
+            'role' => $request->role,
+            'photo' => $photoPath,
+        ]);
+
+        if($request->role == 'perawat'){
+            $this->perawat($user->id, $request->shift, $request->status);
+        }
+
+        return response()->json([
+            'message' => 'Registration Success',
+            'data' => $user,
+        ]);
+
+    }
+
+    public function updateUser(Request $request, $id){
+        $user = User::find($id);
+
+        $validator = Validator::make($request->all(), [
+            'nama_lengkap' => 'required|string|max:255',
+            'tanggal_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|boolean',
+            'alamat' => 'required|string|max:255',
+            'no_telepon' => 'required|string|max:255',
+            'email' => [
+                        'required',
+                        'string',
+                        'email',
+                        'max:255',
+                        Rule::unique('users')->ignore($user->id)],
+            'password' => 'required|string|max:20|',
+            'no_karyawan' => [
+                'required',
+                'string',
+                'max:20',
+                Rule::unique('users')->ignore($user->id),
+            ],
+            'role' => 'required|string|max:10',
+            'photo' => 'nullable|image|file|max:2048',
+            'shift' => 'required_if:role,perawat',
+            'status' => 'required_if:role,perawat',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        if ($request->hasFile('photo')) {
+            if ($user->photo) {
+                Storage::disk('local')->delete($user->photo);
+            }
+            $request->file('photo');
+            $photo = $request->file('photo');
+            $photoPath = $photo->store('post-images');
+        }else{
+            $photoPath = null;
+        }
+
+        if($request->role == 'perawat'){
+            $this->updatePerawat($user->id, $request->shift, $request->status);
+        }
+
+        // Update data user dengan alamat foto
+        $user->update([
+            'nama_lengkap' => $request->nama_lengkap,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'alamat' => $request->alamat,
+            'no_telepon' => $request->no_telepon,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'no_karyawan' => $request->no_karyawan,
+            'role' => $request->role,
+            'photo' => $photoPath,
+        ]);
+
+        return response()->json([
+            'message' => 'Success',
+            'data' => $user,
+        ]);
+    }
+
+    public function delete($id){
+        $user = User::find($id);
+
+        // delete image user
+        if($user->photo != null){
+           $photoName = storage_path('/app/'. $user->photo);
+
+           if(file_exists($photoName)){
+               try{
+                   unlink($photoName);
+               }catch(\Exception $e){
+                     return response()->json([
+                          'message' => 'Delete Photo Failed',
+                          'data' => $user,
+                          'error'=> $e->getMessage(),
+                     ]);
+               }
+           }
+        }
+
+        if($user->role == 'perawat'){
+            $this->deletePerawat($user->id);
+        }
+
+        $user->delete();
+
+
+        return response()->json([
+            'message' => 'Delete Success',
+            'data' => $user,
+        ]);
+    }
+
+
+    private function perawat($id, $shift, $status){
+        $user = User::find($id);
+        $perawat = new Perawat();
+
+        $perawat->id_user = $user->id;
+        $perawat->id_waktu_shift = $shift;
+        $perawat->status = $status;
+
+        $perawat->save();
+
+
+        return response()->json([
+            'message' => 'Update Success',
+            'data' => $user,
+        ]);
+    }
+
+    private function deletePerawat($id_user){
+
+        $user = User::find($id_user);
+
+
+        $perawat = Perawat::where('id_user', $user->id)->first();
+
+        $perawat->delete();
+
+        return response()->json([
+            'message' => 'Delete Success'
+        ]);
+    }
+
+    private function updatePerawat($id_user, $shift, $status){
+        $user = User::find($id_user);
+
+        $perawat = Perawat::where('id_user', $user->id)->first();
+
+        $perawat->id_waktu_shift = $shift;
+        $perawat->status = $status;
+
+        $perawat->update();
+    }
+}

@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('pasien', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
+            $table->string('nama_lengkap');
             $table->date('tanggal_lahir');
             $table->boolean('jenis_kelamin');
-            $table->string('no_telp');
+            $table->string('no_telepon');
             $table->string('alamat');
             $table->boolean('status_pernikahan');
             $table->string('nik');
@@ -26,7 +26,6 @@ return new class extends Migration
             $table->string('no_medical_record');
 
             $table->timestamps();
-
         });
     }
 

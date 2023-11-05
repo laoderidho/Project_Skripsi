@@ -9,29 +9,23 @@ use Illuminate\Support\Facades\Validator;
 
 class IntervensiController extends Controller
 {
-    public function index()
-    {
-        $intervensis = Intervensi::all();
-        return response()->json($intervensis);
-    }
 
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'kode_intervensi' => 'required|string|max:255|unique',
-            'nama_intervensi' => 'required|string|max:255',
-            'deskripsi' => 'required|string|max:255'
-            // Tambahkan validasi untuk field lain jika diperlukan
+   public function AddIntervensi(Request $request){
+        $validator = Validator::make($request->all(),[
+            'kode_intervensi'=> 'required|string|max:10|unique:intervensi',
+            'nama_intervensi'=> 'required|string|max:255',
+            'definisi_intervensi' => 'required|string|max:255',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors());
+        if($validator->fails()){
+            return response()->json($validator->errors()->toJson(), 400);
         }
 
-        $intervensi = new Intervensi();
-        $intervensi->fill($request->all());
-        $intervensi->save();
-
+        $intervensi = Intervensi::create([
+            'kode_intervensi' => $request->get('kode_intervensi'),
+            'nama_intervensi' => $request->get('nama_intervensi'),
+            'definisi_intervensi' => $request->get('definisi_intervensi'),
+        ]);
         return response()->json(['message' => 'Intervensi telah berhasil ditambahkan']);
     }
 
@@ -63,14 +57,4 @@ class IntervensiController extends Controller
         }
     }
 
-    public function destroy($id)
-    {
-        $intervensi = Intervensi::find($id);
-        if ($intervensi) {
-            $intervensi->delete();
-            return response()->json(['message' => 'Intervensi telah berhasil dihapus']);
-        } else {
-            return response()->json(['message' => 'Intervensi tidak ditemukan'], 404);
-        }
-    }
 }

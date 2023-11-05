@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
+            $table->string('nama_lengkap');
             $table->date('tanggal_lahir');
             $table->boolean('jenis_kelamin');
             $table->text('alamat');
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('no_karyawan');
             $table->string('role');
-            $table->string('photo');
+            $table->string('photo')->nullable();
             $table->timestamps();
 
         });
