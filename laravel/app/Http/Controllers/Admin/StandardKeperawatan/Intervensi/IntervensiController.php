@@ -18,7 +18,9 @@ class IntervensiController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'kode_intervensi' => 'required|string|max:255|unique',
             'nama_intervensi' => 'required|string|max:255',
+            'deskripsi' => 'required|string|max:255'
             // Tambahkan validasi untuk field lain jika diperlukan
         ]);
 
@@ -48,7 +50,9 @@ class IntervensiController extends Controller
         $intervensi = Intervensi::find($id);
         if ($intervensi) {
             $intervensi->id_intervensi = $request->input('id_intervensi');
+            $intervensi->kode_intervensi = $request->input('kode_intervensi');
             $intervensi->nama_intervensi = $request->input('nama_intervensi');
+            $intervensi->deskripsi = $request->input('deskripsi');
             // Update field lain sesuai kebutuhan
 
             $intervensi->save();
