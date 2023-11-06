@@ -16,5 +16,9 @@ class Intervensi extends Model
        'definisi_intervensi'
     ];
 
+    public function tindakanIntervensi()
+    {
+        return $this->hasMany(TindakanIntervensi::class, 'id_intervensi');
+    }
 
 }

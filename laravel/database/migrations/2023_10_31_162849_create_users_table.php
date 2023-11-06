@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('no_karyawan');
-            $table->string('role');
             $table->string('photo')->nullable();
             $table->timestamps();
 
