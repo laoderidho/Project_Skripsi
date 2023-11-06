@@ -36,6 +36,22 @@ class UserController extends Controller
         return $perawat;
     }
 
+    public function detailUser($id){
+        $user = User::find($id);
+
+        $perawat = Perawat::where('id_user', $user->id)->first();
+
+
+        $user->photo = Storage::url('app/'.$user->photo);
+        $user->perawat_id = $perawat->id;
+        $user->perawat_shift = $perawat->id_waktu_shift;
+        $user->perawat_status = $perawat->status;
+
+        return response()->json([
+            'message' => 'Success',
+            'data' => $user,
+        ]);
+    }
     public function addUser(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -46,9 +62,8 @@ class UserController extends Controller
             'no_telepon' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|max:20|',
-            'no_karyawan' => 'required|string|max:20|unique:users',
             'role' => 'required|string|max:10',
-            'photo' => 'nullable|image|file|max:2048',
+            'photo' => 'nullable|file|image|mimes:png,jpg,jpeg,svg|max:2048',
             'shift' => 'required_if:role,perawat',
             'status' => 'required_if:role,perawat',
         ]);
@@ -76,7 +91,6 @@ class UserController extends Controller
             'no_telepon' => $request->no_telepon,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'no_karyawan' => $request->no_karyawan,
             'role' => $request->role,
             'photo' => $photoPath,
         ]);
@@ -187,8 +201,7 @@ class UserController extends Controller
 
 
         return response()->json([
-            'message' => 'Delete Success',
-            'data' => $user,
+            'message' => 'Delete Success'
         ]);
     }
 

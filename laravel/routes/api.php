@@ -9,6 +9,8 @@ use App\Http\Controllers\Perawat\PerawatController;
 use App\Http\Controllers\Admin\Data\PasienController;
 use App\Http\Controllers\Admin\InputDiagnosaController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\StandardKeperawatan\Intervensi\IntervensiController;
+
 use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\DetailPenyebab;
 use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Diagnosa;
 use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\FaktorResiko;
@@ -34,10 +36,12 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         Route::get('/hello', [AdminController::class, 'hello']);
         Route::get('/view', [AdminController::class, 'getAll']);
 
-        Route::prefix('user')->group(function(){
+        Route::prefix('users')->group(function(){
+            Route::post('/tambah', [UserController::class, 'addUser']);
             Route::post('/', [UserController::class, 'getUsers']);
             Route::post('/delete/{id}', [UserController::class, 'delete']);
             Route::post('/update/{id}', [UserController::class, 'updateUser']);
+            Route::post('/detail/{id}', [UserController::class, 'detailUser']);
         });
 
 
@@ -47,6 +51,14 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/edit/{id}', [PasienController::class, 'update']);
             Route::post('/detail/{id}', [PasienController::class, 'getDetail']);
             Route::post('/delete/{id}', [PasienController::class, 'delete']);
+        });
+
+        Route::prefix('intervensi')->group(function(){
+            Route::post('/', [IntervensiController::class, 'getIntervensi']);
+            Route::post('/tambah', [IntervensiController::class, 'AddIntervensi']);
+            Route::post('/edit/{id}', [IntervensiController::class, 'updateIntervensi']);
+            Route::post('/detail/{id}', [IntervensiController::class, 'detailIntervensi']);
+            Route::post('/delete/{id}', [IntervensiController::class, 'deleteIntervensi']);
         });
 
         Route::get('/pasien', [PasienController::class,'index']);
@@ -65,4 +77,3 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/login', [AuthController::class, 'viewLogin'])->name('login');
-Route::post('/tambah', [UserController::class, 'addUser']);

@@ -26,7 +26,6 @@ class User extends Authenticatable
         'no_telepon',
         'email',
         'password',
-        'no_karyawan',
         'role',
         'photo'
     ];
