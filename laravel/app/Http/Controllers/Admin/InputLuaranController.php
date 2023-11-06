@@ -66,39 +66,49 @@ class InputLuaranController extends Controller
             'nama_kriteria_luaran.*' => 'string|max:255',
         ]);
 
+        // Cari luaran berdasarkan kode_luaran
         $luaran = Luaran::where('kode_luaran', $kode_luaran)->first();
 
+        // Jika luaran dengan kode_luaran tersebut tidak ditemukan, beri respon sesuai kebutuhan
         if (!$luaran) {
             return response()->json(['message' => 'Data luaran tidak ditemukan'], 404);
         }
 
+        // Update nama_luaran berdasarkan input pengguna
         $luaran->update([
             'nama_luaran' => $request->input('nama_luaran'),
         ]);
 
-        KriteriaLuaran::where('kode_luaran', $kode_luaran)->delete();
+        // Hapus kriteria luaran yang terkait dengan luaran ini
+        KriteriaLuaran::where('id_luaran', $luaran->id)->delete();
 
+        // Tambahkan kriteria luaran baru berdasarkan input pengguna
         foreach ($request->input('nama_kriteria_luaran') as $kriteria) {
             KriteriaLuaran::create([
-                'kode_luaran' => $luaran->kode_luaran,
-                'kriteria' => $kriteria,
+                'id_luaran' => $luaran->id,
+                'nama_kriteria_luaran' => $kriteria,
             ]);
         }
 
         return response()->json(['message' => 'Data luaran berhasil diperbarui']);
     }
-
     public function delete($kode_luaran)
     {
+        // Cari luaran berdasarkan kode_luaran
         $luaran = Luaran::where('kode_luaran', $kode_luaran)->first();
 
+        // Jika luaran dengan kode_luaran tersebut tidak ditemukan, beri respon sesuai kebutuhan
         if (!$luaran) {
             return response()->json(['message' => 'Data luaran tidak ditemukan'], 404);
         }
 
-        KriteriaLuaran::where('kode_luaran', $kode_luaran)->delete();
+        // Cari dan hapus kriteria luaran yang terkait dengan luaran ini berdasarkan id luaran
+        KriteriaLuaran::where('id_luaran', $luaran->id)->delete();
+
+        // Hapus luaran
         $luaran->delete();
 
         return response()->json(['message' => 'Data luaran berhasil dihapus']);
     }
+
 }

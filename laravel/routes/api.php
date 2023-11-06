@@ -68,7 +68,7 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         Route::put('/luaran/{kode_luaran}', [InputLuaranController::class, 'update']);
 
         // Rute untuk menangani penghapusan luaran
-        Route::delete('/luaran/{kode_luaran}', [LuaranController::class, 'delete']);
+        Route::delete('/luaran/{kode_luaran}', [InputLuaranController::class, 'delete']);
 
 
         Route::post('/pasien/create', [PasienController::class, 'store']);
