@@ -16,19 +16,20 @@ use App\Models\Admin\Gejala;
 
 class InputDiagnosaController extends Controller
 {
-    public function tambahDiagnosa(Request $request)
+    public function AddDiagnosa(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'kode_diagnosa' => 'required|string|max:255|unique:diagnosa,kode_diagnosa',
             'nama_diagnosa' => 'required|string|max:255|unique:diagnosa,nama_diagnosa',
             'faktor_resiko' => 'string|nullable',
+            'penyebab_psikologis' => 'string|nullable',
+            'penyebab_situasional' => 'string|nullable',
+            'penyebab_fisiologis' => 'string|nullable',
             'gejala_mayor_subjektif' => 'string|nullable',
             'gejala_mayor_objektif' => 'string|nullable',
             'gejala_minor_subjektif' => 'string|nullable',
             'gejala_minor_objektif' => 'string|nullable',
-            'penyebab_psikologis' => 'string|nullable',
-            'penyebab_situasional' => 'string|nullable',
-            'penyebab_fisiologis' => 'string|nullable',
+
         ]);
 
 
@@ -137,7 +138,8 @@ class InputDiagnosaController extends Controller
     public function editDiagnosa(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'nama_diagnosa' => 'required|string|max:255',
+            'kode_diagnosa' => 'required|string|max:255|unique:diagnosa,kode_diagnosa',
+            'nama_diagnosa' => 'required|string|max:255|unique:diagnosa,nama_diagnosa',
             'faktor_resiko' => 'string|nullable',
             'gejala_mayor_subjektif' => 'string|nullable',
             'gejala_mayor_objektif' => 'string|nullable',
@@ -160,6 +162,7 @@ class InputDiagnosaController extends Controller
         }
 
         // Perbarui data diagnosa
+        $diagnosa->kode_diagnosa = $request->input('kode_diagnosa');
         $diagnosa->nama_diagnosa = $request->input('nama_diagnosa');
         $diagnosa->save();
 
@@ -280,12 +283,22 @@ class InputDiagnosaController extends Controller
 
         private function saveGejala($gejalaInput, $jenisGejala, $kategoriGejala, $diagnosaId)
         {
+
+            $jenisGejalaModel = JenisGejala::where('nama_jenis_gejala', $jenisGejala)->first();
+            if ($jenisGejalaModel) {
+                $jenisGejalaId = $jenisGejalaModel->id;
+                // Lanjutkan dengan penggunaan $jenisGejalaId
+            } else {
+                // Handle ketika jenis gejala tidak ditemukan
+                return response()->json(['error' => 'Jenis gejala tidak ditemukan'], 404);
+            }
+
             $gejalaArray = explode(PHP_EOL, $gejalaInput);
             foreach ($gejalaArray as $item) {
                 $gejalaModel = new Gejala();
                 $gejalaModel->id_diagnosa = $diagnosaId;
                 $gejalaModel->id_jenis_gejala = JenisGejala::where('nama_jenis_gejala', $jenisGejala)->first()->id;
-                $gejalaModel->id_kategori_gejala = KategoriGejala::where('nama_kategori_gejala', $kategoriGejala)->first()->id;
+                $gejalaModel->id_kategori_gejala = KategoriGejala::where('nama_kategori_gejala', $kategoriGejala)->first()->id_kategori_gejala;
                 $gejalaModel->nama_gejala = $item;
                 $gejalaModel->save();
             }
@@ -293,6 +306,16 @@ class InputDiagnosaController extends Controller
 
         private function savePenyebab($penyebabInput, $jenisPenyebab, $diagnosaId)
         {
+            $jenisPenyebabModel = JenisPenyebab::where('nama_jenis_penyebab', $jenisPenyebab)->first();
+            if ($jenisPenyebabModel) {
+                $jenisPenyebabModel = $jenisPenyebabModel->id;
+                // Lanjutkan dengan penggunaan $jenisGejalaId
+            } else {
+                // Handle ketika jenis gejala tidak ditemukan
+                return response()->json(['error' => 'Jenis Penyebab tidak ditemukan'], 404);
+            }
+
+
             $penyebabArray = explode(PHP_EOL, $penyebabInput);
             $jenisPenyebabId = JenisPenyebab::where('nama_jenis_penyebab', $jenisPenyebab)->first()->id;
 

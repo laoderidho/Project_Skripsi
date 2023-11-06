@@ -9,22 +9,8 @@ use App\Http\Controllers\Perawat\PerawatController;
 use App\Http\Controllers\Admin\Data\PasienController;
 use App\Http\Controllers\Admin\InputDiagnosaController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\DetailPenyebab;
-use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Diagnosa;
-use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\FaktorResiko;
-use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Gejala;
-use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\JenisGejala;
-use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\JenisPenyebab;
-
-//Intervensi
-use App\Http\Controllers\Admin\StandardKeperawatan\Intervensi\TindakanIntervensi;
-use App\Http\Controllers\Admin\StandardKeperawatan\Intervensi\KategoriTindakan;
-use App\Http\Controllers\Admin\StandardKeperawatan\Intervensi\Intervensi;
-
-
-//Luaran
-
-
+use App\Http\Controllers\Admin\InputIntervensiController;
+use App\Http\Controllers\Admin\InputLuaranController;
 
 //Controller Perawat
 
@@ -62,16 +48,28 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         Route::get('/pasien', [PasienController::class,'index']);
 
         //Diagnosa
-        Route::post('/diagnosa/add', [InputDiagnosaController::class,'tambahDiagnosa']);
+        Route::post('/diagnosa/add', [InputDiagnosaController::class,'AddDiagnosa']);
         Route::get('/diagnosa/{id}',[InputDiagnosaController::class,'getDiagnosa']);
         Route::post('/diagnosa/edit', [InputDiagnosaController::class,'editDiagnosa']);
         Route::post('/diagnosa/delete', [InputDiagnosaController::class,'hapusDiagnosa']);
 
         //Intervensi
-        Route::post('/intervensi/add', [InputDiagnosaController::class,'tambahDiagnosa']);
-
+        Route::post('/intervensi/add', [IntervensiController::class, 'AddIntervensi']);
+        Route::get('/intervensi/{id}', [IntervensiController::class, 'getIntervensi']);
+        Route::put('/intervensi/update/{id}', [IntervensiController::class, 'updateIntervensi']);
+        Route::delete('/intervensi/delete/{id}', [IntervensiController::class, 'deleteIntervensi']);
 
         //Luaran
+// Rute untuk menampilkan detail luaran
+        Route::get('/luaran/{kode_luaran}', [InputLuaranController::class, 'read']);
+        // Rute untuk menangani pembuatan luaran
+        Route::post('/luaran/add', [InputLuaranController::class, 'create']);
+        // Rute untuk menangani pembaruan luaran
+        Route::put('/luaran/{kode_luaran}', [InputLuaranController::class, 'update']);
+
+        // Rute untuk menangani penghapusan luaran
+        Route::delete('/luaran/{kode_luaran}', [LuaranController::class, 'delete']);
+
 
         Route::post('/pasien/create', [PasienController::class, 'store']);
     });

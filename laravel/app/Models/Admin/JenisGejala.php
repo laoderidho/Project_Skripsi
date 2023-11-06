@@ -11,6 +11,7 @@ class JenisGejala extends Model
     protected $table = 'jenis_gejala';
 
     protected $fillable = [
+        'id',
         'nama_jenis_gejala',
     ];
 

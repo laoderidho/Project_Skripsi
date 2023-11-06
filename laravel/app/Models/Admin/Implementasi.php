@@ -11,6 +11,7 @@ class Implementasi extends Model
     protected $table = 'implementasi';
 
     protected $fillable = [
+        'id',
         'id_tindakan_intervensi',
         'id_tindakan_implementasi',
         'status_implementasi',

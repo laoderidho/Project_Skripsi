@@ -46,7 +46,7 @@ class IntervensiController extends Controller
             $intervensi->id_intervensi = $request->input('id_intervensi');
             $intervensi->kode_intervensi = $request->input('kode_intervensi');
             $intervensi->nama_intervensi = $request->input('nama_intervensi');
-            $intervensi->deskripsi = $request->input('deskripsi');
+            $intervensi->definisi_intervensi = $request->input('definisi_intervensi');
             // Update field lain sesuai kebutuhan
 
             $intervensi->save();

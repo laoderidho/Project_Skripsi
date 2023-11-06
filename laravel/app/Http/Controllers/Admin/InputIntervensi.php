@@ -11,11 +11,11 @@ use App\Models\Admin\TindakanIntervensi;
 
 class InputIntervensiController extends Controller
 {
-    public function tambahIntervensi(Request $request)
+    public function AddIntervensi(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'nama_intervensi' => 'required|string|max:255|unique:intervensi,nama_intervensi',
-            'deskripsi' => 'required|string|max:255|unique:intervensi,deskripsi',
+            'definisi_intervensi' => 'required|string|max:255|unique:intervensi,definisi_intervensi',
             'tindakan_observasi' => 'string|nullable',
             'tindakan_terapeutik' => 'string|nullable',
             'tindakan_edukasi' => 'string|nullable',
@@ -30,18 +30,35 @@ class InputIntervensiController extends Controller
         $intervensi = new Intervensi();
         $intervensi->nama_intervensi = $request->input('nama_intervensi');
         $intervensi->kategori_tindakan_id = $request->input('kategori_tindakan_id');
-        $intervensi->deskripsi = $request->input('deskripsi');
+        $intervensi->definisi_intervensi = $request->input('definisi_intervensi');
         $intervensi->save();
 
-        // Simpan tindakan intervensi
-        $this->saveTindakanIntervensi($request, $intervensi->id);
+        // Simpan tindakan intervensi (Observasi)
+        if ($request->has('tindakan_observasi')) {
+            $this->saveTindakanIntervensi($request->input('tindakan_observasi'), 'Observasi', $intervensi->id);
+        }
+
+        // Simpan tindakan intervensi (Terapeutik)
+        if ($request->has('tindakan_terapeutik')) {
+            $this->saveTindakanIntervensi($request->input('tindakan_terapeutik'), 'Terapeutik', $intervensi->id);
+        }
+
+        // Simpan tindakan intervensi (Edukasi)
+        if ($request->has('tindakan_edukasi')) {
+            $this->saveTindakanIntervensi($request->input('tindakan_edukasi'), 'Edukasi', $intervensi->id);
+        }
+
+        // Simpan tindakan intervensi (Kolaborasi)
+        if ($request->has('tindakan_kolaborasi')) {
+            $this->saveTindakanIntervensi($request->input('tindakan_kolaborasi'), 'Kolaborasi', $intervensi->id);
+        }
 
         return response()->json(['message' => 'Intervensi berhasil ditambahkan', 'data' => $intervensi]);
     }
 
-    public function readIntervensi($id)
+    public function getIntervensi($id)
     {
-        $intervensi = Intervensi::with('kategoriTindakan', 'tindakanIntervensi')->find($id);
+        $intervensi = Intervensi::find($id);
 
         if (!$intervensi) {
             return response()->json(['message' => 'Intervensi tidak ditemukan'], 404);
@@ -50,11 +67,17 @@ class InputIntervensiController extends Controller
         return response()->json(['data' => $intervensi]);
     }
 
-    public function editIntervensi(Request $request, $id)
+    public function updateIntervensi(Request $request, $id)
     {
+        $intervensi = Intervensi::find($id);
+
+        if (!$intervensi) {
+            return response()->json(['message' => 'Intervensi tidak ditemukan'], 404);
+        }
+
         $validator = Validator::make($request->all(), [
-            'nama_intervensi' => 'required|string|max:255',
-            'kategori_tindakan_id' => 'required|exists:kategori_tindakan,id',
+            'nama_intervensi' => 'required|string|max:255|unique:intervensi,nama_intervensi,' . $id,
+            'definisi_intervensi' => 'required|string|max:255|unique:intervensi,definisi_intervensi,' . $id,
             'tindakan_observasi' => 'string|nullable',
             'tindakan_terapeutik' => 'string|nullable',
             'tindakan_edukasi' => 'string|nullable',
@@ -65,25 +88,39 @@ class InputIntervensiController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        $intervensi = Intervensi::find($id);
-
-        if (!$intervensi) {
-            return response()->json(['message' => 'Intervensi tidak ditemukan'], 404);
-        }
-
+        // Update data intervensi
         $intervensi->nama_intervensi = $request->input('nama_intervensi');
         $intervensi->kategori_tindakan_id = $request->input('kategori_tindakan_id');
-        $intervensi->deskripsi = $request->input('deskripsi');
+        $intervensi->definisi_intervensi = $request->input('definisi_intervensi');
         $intervensi->save();
 
-        // Update tindakan intervensi
+        // Menghapus tindakan intervensi terkait yang sudah ada
         TindakanIntervensi::where('intervensi_id', $id)->delete();
-        $this->saveTindakanIntervensi($request, $id);
+
+        // Menyimpan tindakan intervensi baru sesuai kategori
+
+        if ($request->has('tindakan_observasi')) {
+            $this->saveTindakanIntervensi($request->input('tindakan_observasi'), 'Observasi', $intervensi->id);
+        }
+
+        if ($request->has('tindakan_terapeutik')) {
+            $this->saveTindakanIntervensi($request->input('tindakan_terapeutik'), 'Terapeutik', $intervensi->id);
+        }
+
+        if ($request->has('tindakan_edukasi')) {
+            $this->saveTindakanIntervensi($request->input('tindakan_edukasi'), 'Edukasi', $intervensi->id);
+        }
+
+        if ($request->has('tindakan_kolaborasi')) {
+            $this->saveTindakanIntervensi($request->input('tindakan_kolaborasi'), 'Kolaborasi', $intervensi->id);
+        }
 
         return response()->json(['message' => 'Intervensi berhasil diperbarui', 'data' => $intervensi]);
     }
 
-    public function hapusIntervensi($id)
+
+
+    public function deleteIntervensi($id)
     {
         $intervensi = Intervensi::find($id);
 
@@ -91,47 +128,25 @@ class InputIntervensiController extends Controller
             return response()->json(['message' => 'Intervensi tidak ditemukan'], 404);
         }
 
-        // Hapus tindakan intervensi yang terkait dengan intervensi
+        // Menghapus tindakan intervensi terkait yang sudah ada
         TindakanIntervensi::where('intervensi_id', $id)->delete();
 
-        // Hapus intervensi
+        // Menghapus intervensi
         $intervensi->delete();
 
         return response()->json(['message' => 'Intervensi berhasil dihapus']);
     }
 
-    private function saveTindakanIntervensi(Request $request, $intervensiId)
+
+    private function saveTindakanIntervensi($namaTindakan, $kategori, $intervensiId)
     {
-        $kategoriTindakan = KategoriTindakan::where('nama_kategori_tindakan', 'Observasi')->first();
-        if ($kategoriTindakan && $request->has('tindakan_observasi')) {
-            $this->saveTindakan($request->input('tindakan_observasi'), $kategoriTindakan->id, $intervensiId);
-        }
-
-        $kategoriTindakan = KategoriTindakan::where('nama_kategori_tindakan', 'Terapeutik')->first();
-        if ($kategoriTindakan && $request->has('tindakan_terapeutik')) {
-            $this->saveTindakan($request->input('tindakan_terapeutik'), $kategoriTindakan->id, $intervensiId);
-        }
-
-        $kategoriTindakan = KategoriTindakan::where('nama_kategori_tindakan', 'Edukasi')->first();
-        if ($kategoriTindakan && $request->has('tindakan_edukasi')) {
-            $this->saveTindakan($request->input('tindakan_edukasi'), $kategoriTindakan->id, $intervensiId);
-        }
-
-        $kategoriTindakan = KategoriTindakan::where('nama_kategori_tindakan', 'Kolaborasi')->first();
-        if ($kategoriTindakan && $request->has('tindakan_kolaborasi')) {
-            $this->saveTindakan($request->input('tindakan_kolaborasi'), $kategoriTindakan->id, $intervensiId);
-        }
+        $tindakan = new TindakanIntervensi();
+        $tindakan->nama_tindakan_intervensi = $namaTindakan;
+        $tindakan->kategori_tindakan = $kategori;
+        $tindakan->id_kategori_tindakan = KategoriTindakan::where('nama_kategori_tindakan', $kategori)->first()->id;
+        $tindakan->intervensi_id = $intervensiId;
+        $tindakan->save();
     }
 
-    private function saveTindakan($tindakan, $kategoriId, $intervensiId)
-    {
-        $tindakanArray = explode(PHP_EOL, $tindakan);
-        foreach ($tindakanArray as $item) {
-            $tindakanIntervensi = new TindakanIntervensi();
-            $tindakanIntervensi->intervensi_id = $intervensiId;
-            $tindakanIntervensi->kategori_tindakan_id = $kategoriId;
-            $tindakanIntervensi->tindakan = trim($item);
-            $tindakanIntervensi->save();
-        }
-    }
+
 }
