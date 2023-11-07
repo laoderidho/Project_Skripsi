@@ -80,7 +80,6 @@ class InputDiagnosaController extends Controller
         if (!$diagnosa) {
             return response()->json(['message' => 'Diagnosa tidak ditemukan'], 404);
         }
-
         // Ubah data gejala menjadi array
         $gejalaMayorSubjektif = Gejala::where('id_diagnosa', $id)
             ->where('id_jenis_gejala', 1) // Sesuaikan dengan ID jenis gejala mayor
@@ -130,7 +129,6 @@ class InputDiagnosaController extends Controller
         $diagnosa->penyebab_psikologis = $penyebabPsikologis;
         $diagnosa->penyebab_situasional = $penyebabSituasional;
         $diagnosa->penyebab_fisiologis = $penyebabFisiologis;
-
         return response()->json(['data' => $diagnosa]);
     }
 

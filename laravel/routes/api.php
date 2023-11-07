@@ -69,7 +69,7 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         Route::post('/diagnosa/add', [InputDiagnosaController::class,'AddDiagnosa']);
         Route::get('/diagnosa/{id}',[InputDiagnosaController::class,'getDiagnosa']);
         Route::post('/diagnosa/edit', [InputDiagnosaController::class,'editDiagnosa']);
-        Route::post('/diagnosa/delete', [InputDiagnosaController::class,'hapusDiagnosa']);
+        Route::delete('/diagnosa/{id}', [InputDiagnosaController::class,'hapusDiagnosa']);
 
         //Intervensi
         Route::post('/intervensi/add', [IntervensiController::class, 'AddIntervensi']);
@@ -104,3 +104,4 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/login', [AuthController::class, 'viewLogin'])->name('login');
+Route::post('/tambah', [UserController::class, 'addUser']);

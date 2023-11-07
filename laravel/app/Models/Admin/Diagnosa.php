@@ -14,4 +14,18 @@ class Diagnosa extends Model
         'kode_diagnosa',
         'nama_diagnosa',
     ];
+
+    public function faktorResiko()
+    {
+        return $this->hasMany(FaktorResiko::class, 'id_diagnosa');
+    }
+    public function gejala()
+    {
+        return $this->hasMany(Gejala::class, 'id_diagnosa');
+    }
+    public function penyebab()
+    {
+        return $this->hasMany(DetailPenyebab::class, 'id_diagnosa');
+    }
+
 }
