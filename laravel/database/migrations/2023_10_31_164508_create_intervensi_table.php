@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('kode_intervensi', 10)->unique();
             $table->string('nama_intervensi', 255);
-            $table->string('definisi_intervensi', 255);
             $table->timestamps();
         });
     }

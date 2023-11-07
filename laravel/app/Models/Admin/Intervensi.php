@@ -12,7 +12,6 @@ class Intervensi extends Model
     protected $fillable = [
        'kode_intervensi',
        'nama_intervensi',
-       'definisi_intervensi'
     ];
 
     public function tindakanIntervensi()
