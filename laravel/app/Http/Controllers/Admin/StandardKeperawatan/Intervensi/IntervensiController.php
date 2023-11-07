@@ -26,7 +26,6 @@ class IntervensiController extends Controller
             $validator = Validator::make($request->all(),[
                 'kode_intervensi'=> 'required|string|max:10|unique:intervensi',
                 'nama_intervensi'=> 'required|string|max:255',
-                'definisi_intervensi' => 'required|string|max:255',
             ]);
 
             $observasi = $request->input('observasi');
@@ -43,7 +42,6 @@ class IntervensiController extends Controller
                 $intervensi = new Intervensi([
                     'kode_intervensi' => $request->input('kode_intervensi'),
                     'nama_intervensi' => $request->input('nama_intervensi'),
-                    'definisi_intervensi' => $request->input('definisi_intervensi'),
                 ]);
 
                 $intervensi->save();
@@ -121,7 +119,6 @@ class IntervensiController extends Controller
         $validator = Validator::make($request->all(),[
             'kode_intervensi'=> 'required|string|max:10',
             'nama_intervensi'=> 'required|string|max:255',
-            'definisi_intervensi' => 'required|string|max:255',
         ]);
 
         $observasi = $request->input('observasi');
@@ -138,7 +135,6 @@ class IntervensiController extends Controller
 
             $intervensi->kode_intervensi = $request->input('kode_intervensi');
             $intervensi->nama_intervensi = $request->input('nama_intervensi');
-            $intervensi->definisi_intervensi = $request->input('definisi_intervensi');
 
             $intervensi->update();
 

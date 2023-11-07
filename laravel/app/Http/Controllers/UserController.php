@@ -122,12 +122,6 @@ class UserController extends Controller
                         'max:255',
                         Rule::unique('users')->ignore($user->id)],
             'password' => 'required|string|max:20|',
-            'no_karyawan' => [
-                'required',
-                'string',
-                'max:20',
-                Rule::unique('users')->ignore($user->id),
-            ],
             'role' => 'required|string|max:10',
             'photo' => 'nullable|image|file|max:2048',
             'shift' => 'required_if:role,perawat',
@@ -162,7 +156,6 @@ class UserController extends Controller
             'no_telepon' => $request->no_telepon,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'no_karyawan' => $request->no_karyawan,
             'role' => $request->role,
             'photo' => $photoPath,
         ]);

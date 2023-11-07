@@ -13,7 +13,6 @@ class Intervensi extends Model
         'id',
        'kode_intervensi',
        'nama_intervensi',
-       'definisi_intervensi'
     ];
 
     public function tindakanIntervensi()
