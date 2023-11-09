@@ -71,19 +71,13 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         Route::post('/diagnosa/edit', [InputDiagnosaController::class,'editDiagnosa']);
         Route::delete('/diagnosa/{id}', [InputDiagnosaController::class,'hapusDiagnosa']);
 
-        //Intervensi
-        Route::post('/intervensi/add', [IntervensiController::class, 'AddIntervensi']);
-        Route::get('/intervensi/{id}', [IntervensiController::class, 'getIntervensi']);
-        Route::put('/intervensi/update/{id}', [IntervensiController::class, 'updateIntervensi']);
-        Route::delete('/intervensi/delete/{id}', [IntervensiController::class, 'deleteIntervensi']);
-
         //Luaran
 // Rute untuk menampilkan detail luaran
-        Route::get('/luaran/{kode_luaran}', [InputLuaranController::class, 'read']);
+        Route::post('/luaran/{kode_luaran}', [InputLuaranController::class, 'read']);
         // Rute untuk menangani pembuatan luaran
         Route::post('/luaran/add', [InputLuaranController::class, 'create']);
         // Rute untuk menangani pembaruan luaran
-        Route::put('/luaran/{kode_luaran}', [InputLuaranController::class, 'update']);
+        Route::post('/luaran/{kode_luaran}', [InputLuaranController::class, 'update']);
 
         // Rute untuk menangani penghapusan luaran
         Route::delete('/luaran/{kode_luaran}', [InputLuaranController::class, 'delete']);
