@@ -8,7 +8,7 @@ class FaktorResiko extends Model
 {
     use HasFactory;
 
-    protected $table = 'faktor_resiko';
+    protected $table = 'faktor_risiko';
 
     protected $fillable = [
         'id_diagnosa',
