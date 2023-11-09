@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models\Admin;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,7 +9,7 @@ class FaktorResiko extends Model
 {
     use HasFactory;
 
-    protected $table = 'faktor_risiko';
+    protected $table = 'faktor_resiko';
 
     protected $fillable = [
         'id_diagnosa',
