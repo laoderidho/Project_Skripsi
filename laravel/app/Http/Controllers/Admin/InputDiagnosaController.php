@@ -21,7 +21,7 @@ class InputDiagnosaController extends Controller
         $validator = Validator::make($request->all(), [
             'kode_diagnosa' => 'required|string|max:255|unique:diagnosa,kode_diagnosa',
             'nama_diagnosa' => 'required|string|max:255|unique:diagnosa,nama_diagnosa',
-            'faktor_resiko' => 'string|nullable',
+            'faktor_risiko' => 'string|nullable',
             'penyebab_psikologis' => 'string|nullable',
             'penyebab_situasional' => 'string|nullable',
             'penyebab_fisiologis' => 'string|nullable',
@@ -46,7 +46,7 @@ class InputDiagnosaController extends Controller
         $diagnosaId = $diagnosa->id; // Ambil ID diagnosa yang baru dibuat
 
         // Faktor Resiko
-        $this->saveFaktorResiko($request->input('faktor_resiko'), $diagnosaId);
+        $this->saveFaktorResiko($request->input('faktor_risiko'), $diagnosaId);
 
 
         // Gejala Mayor Subjektif
@@ -131,7 +131,7 @@ class InputDiagnosaController extends Controller
         $diagnosa->penyebab_psikologis = $penyebabPsikologis;
         $diagnosa->penyebab_situasional = $penyebabSituasional;
         $diagnosa->penyebab_fisiologis = $penyebabFisiologis;
-        $diagnosa->faktor_resiko = $faktorResiko;
+        $diagnosa->faktor_risiko = $faktorResiko;
         return response()->json(['data' => $diagnosa]);
     }
 
@@ -141,7 +141,7 @@ class InputDiagnosaController extends Controller
         $validator = Validator::make($request->all(), [
             'kode_diagnosa' => 'required|string|max:255|unique:diagnosa,kode_diagnosa',
             'nama_diagnosa' => 'required|string|max:255|unique:diagnosa,nama_diagnosa',
-            'faktor_resiko' => 'string|nullable',
+            'faktor_risiko' => 'string|nullable',
             'gejala_mayor_subjektif' => 'string|nullable',
             'gejala_mayor_objektif' => 'string|nullable',
             'gejala_minor_subjektif' => 'string|nullable',
@@ -168,7 +168,7 @@ class InputDiagnosaController extends Controller
         $diagnosa->save();
 
         // Faktor Resiko
-        $this->updateFaktorResiko($request->input('faktor_resiko'), $diagnosa->id);
+        $this->updateFaktorResiko($request->input('faktor_risiko'), $diagnosa->id);
 
         // Gejala Mayor Subjektif
         $this->updateGejala($request->input('gejala_mayor_subjektif'), 'Mayor', 'Subjektif', $diagnosa->id);
@@ -203,7 +203,7 @@ class InputDiagnosaController extends Controller
             return response()->json(['message' => 'Diagnosa tidak ditemukan'], 404);
         }
 
-        // Hapus faktor resiko yang terkait dengan diagnosa
+        // Hapus faktor risiko yang terkait dengan diagnosa
         FaktorResiko::where('id_diagnosa', $id)->delete();
 
         // Hapus gejala yang terkait dengan diagnosa
@@ -220,10 +220,10 @@ class InputDiagnosaController extends Controller
 
     private function updateFaktorResiko($faktorResiko, $diagnosaId)
     {
-        // Hapus faktor resiko yang terkait dengan diagnosa
+        // Hapus faktor risiko yang terkait dengan diagnosa
         FaktorResiko::where('id_diagnosa', $diagnosaId)->delete();
 
-        // Simpan faktor resiko baru
+        // Simpan faktor risiko baru
         $faktorResikoArray = explode(PHP_EOL, $faktorResiko);
         foreach ($faktorResikoArray as $item) {
             $faktorResikoModel = new FaktorResiko();

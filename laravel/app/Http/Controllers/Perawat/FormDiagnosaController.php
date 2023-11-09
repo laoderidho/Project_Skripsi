@@ -31,7 +31,7 @@ class FormDiagnosaController extends Controller
             'id_diagnosa' => 'required|bigInt|max:20',
             'id_gejala' => 'required|int',
             'id_detail_penyebab' => 'required|int',
-            'id_faktor_resiko' => 'required|int',
+            'id_faktor_risiko' => 'required|int',
             'catatan_diagnosa' => 'required|string|max:255',
         ]);
 
@@ -52,7 +52,7 @@ class FormDiagnosaController extends Controller
             'id_diagnosa' => 'required|bigInt|max:20',
             'id_gejala' => 'required|int',
             'id_detail_penyebab' => 'required|int',
-            'id_faktor_resiko' => 'required|int',
+            'id_faktor_risiko' => 'required|int',
             'catatan_diagnosa' => 'required|string|max:255',
         ]);
 

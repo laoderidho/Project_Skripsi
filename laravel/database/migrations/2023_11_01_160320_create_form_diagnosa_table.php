@@ -16,14 +16,14 @@ return new class extends Migration
             $table->unsignedBigInteger('id_diagnosa');
             $table->unsignedBigInteger('id_gejala');
             $table->unsignedBigInteger('id_detail_penyebab');
-            $table->unsignedBigInteger('id_faktor_resiko');
+            $table->unsignedBigInteger('id_faktor_risiko');
             $table->string('catatan_diagnosa', 255);
             $table->timestamps();
 
             $table->foreign('id_diagnosa')->references('id')->on('diagnosa');
             $table->foreign('id_gejala')->references('id')->on('gejala');
             $table->foreign('id_detail_penyebab')->references('id')->on('detail_penyebab');
-            $table->foreign('id_faktor_resiko')->references('id')->on('faktor_resiko');
+            $table->foreign('id_faktor_risiko')->references('id')->on('faktor_risiko');
 
         });
     }

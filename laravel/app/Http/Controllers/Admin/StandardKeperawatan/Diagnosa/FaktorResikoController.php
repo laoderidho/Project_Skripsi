@@ -29,7 +29,7 @@ class FaktorResikoController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id_diagnosa' => 'required|bigInt|max:20',
-            'nama_faktor_resiko' => 'required|string|max:255',
+            'nama_faktor_risiko' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -47,7 +47,7 @@ class FaktorResikoController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id_diagnosa' => 'required|bigInt|max:20',
-            'nama_faktor_resiko' => 'required|string|max:255',
+            'nama_faktor_risiko' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {

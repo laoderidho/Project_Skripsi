@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('keluhan_utama', 255);
             $table->string('riwayat_penyakit', 255);
             $table->string('riwayat_alergi', 255);
-            $table->string('resiko_jatuh', 255);
-            $table->string('resiko_nyeri', 255);
+            $table->string('risiko_jatuh', 255);
+            $table->string('risiko_nyeri', 255);
             $table->string('suhu', 3);
             $table->string('tekanan_darah', 255);
             $table->string('nadi', 255);
