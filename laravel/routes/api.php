@@ -66,10 +66,13 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         Route::get('/pasien', [PasienController::class,'index']);
 
         //Diagnosa
-        Route::post('/diagnosa/add', [InputDiagnosaController::class,'AddDiagnosa']);
-        Route::get('/diagnosa/{id}',[InputDiagnosaController::class,'getDiagnosa']);
-        Route::post('/diagnosa/edit', [InputDiagnosaController::class,'editDiagnosa']);
-        Route::delete('/diagnosa/{id}', [InputDiagnosaController::class,'hapusDiagnosa']);
+        Route::prefix('diagnosa')->group(function(){
+            Route::post('/add', [InputDiagnosaController::class,'AddDiagnosa']);
+            Route::get('/{id}',[InputDiagnosaController::class,'getDiagnosa']);
+            Route::post('/edit', [InputDiagnosaController::class,'updateDiagnosa']);
+            Route::delete('/{id}', [InputDiagnosaController::class,'hapusDiagnosa']);
+        });
+
 
         //Luaran
 // Rute untuk menampilkan detail luaran

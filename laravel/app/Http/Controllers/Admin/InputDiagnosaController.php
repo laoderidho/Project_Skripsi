@@ -75,7 +75,7 @@ class InputDiagnosaController extends Controller
 
     public function getDiagnosa($id)
     {
-        $diagnosa = Diagnosa::with(['faktorResiko', 'gejala', 'penyebab'])->find($id);
+        $diagnosa = Diagnosa::where('id', $id)->first();
 
         if (!$diagnosa) {
             return response()->json(['message' => 'Diagnosa tidak ditemukan'], 404);
@@ -120,7 +120,9 @@ class InputDiagnosaController extends Controller
             ->where('id_jenis_penyebab', 3) // Sesuaikan dengan ID jenis penyebab fisiologis
             ->pluck('nama_penyebab')
             ->toArray();
-
+        $faktorResiko = FaktorResiko::where('id_diagnosa',$id)
+            ->pluck('nama')
+            ->toArray();
         // Mengganti nilai gejala dan penyebab dalam objek diagnosa
         $diagnosa->gejala_mayor_subjektif = $gejalaMayorSubjektif;
         $diagnosa->gejala_mayor_objektif = $gejalaMayorObjektif;
@@ -129,6 +131,7 @@ class InputDiagnosaController extends Controller
         $diagnosa->penyebab_psikologis = $penyebabPsikologis;
         $diagnosa->penyebab_situasional = $penyebabSituasional;
         $diagnosa->penyebab_fisiologis = $penyebabFisiologis;
+        $diagnosa->faktor_resiko = $faktorResiko;
         return response()->json(['data' => $diagnosa]);
     }
 
@@ -268,61 +271,76 @@ class InputDiagnosaController extends Controller
         }
     }
 
-        private function saveFaktorResiko($faktorResiko, $diagnosaId)
-        {
-            $faktorResikoArray = explode(PHP_EOL, $faktorResiko);
-            foreach ($faktorResikoArray as $item) {
-                $faktorResikoModel = new FaktorResiko();
-                $faktorResikoModel->id_diagnosa = $diagnosaId;
-                $faktorResikoModel->nama = $item;
-                $faktorResikoModel->save();
-            }
+    private function saveFaktorResiko($faktorResiko, $diagnosaId)
+    {
+        $faktorResikoArray = explode(PHP_EOL, $faktorResiko);
+        foreach ($faktorResikoArray as $item) {
+            // Menghindari menyimpan baris kosong
+            $trimmedItem = trim($item);
+
+            $faktorResikoModel = new FaktorResiko();
+            $faktorResikoModel->id_diagnosa = $diagnosaId;
+            $faktorResikoModel->nama = $trimmedItem;
+            $faktorResikoModel->save();
         }
+    }
+
+
 
         private function saveGejala($gejalaInput, $jenisGejala, $kategoriGejala, $diagnosaId)
         {
+            try {
+                $jenisGejalaModel = JenisGejala::where('nama_jenis_gejala', $jenisGejala)->first();
+                $kategoriGejalaModel = KategoriGejala::where('nama_kategori_gejala', $kategoriGejala)->first();
 
-            $jenisGejalaModel = JenisGejala::where('nama_jenis_gejala', $jenisGejala)->first();
-            if ($jenisGejalaModel) {
-                $jenisGejalaId = $jenisGejalaModel->id;
-                // Lanjutkan dengan penggunaan $jenisGejalaId
-            } else {
-                // Handle ketika jenis gejala tidak ditemukan
-                return response()->json(['error' => 'Jenis gejala tidak ditemukan'], 404);
-            }
+                if ($jenisGejalaModel && $kategoriGejalaModel) {
+                    $jenisGejalaId = $jenisGejalaModel->id;
+                    $kategoriGejalaId = $kategoriGejalaModel->id; // Menggunakan properti id dari objek KategoriGejala
+                } else {
+                    // Handle ketika jenis gejala atau kategori gejala tidak ditemukan
+                    return response()->json(['error' => 'Jenis gejala / Kategori tidak ditemukan'], 404);
+                }
 
-            $gejalaArray = explode(PHP_EOL, $gejalaInput);
-            foreach ($gejalaArray as $item) {
-                $gejalaModel = new Gejala();
-                $gejalaModel->id_diagnosa = $diagnosaId;
-                $gejalaModel->id_jenis_gejala = JenisGejala::where('nama_jenis_gejala', $jenisGejala)->first()->id;
-                $gejalaModel->id_kategori_gejala = KategoriGejala::where('nama_kategori_gejala', $kategoriGejala)->first()->id_kategori_gejala;
-                $gejalaModel->nama_gejala = $item;
-                $gejalaModel->save();
-            }
-        }
+                $gejalaArray = explode(PHP_EOL, $gejalaInput);
+                foreach ($gejalaArray as $item) {
+                    $trimmedItem = trim($item);
+                    if (!empty($trimmedItem)) {
+                        $gejalaModel = new Gejala();
+                        $gejalaModel->id_diagnosa = $diagnosaId;
+                        $gejalaModel->id_jenis_gejala = $jenisGejalaId;
+                        $gejalaModel->id_kategori_gejala = $kategoriGejalaId;
+                        $gejalaModel->nama_gejala = $trimmedItem;
+                        $gejalaModel->save();
+                    }
+                }
 
-        private function savePenyebab($penyebabInput, $jenisPenyebab, $diagnosaId)
-        {
-            $jenisPenyebabModel = JenisPenyebab::where('nama_jenis_penyebab', $jenisPenyebab)->first();
-            if ($jenisPenyebabModel) {
-                $jenisPenyebabModel = $jenisPenyebabModel->id;
-                // Lanjutkan dengan penggunaan $jenisGejalaId
-            } else {
-                // Handle ketika jenis gejala tidak ditemukan
-                return response()->json(['error' => 'Jenis Penyebab tidak ditemukan'], 404);
-            }
-
-
-            $penyebabArray = explode(PHP_EOL, $penyebabInput);
-            $jenisPenyebabId = JenisPenyebab::where('nama_jenis_penyebab', $jenisPenyebab)->first()->id;
-
-            foreach ($penyebabArray as $item) {
-                $penyebabModel = new DetailPenyebab();
-                $penyebabModel->id_diagnosa = $diagnosaId;
-                $penyebabModel->id_jenis_penyebab = $jenisPenyebabId;
-                $penyebabModel->nama_penyebab = $item;
-                $penyebabModel->save();
+            } catch (Exception $e) {
+                return response()->json(['error' => 'Null'], 404);
             }
         }
+
+
+            private function savePenyebab($penyebabInput, $jenisPenyebab, $diagnosaId)
+            {
+                $jenisPenyebabModel = JenisPenyebab::where('nama_jenis_penyebab', $jenisPenyebab)->first();
+                if ($jenisPenyebabModel) {
+                    $jenisPenyebabModel = $jenisPenyebabModel->id;
+                    // Lanjutkan dengan penggunaan $jenisGejalaId
+                } else {
+                    // Handle ketika jenis gejala tidak ditemukan
+                    return response()->json(['error' => 'Jenis Penyebab tidak ditemukan'], 404);
+                }
+
+
+                $penyebabArray = explode(PHP_EOL, $penyebabInput);
+                $jenisPenyebabId = JenisPenyebab::where('nama_jenis_penyebab', $jenisPenyebab)->first()->id;
+
+                foreach ($penyebabArray as $item) {
+                    $penyebabModel = new DetailPenyebab();
+                    $penyebabModel->id_diagnosa = $diagnosaId;
+                    $penyebabModel->id_jenis_penyebab = $jenisPenyebabId;
+                    $penyebabModel->nama_penyebab = $item;
+                    $penyebabModel->save();
+                }
+            }
 }
