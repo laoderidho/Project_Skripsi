@@ -16,6 +16,16 @@ use App\Models\Admin\Gejala;
 
 class InputDiagnosaController extends Controller
 {
+    public function getDiagnosa()
+    {
+        $diagnosa = Diagnosa::all();
+
+        return response()->json([
+            'message' => 'Sukses',
+            'data' => $diagnosa,
+        ]);
+    }
+
     public function AddDiagnosa(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -73,7 +83,7 @@ class InputDiagnosaController extends Controller
         return response()->json(['message' => 'Diagnosa berhasil ditambahkan', 'data' => $diagnosa]);
     }
 
-    public function getDiagnosa($id)
+    public function detailDiagnosa($id)
     {
         $diagnosa = Diagnosa::where('id', $id)->first();
 
@@ -136,7 +146,7 @@ class InputDiagnosaController extends Controller
     }
 
     //Edit
-    public function editDiagnosa(Request $request, $id)
+    public function updateDiagnosa(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'kode_diagnosa' => 'required|string|max:255|unique:diagnosa,kode_diagnosa',

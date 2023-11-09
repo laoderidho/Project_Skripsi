@@ -66,11 +66,13 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         Route::get('/pasien', [PasienController::class,'index']);
 
         //Diagnosa
-        Route::prefix('diagnosa')->group(function(){
-            Route::post('/add', [InputDiagnosaController::class,'AddDiagnosa']);
-            Route::get('/{id}',[InputDiagnosaController::class,'getDiagnosa']);
-            Route::post('/update', [InputDiagnosaController::class,'updateDiagnosa']);
-            Route::delete('/{id}', [InputDiagnosaController::class,'hapusDiagnosa']);
+
+        Route::prefix('diagnosa')->group(function () {
+            Route::get('/', [InputDiagnosaController::class, 'getDiagnosa']);
+            Route::get('/{id}', [InputDiagnosaController::class, 'detailDiagnosa']);
+            Route::post('/add', [InputDiagnosaController::class, 'addDiagnosa']);
+            Route::put('/{id}', [InputDiagnosaController::class, 'updateDiagnosa']);
+            Route::delete('/{id}', [InputDiagnosaController::class, 'deleteDiagnosa']);
         });
 
 
@@ -81,15 +83,16 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         Route::delete('/intervensi/delete/{id}', [IntervensiController::class, 'deleteIntervensi']);
 
         //Luaran
-// Rute untuk menampilkan detail luaran
-        Route::get('/luaran/{kode_luaran}', [InputLuaranController::class, 'read']);
-        // Rute untuk menangani pembuatan luaran
-        Route::post('/luaran/add', [InputLuaranController::class, 'create']);
-        // Rute untuk menangani pembaruan luaran
-        Route::put('/luaran/{kode_luaran}', [InputLuaranController::class, 'update']);
 
-        // Rute untuk menangani penghapusan luaran
-        Route::delete('/luaran/{kode_luaran}', [InputLuaranController::class, 'delete']);
+        Route::prefix('luaran')->group(function(){
+            Route::get('/', [InputLuaranController::class, 'read']);
+            Route::get('/{id}', [InputLuaranController::class, 'detailLuaran']);
+            Route::post('/add', [InputLuaranController::class, 'createLuaran']);
+            Route::put('/{id}', [InputLuaranController::class, 'update']);
+            Route::delete('/{id}', [InputLuaranController::class, 'delete']);
+        });
+
+
 
 
         Route::post('/pasien/create', [PasienController::class, 'store']);
