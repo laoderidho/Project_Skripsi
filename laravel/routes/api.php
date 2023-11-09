@@ -72,7 +72,7 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::get('/{id}', [InputDiagnosaController::class, 'detailDiagnosa']);
             Route::post('/add', [InputDiagnosaController::class, 'addDiagnosa']);
             Route::put('/{id}', [InputDiagnosaController::class, 'updateDiagnosa']);
-            Route::delete('/{id}', [InputDiagnosaController::class, 'deleteDiagnosa']);
+            Route::delete('/{id}', [InputDiagnosaController::class, 'hapusDiagnosa']);
         });
 
 
@@ -91,9 +91,6 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::put('/{id}', [InputLuaranController::class, 'update']);
             Route::delete('/{id}', [InputLuaranController::class, 'delete']);
         });
-
-
-
 
         Route::post('/pasien/create', [PasienController::class, 'store']);
     });
