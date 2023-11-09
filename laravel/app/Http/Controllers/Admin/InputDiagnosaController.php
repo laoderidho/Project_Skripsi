@@ -31,14 +31,14 @@ class InputDiagnosaController extends Controller
         $validator = Validator::make($request->all(), [
             'kode_diagnosa' => 'required|string|max:255|unique:diagnosa,kode_diagnosa',
             'nama_diagnosa' => 'required|string|max:255|unique:diagnosa,nama_diagnosa',
-            'faktor_risiko' => 'string|nullable',
-            'penyebab_psikologis' => 'string|nullable',
-            'penyebab_situasional' => 'string|nullable',
-            'penyebab_fisiologis' => 'string|nullable',
-            'gejala_mayor_subjektif' => 'string|nullable',
-            'gejala_mayor_objektif' => 'string|nullable',
-            'gejala_minor_subjektif' => 'string|nullable',
-            'gejala_minor_objektif' => 'string|nullable',
+            // 'faktor_risiko' => 'string|nullable',
+            // 'penyebab_psikologis' => 'string|nullable',
+            // 'penyebab_situasional' => 'string|nullable',
+            // 'penyebab_fisiologis' => 'string|nullable',
+            // 'gejala_mayor_subjektif' => 'string|nullable',
+            // 'gejala_mayor_objektif' => 'string|nullable',
+            // 'gejala_minor_subjektif' => 'string|nullable',
+            // 'gejala_minor_objektif' => 'string|nullable',
 
         ]);
 
@@ -324,7 +324,7 @@ class InputDiagnosaController extends Controller
                     }
                 }
 
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 return response()->json(['error' => 'Null'], 404);
             }
         }

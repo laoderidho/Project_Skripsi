@@ -76,12 +76,6 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         });
 
 
-        //Intervensi
-        Route::post('/intervensi/add', [IntervensiController::class, 'AddIntervensi']);
-        Route::get('/intervensi/{id}', [IntervensiController::class, 'getIntervensi']);
-        Route::put('/intervensi/update/{id}', [IntervensiController::class, 'updateIntervensi']);
-        Route::delete('/intervensi/delete/{id}', [IntervensiController::class, 'deleteIntervensi']);
-
         //Luaran
 
         Route::prefix('luaran')->group(function(){

@@ -64,14 +64,12 @@ class IntervensiController extends Controller
                     }
                 }
 
+
                 DB::commit();
             }catch(\Exception $e){
                 dd($e);
                 DB::rollback();
             }
-
-
-
 
             return response()->json([
                 'message' => 'Intervensi successfully added',
@@ -91,6 +89,7 @@ class IntervensiController extends Controller
                 'nama_tindakan_intervensi' => $data_tindakan,
             ]);
 
+
             $tindakanIntervensi->save();
     }
 
@@ -105,10 +104,20 @@ class IntervensiController extends Controller
             ->where('i.id', '=', $intervensi->id)
             ->get();
 
+            $tindakan_observasi = $tindakan_intervensi->where('id_kategori_tindakan', 1);
+            $tindakan_terapeutik = $tindakan_intervensi->where('id_kategori_tindakan', 2);
+            $tindakan_edukasi = $tindakan_intervensi->where('id_kategori_tindakan', 3);
+
+            $tindakan_observasi = $tindakan_observasi->pluck('nama_tindakan_intervensi');
+            $tindakan_terapeutik = $tindakan_terapeutik->pluck('nama_tindakan_intervensi');
+            $tindakan_edukasi = $tindakan_edukasi->pluck('nama_tindakan_intervensi');
+
             return response()->json([
                 'message' => 'Success',
-                'tindakan' => $tindakan_intervensi,
                 'data'=> $intervensi,
+                'observasi'=> $tindakan_observasi,
+                'terapeutik'=> $tindakan_terapeutik,
+                'edukasi'=> $tindakan_edukasi,
             ]);
     }
 
