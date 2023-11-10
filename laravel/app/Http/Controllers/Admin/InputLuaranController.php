@@ -10,6 +10,16 @@ use App\Models\Admin\KriteriaLuaran;
 
 class InputLuaranController extends Controller
 {
+
+    public function read(){
+        $luaran = Luaran::all();
+
+        return response()->json([
+            'message' => 'Success',
+            'data' => $luaran,
+        ]);
+    }
+
     public function createLuaran(Request $request)
     {
         $request->validate([
@@ -66,7 +76,7 @@ class InputLuaranController extends Controller
             'data' => $diagnosa,
         ]);
     }
-    public function update(Request $request, $kode_luaran)
+    public function update(Request $request, $id_luaran)
     {
         $request->validate([
             'nama_luaran' => 'required|string|max:255',
@@ -75,7 +85,7 @@ class InputLuaranController extends Controller
         ]);
 
         // Cari luaran berdasarkan kode_luaran
-        $luaran = Luaran::where('kode_luaran', $kode_luaran)->first();
+        $luaran = Luaran::where('id', $id_luaran)->first();
 
         // Jika luaran dengan kode_luaran tersebut tidak ditemukan, beri respon sesuai kebutuhan
         if (!$luaran) {

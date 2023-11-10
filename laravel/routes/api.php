@@ -79,8 +79,8 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         //Luaran
 
         Route::prefix('luaran')->group(function(){
-            Route::get('/', [InputLuaranController::class, 'read']);
-            Route::get('/{id}', [InputLuaranController::class, 'detailLuaran']);
+            Route::post('/', [InputLuaranController::class, 'read']);
+            Route::post('/{id}', [InputLuaranController::class, 'detailLuaran']);
             Route::post('/add', [InputLuaranController::class, 'createLuaran']);
             Route::put('/{id}', [InputLuaranController::class, 'update']);
             Route::delete('/{id}', [InputLuaranController::class, 'delete']);
