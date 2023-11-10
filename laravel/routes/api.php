@@ -25,8 +25,8 @@ use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Jenis;
 //
 
 Route::middleware('auth:sanctum')->group(function(){
-    Route::get('/profile', [AuthController::class, 'profile']);
-    Route::get('/logout', [AuthController::class, 'logout']);
+    Route::post('/profile', [AuthController::class, 'profile']);
+    Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/update-password', [AuthController::class, 'changePassword']);
 });
 
@@ -34,9 +34,9 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
 
     Route::prefix('admin')->group(function(){
         Route::post('/', [AdminController::class, 'getAll']);
-        Route::get('/getAll', [AdminController::class, 'getAll']);
-        Route::get('/hello', [AdminController::class, 'hello']);
-        Route::get('/view', [AdminController::class, 'getAll']);
+        Route::post('/getAll', [AdminController::class, 'getAll']);
+        Route::post('/hello', [AdminController::class, 'hello']);
+        Route::post('/view', [AdminController::class, 'getAll']);
 
         Route::prefix('users')->group(function(){
             Route::post('/tambah', [UserController::class, 'addUser']);
@@ -63,16 +63,16 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/delete/{id}', [IntervensiController::class, 'deleteIntervensi']);
         });
 
-        Route::get('/pasien', [PasienController::class,'index']);
+        Route::post('/pasien', [PasienController::class,'index']);
 
         //Diagnosa
 
         Route::prefix('diagnosa')->group(function () {
-            Route::get('/', [InputDiagnosaController::class, 'getDiagnosa']);
-            Route::get('/{id}', [InputDiagnosaController::class, 'detailDiagnosa']);
+            Route::post('/', [InputDiagnosaController::class, 'getDiagnosa']);
+            Route::post('/{id}', [InputDiagnosaController::class, 'detailDiagnosa']);
             Route::post('/add', [InputDiagnosaController::class, 'addDiagnosa']);
-            Route::put('/{id}', [InputDiagnosaController::class, 'updateDiagnosa']);
-            Route::delete('/{id}', [InputDiagnosaController::class, 'deleteDiagnosa']);
+            Route::post('/{id}', [InputDiagnosaController::class, 'updateDiagnosa']);
+            Route::post('/{id}', [InputDiagnosaController::class, 'hapusDiagnosa']);
         });
 
 
@@ -82,8 +82,8 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/', [InputLuaranController::class, 'read']);
             Route::post('/{id}', [InputLuaranController::class, 'detailLuaran']);
             Route::post('/add', [InputLuaranController::class, 'createLuaran']);
-            Route::put('/{id}', [InputLuaranController::class, 'update']);
-            Route::delete('/{id}', [InputLuaranController::class, 'delete']);
+            Route::post('/{id}', [InputLuaranController::class, 'update']);
+            Route::post('/{id}', [InputLuaranController::class, 'delete']);
         });
 
         Route::post('/pasien/create', [PasienController::class, 'store']);
@@ -94,8 +94,8 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
 Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 
     Route::prefix('perawat')->group(function(){
-        Route::get('/', [PerawatController::class, 'hello']);
-        // Route::get('/add_diagnosa'[])
+        Route::post('/', [PerawatController::class, 'hello']);
+        // Route::post('/add_diagnosa'[])
     });
 });
 
