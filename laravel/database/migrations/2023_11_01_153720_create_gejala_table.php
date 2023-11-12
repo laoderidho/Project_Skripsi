@@ -16,7 +16,7 @@ return new class extends Migration
             $table->bigInteger('id_diagnosa')->unsigned();
             $table->unsignedBigInteger('id_kategori_gejala');
             $table->unsignedBigInteger('id_jenis_gejala');
-            $table->string('nama_gejala', 255);
+            $table->string('nama_gejala', 255)->nullable();
             $table->timestamps();
 
             $table->foreign('id_diagnosa')->references('id')->on('diagnosa');

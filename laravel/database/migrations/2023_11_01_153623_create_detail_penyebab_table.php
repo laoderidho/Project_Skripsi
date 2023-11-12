@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_diagnosa');
             $table->unsignedBigInteger('id_jenis_penyebab');
-            $table->string('nama_penyebab', 255);
+            $table->string('nama_penyebab', 255)->nullable();
             $table->timestamps();
 
             $table->foreign('id_diagnosa')->references('id')->on('diagnosa');

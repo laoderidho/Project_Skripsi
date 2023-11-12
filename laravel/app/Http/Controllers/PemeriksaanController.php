@@ -28,7 +28,7 @@ class PemeriksaanController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id_perawat' => 'required|int',
+            'id_perawatanan' => 'required|int',
             'id_form_diagnosa' => 'required|int',
             'id_tindakan_intervensi' => 'required|int',
             'id_implementasi' => 'required|int',
@@ -53,7 +53,7 @@ class PemeriksaanController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'id_perawat' => 'required|int',
+            'id_perawatan' => 'required|int',
             'id_form_diagnosa' => 'required|int',
             'id_tindakan_intervensi' => 'required|int',
             'id_implementasi' => 'required|int',
