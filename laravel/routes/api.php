@@ -62,10 +62,10 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
 
         Route::prefix('diagnosa')->group(function () {
             Route::post('/', [InputDiagnosaController::class, 'getDiagnosa']);
-            Route::post('/{id}', [InputDiagnosaController::class, 'detailDiagnosa']);
-            Route::post('/add', [InputDiagnosaController::class, 'addDiagnosa']);
-            Route::post('/{id}', [InputDiagnosaController::class, 'updateDiagnosa']);
-            Route::post('/{id}', [InputDiagnosaController::class, 'hapusDiagnosa']);
+            Route::post('/detail/{id}', [InputDiagnosaController::class, 'detailDiagnosa']);
+            Route::post('/add', [InputDiagnosaController::class, 'AddDiagnosa']);
+            Route::post('/update/{id}', [InputDiagnosaController::class, 'updateDiagnosa']);
+            Route::post('/delete/{id}', [InputDiagnosaController::class, 'hapusDiagnosa']);
         });
 
 
@@ -95,3 +95,4 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/login', [AuthController::class, 'viewLogin'])->name('login');
 Route::post('/tambah', [UserController::class, 'addUser']);
+

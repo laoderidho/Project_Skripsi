@@ -11,7 +11,6 @@ class KategoriGejala extends Model
     protected $table = 'kategori_gejala';
 
     protected $fillable = [
-        'id',
         'nama_kategori_gejala',
     ];
 
