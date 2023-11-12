@@ -63,7 +63,7 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         Route::prefix('diagnosa')->group(function () {
             Route::post('/', [InputDiagnosaController::class, 'getDiagnosa']);
             Route::post('/detail/{id}', [InputDiagnosaController::class, 'detailDiagnosa']);
-            Route::post('/add', [InputDiagnosaController::class, 'AddDiagnosa']);
+            Route::post('/tambah', [InputDiagnosaController::class, 'AddDiagnosa']);
             Route::post('/update/{id}', [InputDiagnosaController::class, 'updateDiagnosa']);
             Route::post('/delete/{id}', [InputDiagnosaController::class, 'hapusDiagnosa']);
         });
