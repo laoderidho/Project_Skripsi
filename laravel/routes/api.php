@@ -7,17 +7,10 @@ use App\Http\Controllers\Perawat\PerawatController;
 
 //Controller Admin
 use App\Http\Controllers\Admin\Data\PasienController;
-use App\Http\Controllers\Admin\InputDiagnosaController;
+use App\Http\Controllers\Admin\Diagnosa\InputDiagnosaController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\Admin\InputIntervensiController;
 use App\Http\Controllers\Admin\InputLuaranController;
 use App\Http\Controllers\Admin\StandardKeperawatan\Intervensi\IntervensiController;
-
-use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\DetailPenyebab;
-use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Diagnosa;
-use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\FaktorResiko;
-use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Gejala;
-use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Jenis;
 
 
 //Controller Perawat
