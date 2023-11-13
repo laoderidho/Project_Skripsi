@@ -31,6 +31,7 @@ class IntervensiController extends Controller
             $observasi = $request->input('observasi');
             $terapeutik = $request->input('terapeutik');
             $edukasi = $request->input('edukasi');
+            $kolaborasi = $request->input('kolaborasi');
 
 
             if($validator->fails()){
@@ -61,6 +62,12 @@ class IntervensiController extends Controller
                 if($edukasi!=null || $edukasi!=''){
                     foreach($edukasi as $edu){
                         $this->intervensiAction($intervensi->id, $edu, 'Edukasi');
+                    }
+                }
+
+                if($kolaborasi!=null || $kolaborasi!=''){
+                    foreach($kolaborasi as $kol){
+                        $this->intervensiAction($intervensi->id, $kol, 'Kolaborasi');
                     }
                 }
 
@@ -133,6 +140,7 @@ class IntervensiController extends Controller
         $observasi = $request->input('observasi');
         $terapeutik = $request->input('terapeutik');
         $edukasi = $request->input('edukasi');
+        $kolaborasi = $request->input('kolaborasi');
 
         if($validator->fails()){
             return response()->json($validator->errors()->toJson(), 400);
@@ -167,6 +175,14 @@ class IntervensiController extends Controller
                 $i = 0;
                 foreach($edukasi as $edu){
                     $this->updateIntervensiAction($intervensi->id, $edu, 'Edukasi', $i);
+                    $i++;
+                }
+            }
+
+            if($kolaborasi!=null || $kolaborasi!=''){
+                $i = 0;
+                foreach($kolaborasi as $kol){
+                    $this->updateIntervensiAction($intervensi->id, $kol, 'Kolaborasi', $i);
                     $i++;
                 }
             }

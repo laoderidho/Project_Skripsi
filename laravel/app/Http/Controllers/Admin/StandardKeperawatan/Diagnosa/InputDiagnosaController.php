@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Diapulgnosa\Admin;
+namespace App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -63,7 +63,7 @@ class InputDiagnosaController extends Controller
                 $faktorResikoString = implode(', ', $faktorResikoArray);
 
                 foreach ($faktorResikoString as $faktor_item) {
-                    $this->saveFaktorResiko($diagnosaId, $faktorResikoString);
+                    $this->saveFaktorResiko($diagnosaId, $faktor_item);
                 }
             } else {
                 $this->saveFaktorResiko($diagnosaId, '');
