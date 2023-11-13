@@ -7,20 +7,15 @@ use App\Http\Controllers\Perawat\PerawatController;
 
 //Controller Admin
 use App\Http\Controllers\Admin\Data\PasienController;
-use App\Http\Controllers\Admin\InputDiagnosaController;
+use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\InputDiagnosaController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\Admin\InputIntervensiController;
 use App\Http\Controllers\Admin\InputLuaranController;
 use App\Http\Controllers\Admin\StandardKeperawatan\Intervensi\IntervensiController;
 
-use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\DetailPenyebab;
-use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Diagnosa;
-use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\FaktorResiko;
-use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Gejala;
-use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\Jenis;
-
 
 //Controller Perawat
+use App\Http\Controllers\Perawat\StandarForm\DiagnosaController;
+use App\Http\Controllers\Perawat\StandarForm\IntervensiFormController;
 
 //
 
@@ -95,11 +90,23 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 
     Route::prefix('perawat')->group(function(){
         Route::post('/', [PerawatController::class, 'hello']);
-        // Route::post('/add_diagnosa'[])
+
+        Route::prefix('diagnosa')->group(function () {
+            Route::post('/', [DiagnosaController::class, 'getDiagnosa']);
+            Route::post('/detail/{id}', [DiagnosaController::class, 'validationDiagnosaAttribute']);
+        });
+
+        Route::prefix('intervensi')->group(function(){
+            Route::post('/', [IntervensiController::class, 'getIntervensi']);
+        });
+
+        Route::prefix('luaran')->group(function(){
+            Route::post('/', [InputLuaranController::class, 'read']);
+            Route::post('detail/{id}', [InputLuaranController::class, 'detailLuaran']);
+        });
     });
 });
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/login', [AuthController::class, 'viewLogin'])->name('login');
 Route::post('/tambah', [UserController::class, 'addUser']);
-

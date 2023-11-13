@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -44,45 +44,42 @@ class InputDiagnosaController extends Controller
 
         // dd($request->all());
         if ($validator->fails()) {
-        return response()->json(['errors' => $validator->errors()], 400);
-
+            return response()->json(['errors' => $validator->errors()], 400);
         }
 
         DB::beginTransaction();
-       try{
+        try {
             $diagnosa = new Diagnosa();
             $diagnosa->kode_diagnosa = $request->input('kode_diagnosa');
             $diagnosa->nama_diagnosa = $request->input('nama_diagnosa');
             $diagnosa->save();
-            $diagnosaId = $diagnosa -> id;
+            $diagnosaId = $diagnosa->id;
 
             $faktor_resiko = $request->input('faktor_risiko');
 
-            if ($faktor_resiko!=null) {
+            if ($faktor_resiko != null) {
                 $faktorResikoArray = $faktor_resiko;
 
                 $faktorResikoString = explode(', ', $faktorResikoArray);
 
-                foreach($faktorResikoString as $faktor_item){
-                $this->saveFaktorResiko($diagnosaId, $faktorResikoString);
+                foreach ($faktorResikoString as $faktor_item) {
+                    $this->saveFaktorResiko($diagnosaId, $faktor_item);
                 }
-            }
-            else{
+            } else {
                 $this->saveFaktorResiko($diagnosaId, '');
             }
 
             // Gejala Mayor Subjektif
 
             $gejala_mayor_subjektif = $request->input('gejala_mayor_subjektif');
-            if($gejala_mayor_subjektif!=null){
+            if ($gejala_mayor_subjektif != null) {
                 foreach ($gejala_mayor_subjektif as $gejala_mayor_subjektif_item) {
                     $this->saveGejala($gejala_mayor_subjektif_item, 'Mayor', 'Subjektif', $diagnosaId);
                 }
-            }
-            else{
+            } else {
                 $this->saveGejala('', 'Mayor', 'Subjektif', $diagnosaId);
             }
-                    // Untuk gejala_mayor_objektif
+            // Untuk gejala_mayor_objektif
             $gejala_mayor_objektif = $request->input('gejala_mayor_objektif');
             if ($gejala_mayor_objektif != null) {
                 foreach ($gejala_mayor_objektif as $gejala_mayor_objektif_item) {
@@ -113,30 +110,26 @@ class InputDiagnosaController extends Controller
             }
 
             // Penyebab Psikologis
-         // Array of penyebab types
-        $penyebabTypes = ['psikologis', 'situasional', 'fisiologis'];
+            // Array of penyebab types
+            $penyebabTypes = ['psikologis', 'situasional', 'fisiologis'];
 
-        foreach ($penyebabTypes as $penyebabType) {
-            $inputName = 'penyebab_' . $penyebabType;
-            $penyebabData = $request->input($inputName);
-            if($penyebabData!=null){
-                foreach ($penyebabData as $penyebabItem) {
-                    $this->savePenyebab($penyebabItem, ucfirst($penyebabType), $diagnosaId);
+            foreach ($penyebabTypes as $penyebabType) {
+                $inputName = 'penyebab_' . $penyebabType;
+                $penyebabData = $request->input($inputName);
+                if ($penyebabData != null) {
+                    foreach ($penyebabData as $penyebabItem) {
+                        $this->savePenyebab($penyebabItem, ucfirst($penyebabType), $diagnosaId);
+                    }
+                } else {
+                    $this->savePenyebab('', ucfirst($penyebabType), $diagnosaId);
                 }
             }
-            else
-            {
-                $this->savePenyebab('', ucfirst($penyebabType), $diagnosaId);
-            }
-        }
             DB::commit();
-    }
-
-       catch(\Exception $e){
+        } catch (\Exception $e) {
             dd($e);
             DB::rollback();
-       }
-       return response()->json(['message' => 'Diagnosa berhasil ditambahkan', 'data' => $diagnosa]);
+        }
+        return response()->json(['message' => 'Diagnosa berhasil ditambahkan', 'data' => $diagnosa]);
     }
 
     public function detailDiagnosa($id)
@@ -186,7 +179,7 @@ class InputDiagnosaController extends Controller
             ->where('id_jenis_penyebab', 3) // Sesuaikan dengan ID jenis penyebab fisiologis
             ->pluck('nama_penyebab')
             ->toArray();
-        $faktorResiko = FaktorResiko::where('id_diagnosa',$id)
+        $faktorResiko = FaktorResiko::where('id_diagnosa', $id)
             ->pluck('nama')
             ->toArray();
         // Mengganti nilai gejala dan penyebab dalam objek diagnosa
@@ -223,7 +216,7 @@ class InputDiagnosaController extends Controller
 
         DB::beginTransaction();
 
-        try{
+        try {
             $diagnosa = Diagnosa::find($id);
 
             if (!$diagnosa) {
@@ -284,25 +277,23 @@ class InputDiagnosaController extends Controller
                 }
             }
             // Penyebab Psikologis
-         // Array of penyebab types
-        $penyebabTypes = ['psikologis', 'situasional', 'fisiologis'];
+            // Array of penyebab types
+            $penyebabTypes = ['psikologis', 'situasional', 'fisiologis'];
 
-        foreach ($penyebabTypes as $penyebabType) {
-            $inputName = 'penyebab_' . $penyebabType;
+            foreach ($penyebabTypes as $penyebabType) {
+                $inputName = 'penyebab_' . $penyebabType;
 
-            if ($request->input($inputName) != null && $request->input($inputName) != '') {
-                $penyebabData = $request->input($inputName);
+                if ($request->input($inputName) != null && $request->input($inputName) != '') {
+                    $penyebabData = $request->input($inputName);
 
-                foreach ($penyebabData as $penyebabItem) {
-                    $this->updatePenyebab($penyebabItem, ucfirst($penyebabType), $diagnosaId);
+                    foreach ($penyebabData as $penyebabItem) {
+                        $this->updatePenyebab($penyebabItem, ucfirst($penyebabType), $diagnosaId);
+                    }
                 }
             }
-        }
 
             DB::commit();
-        }
-        catch(\Exception $e){
-
+        } catch (\Exception $e) {
         }
         // Temukan diagnosa berdasarkan ID
 
@@ -315,7 +306,7 @@ class InputDiagnosaController extends Controller
         $diagnosa = Diagnosa::find($id);
 
         DB::beginTransaction();
-        try{
+        try {
             // if (!$diagnosa) {
             //     return response()->json(['message' => 'Diagnosa tidak ditemukan'], 404);
             // }
@@ -332,8 +323,7 @@ class InputDiagnosaController extends Controller
             // Hapus diagnosa
             $diagnosa->delete();
             DB::commit();
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             dd($e);
             DB::rollback();
         }
@@ -394,15 +384,15 @@ class InputDiagnosaController extends Controller
         }
     }
 
-    private function saveFaktorResiko($diagnosaId,$faktorResiko)
+    private function saveFaktorResiko($diagnosaId, $faktorResiko)
     {
-       $diagnosa = Diagnosa::where('id',$diagnosaId)->pluck('id')->first();
-       $faktorResiko = new FaktorResiko([
-        'id_diagnosa' => $diagnosa,
-        'nama' => $faktorResiko,
-       ]);
+        $diagnosa = Diagnosa::where('id', $diagnosaId)->pluck('id')->first();
+        $faktorResiko = new FaktorResiko([
+            'id_diagnosa' => $diagnosa,
+            'nama' => $faktorResiko,
+        ]);
 
-       $faktorResiko ->save();
+        $faktorResiko->save();
     }
 
     private function saveGejala($gejalaInput, $jenisGejala, $kategoriGejala, $diagnosaId)
@@ -417,19 +407,17 @@ class InputDiagnosaController extends Controller
             'id_jenis_gejala' => $idJenisGejala,
             'nama_gejala' => $gejalaInput,
         ]);
-        $gejala -> save();
+        $gejala->save();
     }
     private function savePenyebab($penyebabInput, $jenisPenyebab, $diagnosaId)
     {
-        $idJenisPenyebab = JenisPenyebab::where('nama_jenis_penyebab',$jenisPenyebab)->pluck('id')->first();
+        $idJenisPenyebab = JenisPenyebab::where('nama_jenis_penyebab', $jenisPenyebab)->pluck('id')->first();
         $penyebab = new DetailPenyebab([
             'id_diagnosa' => $diagnosaId,
             'id_jenis_penyebab' => $idJenisPenyebab,
             'nama_penyebab' => $penyebabInput,
         ]);
 
-        $penyebab -> save();
+        $penyebab->save();
     }
-
-
 }
