@@ -61,7 +61,7 @@ class InputDiagnosaController extends Controller
             if ($faktor_resiko!=null) {
                 $faktorResikoArray = $faktor_resiko;
 
-                $faktorResikoString = implode(', ', $faktorResikoArray);
+                $faktorResikoString = explode(', ', $faktorResikoArray);
 
                 foreach($faktorResikoString as $faktor_item){
                 $this->saveFaktorResiko($diagnosaId, $faktorResikoString);
@@ -323,7 +323,7 @@ class InputDiagnosaController extends Controller
             // Hapus faktor risiko yang terkait dengan diagnosa
             FaktorResiko::where('id_diagnosa', $id)->delete();
 
-            // Hapus gejala yang terkait dengan diagnosa
+
             Gejala::where('id_diagnosa', $id)->delete();
 
             // Hapus penyebab yang terkait dengan diagnosa
