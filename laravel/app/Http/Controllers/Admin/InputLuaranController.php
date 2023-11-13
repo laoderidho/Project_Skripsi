@@ -26,7 +26,7 @@ class InputLuaranController extends Controller
             'kode_luaran' => 'required|string|max:255',
             'nama_luaran' => 'required|string|max:255',
             'nama_kriteria_luaran' => 'required|array',
-            'nama_kriteria_luaran.*' => 'string|max:255',
+            // 'nama_kriteria_luaran.*' => 'string|max:255',
         ]);
 
         // Cari luaran berdasarkan kode_luaran

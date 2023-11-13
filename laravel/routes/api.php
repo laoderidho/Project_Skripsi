@@ -16,6 +16,9 @@ use App\Http\Controllers\Admin\StandardKeperawatan\Intervensi\IntervensiControll
 //Controller Perawat
 use App\Http\Controllers\Perawat\StandarForm\DiagnosaController;
 use App\Http\Controllers\Perawat\StandarForm\IntervensiFormController;
+use App\Http\Controllers\Perawat\StandarForm\LuaranFormController;
+
+use App\Http\Controllers\Perawat\Diagnostic\DiagnosticController;
 
 //
 
@@ -103,6 +106,10 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
         Route::prefix('luaran')->group(function(){
             Route::post('/', [InputLuaranController::class, 'read']);
             Route::post('detail/{id}', [InputLuaranController::class, 'detailLuaran']);
+        });
+
+        Route::prefix('diagnostic')->group(function(){
+            Route::post('/{id}', [DiagnosticController::class, 'addDiagnostic']);
         });
     });
 });
