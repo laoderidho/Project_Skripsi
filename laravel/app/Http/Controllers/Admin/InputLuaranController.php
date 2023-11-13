@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use App\Models\Admin\Luaran;
 use App\Models\Admin\KriteriaLuaran;
 
 class InputLuaranController extends Controller
 {
-
-    public function read(){
+    public function getLuaran()
+    {
         $luaran = Luaran::all();
 
         return response()->json([
@@ -22,43 +23,68 @@ class InputLuaranController extends Controller
 
     public function createLuaran(Request $request)
     {
-        $request->validate([
-            'kode_luaran' => 'required|string|max:255',
+        $validator = Validator::make($request->all(), [
+            'kode_luaran' => 'required|string|max:255|unique:luaran',
             'nama_luaran' => 'required|string|max:255',
             'nama_kriteria_luaran' => 'required|array',
             // 'nama_kriteria_luaran.*' => 'string|max:255',
         ]);
 
-        // Cari luaran berdasarkan kode_luaran
-        $luaran = Luaran::create([
-            'kode_luaran' => $request->input('kode_luaran'),
-            'nama_luaran' => $request->input('nama_luaran'),
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        DB::beginTransaction();
+        try {
+            $luaran = new Luaran([
+                'kode_luaran' => $request->input('kode_luaran'),
+                'nama_luaran' => $request->input('nama_luaran'),
+            ]);
+
+            $luaran->save();
+
+            foreach ($request->input('nama_kriteria_luaran') as $kriteria) {
+                $this->luaranAction($luaran->id, $kriteria);
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            dd($e);
+            DB::rollback();
+            return response()->json(['message' => 'Failed to create Luaran'], 500);
+        }
+
+        return response()->json(['message' => 'Luaran successfully added', 'luaran' => $luaran], 201);
+    }
+
+    private function luaranAction($id_luaran, $nama_kriteria)
+    {
+        $kriteria_luaran = new KriteriaLuaran([
+            'id_luaran' => $id_luaran,
+            'nama_kriteria_luaran' => $nama_kriteria,
         ]);
 
-        // Jika luaran gagal disimpan, beri respon sesuai kebutuhan
-        if (!$luaran) {
-            return response()->json(['message' => 'Gagal menyimpan luaran'], 500);
-        }
-
-        // Buat kriteria luaran untuk luaran yang ditemukan
-        foreach ($request->input('nama_kriteria_luaran') as $kriteria) {
-            KriteriaLuaran::create([
-                'id_luaran' => $luaran->id,
-                'nama_kriteria_luaran' => $kriteria,
-            ]);
-        }
-
-        return response()->json(['message' => 'Kriteria luaran berhasil ditambahkan']);
+        $kriteria_luaran->save();
     }
+
     public function detailLuaran($id)
     {
-        $luaran = Luaran::where('id', $id)->first();
-        // dd($luaran);
+        \Log::info('createLuaran method called.');
+        // \Log::info($request->all());
+
+        $luaran = Luaran::find($id);
+
         if (!$luaran) {
-            return response()->json(['message' => 'Data luaran tidak ditemukan'], 404);
+            return response()->json(['message' => 'Luaran data not found'], 404);
         }
-        $kriteriaLuaran = KriteriaLuaran::where('id_luaran', $luaran->id)->pluck('nama_kriteria_luaran')->toArray();
-        // dd($kriteriaLuaran);
+
+        // Check if $luaran is not null before accessing its properties
+        if (!is_null($luaran)) {
+            $kriteriaLuaran = KriteriaLuaran::where('id_luaran', $luaran->id)->pluck('nama_kriteria_luaran')->toArray();
+        } else {
+            $kriteriaLuaran = [];
+        }
+
         $result = [
             'kode_luaran' => $luaran->kode_luaran,
             'nama_luaran' => $luaran->nama_luaran,
@@ -67,66 +93,67 @@ class InputLuaranController extends Controller
 
         return response()->json(['data' => $result]);
     }
-    public function getLuaran()
-    {
-        $diagnosa = Luaran::all();
 
-        return response()->json([
-            'message' => 'Success',
-            'data' => $diagnosa,
-        ]);
-    }
+
     public function update(Request $request, $id_luaran)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'nama_luaran' => 'required|string|max:255',
             'nama_kriteria_luaran' => 'required|array',
             'nama_kriteria_luaran.*' => 'string|max:255',
         ]);
 
-        // Cari luaran berdasarkan kode_luaran
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        $luaran = Luaran::find($id_luaran);
+
+        // if (!$luaran) {
+        //     return response()->json(['message' => 'Luaran data not found'], 404);
+        // }
+
+        DB::beginTransaction();
+        try {
+            $luaran->update([
+                'nama_luaran' => $request->input('nama_luaran'),
+            ]);
+
+            KriteriaLuaran::where('id_luaran', $luaran->id)->delete();
+
+            foreach ($request->input('nama_kriteria_luaran') as $kriteria) {
+                $this->luaranAction($luaran->id, $kriteria);
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            dd($e);
+            DB::rollback();
+            return response()->json(['message' => 'Failed to update Luaran'], 500);
+        }
+
+        return response()->json(['message' => 'Luaran data successfully updated']);
+    }
+
+    public function delete($id_luaran)
+    {
         $luaran = Luaran::where('id', $id_luaran)->first();
 
-        // Jika luaran dengan kode_luaran tersebut tidak ditemukan, beri respon sesuai kebutuhan
-        if (!$luaran) {
-            return response()->json(['message' => 'Data luaran tidak ditemukan'], 404);
+        // if (!$luaran) {
+        //     return response()->json(['message' => 'Luaran data not found'], 404);
+        // }
+
+        DB::beginTransaction();
+        try {
+            KriteriaLuaran::where('id_luaran', $luaran->id)->delete();
+            $luaran->delete();
+            DB::commit();
+        } catch (\Exception $e) {
+            dd($e);
+            DB::rollback();
+            return response()->json(['message' => 'Failed to delete Luaran'], 500);
         }
 
-        // Update nama_luaran berdasarkan input pengguna
-        $luaran->update([
-            'nama_luaran' => $request->input('nama_luaran'),
-        ]);
-
-        // Hapus kriteria luaran yang terkait dengan luaran ini
-        KriteriaLuaran::where('id_luaran', $luaran->id)->delete();
-
-        // Tambahkan kriteria luaran baru berdasarkan input pengguna
-        foreach ($request->input('nama_kriteria_luaran') as $kriteria) {
-            KriteriaLuaran::create([
-                'id_luaran' => $luaran->id,
-                'nama_kriteria_luaran' => $kriteria,
-            ]);
-        }
-
-        return response()->json(['message' => 'Data luaran berhasil diperbarui']);
+        return response()->json(['message' => 'Luaran data successfully deleted']);
     }
-    public function delete($kode_luaran)
-    {
-        // Cari luaran berdasarkan kode_luaran
-        $luaran = Luaran::where('kode_luaran', $kode_luaran)->first();
-
-        // Jika luaran dengan kode_luaran tersebut tidak ditemukan, beri respon sesuai kebutuhan
-        if (!$luaran) {
-            return response()->json(['message' => 'Data luaran tidak ditemukan'], 404);
-        }
-
-        // Cari dan hapus kriteria luaran yang terkait dengan luaran ini berdasarkan id luaran
-        KriteriaLuaran::where('id_luaran', $luaran->id)->delete();
-
-        // Hapus luaran
-        $luaran->delete();
-
-        return response()->json(['message' => 'Data luaran berhasil dihapus']);
-    }
-
 }
