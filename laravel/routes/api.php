@@ -74,12 +74,13 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         //Luaran
 
         Route::prefix('luaran')->group(function(){
-            Route::post('/', [InputLuaranController::class, 'read']);
+            Route::post('/', [InputLuaranController::class, 'getLuaran']);
+            Route::post('/add', [InputLuaranController::class, 'createLuaran']); // Move this line above the next line
             Route::post('/{id}', [InputLuaranController::class, 'detailLuaran']);
-            Route::post('/add', [InputLuaranController::class, 'createLuaran']);
-            Route::post('/{id}', [InputLuaranController::class, 'update']);
-            Route::post('/{id}', [InputLuaranController::class, 'delete']);
+            Route::post('/update/{id_luaran}', [InputLuaranController::class, 'update']);
+            Route::post('/delete/{id_luaran}', [InputLuaranController::class, 'delete']);
         });
+
 
         Route::post('/pasien/create', [PasienController::class, 'store']);
     });
@@ -101,8 +102,9 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
         });
 
         Route::prefix('luaran')->group(function(){
-            Route::post('/', [InputLuaranController::class, 'read']);
+            Route::post('/', [InputLuaranController::class, 'getLuaran']);
             Route::post('detail/{id}', [InputLuaranController::class, 'detailLuaran']);
+
         });
     });
 });
