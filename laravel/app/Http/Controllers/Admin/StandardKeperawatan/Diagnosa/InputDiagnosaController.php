@@ -136,9 +136,9 @@ class InputDiagnosaController extends Controller
     {
         $diagnosa = Diagnosa::where('id', $id)->first();
 
-        // if (!$diagnosa) {
-        //     return response()->json(['message' => 'Diagnosa tidak ditemukan'], 404);
-        // }
+        if (!$diagnosa) {
+            return response()->json(['message' => 'Diagnosa tidak ditemukan'], 404);
+        }
         // Ubah data gejala menjadi array
         $gejalaMayorSubjektif = Gejala::where('id_diagnosa', $id)
             ->where('id_jenis_gejala', 1) // Sesuaikan dengan ID jenis gejala mayor
@@ -217,88 +217,65 @@ class InputDiagnosaController extends Controller
         DB::beginTransaction();
 
         try {
-            $diagnosa = Diagnosa::find($id);
-            $diagnosaId = $diagnosa->id;
+            $diagnosa = Diagnosa::findOrFail($id);
+
 
             if (!$diagnosa) {
                 return response()->json(['message' => 'Diagnosa tidak ditemukan'], 404);
             }
 
             // Perbarui data diagnosa
-            $diagnosa->kode_diagnosa = $request->input('kode_diagnosa', $diagnosa->kode_diagnosa);
-            $diagnosa->nama_diagnosa = $request->input('nama_diagnosa', $diagnosa->nama_diagnosa);
-            $diagnosa->save();
-
+            $diagnosa->update([
+                'kode_diagnosa' => $request->input('kode_diagnosa', $diagnosa->kode_diagnosa),
+                'nama_diagnosa' => $request->input('nama_diagnosa', $diagnosa->nama_diagnosa),
+            ]);
+            $diagnosa->update($request->all());
+            $diagnosaId = $diagnosa -> id;
             // Faktor Resiko
 
-            if ($request->input('faktor_risiko') != null && $request->input('faktor_risiko') != '') {
-                $faktorResiko = $request->input('faktor_risiko');
+            // dd($diagnosa->all());
+                // Process Faktor Resiko
+            $faktorResiko = $request->input('faktor_risiko');
+            $faktorResikoArray = is_array($faktorResiko) ? $faktorResiko : explode(', ', $faktorResiko);
 
-                foreach ($faktorResiko as $faktorResikoItem) {
-                    $this->updateFaktorResiko($diagnosaId, $faktorResikoItem, 'Faktor Risiko');
-                }
-            }
-            // Gejala Mayor Subjektif
+            $this->updateFaktorResiko($faktorResikoArray, $diagnosaId);
 
+            // Process Gejala Mayor Subjektif
+            $gejalaMayorSubjektif = $request->input('gejala_mayor_subjektif');
+            $gejalaMayorSubjektifArray = is_array($gejalaMayorSubjektif) ? $gejalaMayorSubjektif : explode(', ', $gejalaMayorSubjektif);
 
-            if ($request->input('gejala_mayor_subjektif') != null && $request->input('gejala_mayor_subjektif') != '') {
-                $gejala_mayor_subjektif = $request->input('gejala_mayor_subjektif');
+            $this->updateGejala($gejalaMayorSubjektifArray, 'Mayor', 'Subjektif', $diagnosaId);
+            // Process Gejala Mayor Objektif
+            $gejalaMayorObjektif = $request->input('gejala_mayor_objektif');
+            $gejalaMayorObjektifArray = is_array($gejalaMayorObjektif) ? $gejalaMayorObjektif : explode(', ', $gejalaMayorObjektif);
 
-                foreach ($gejala_mayor_subjektif as $gejala_mayor_subjektif_item) {
-                    $this->updateGejala($gejala_mayor_subjektif_item, 'Mayor', 'Subjektif', $diagnosaId);
-                }
-            }
+            $this->updateGejala($gejalaMayorObjektifArray, 'Mayor', 'Objektif', $diagnosaId);
+            // Process Gejala Minor Subjektif
+            $gejalaMinorSubjektif = $request->input('gejala_minor_subjektif');
+            $gejalaMinorSubjektifArray = is_array($gejalaMinorSubjektif) ? $gejalaMinorSubjektif : explode(', ', $gejalaMinorSubjektif);
 
-            // Gejala Mayor Objektif
+            $this->updateGejala($gejalaMinorSubjektifArray, 'Minor', 'Subjektif', $diagnosaId);
+            // Process Gejala Minor Objektif
+            $gejalaMinorObjektif = $request->input('gejala_minor_objektif');
+            $gejalaMinorObjektifArray = is_array($gejalaMinorObjektif) ? $gejalaMinorObjektif : explode(', ', $gejalaMinorObjektif);
 
-            if ($request->input('gejala_mayor_objektif') != null && $request->input('gejala_mayor_objektif') != '') {
-                $gejala_mayor_objektif = $request->input('gejala_mayor_objektif');
-
-                foreach ($gejala_mayor_objektif as $gejala_mayor_objektif_item) {
-                    $this->updateGejala($gejala_mayor_objektif_item, 'Mayor', 'Subjektif', $diagnosaId);
-                }
-            }
-
-            // Gejala Minor Subjektif
-            if ($request->input('gejala_minor_subjektif') != null && $request->input('gejala_minor_subjektif') != '') {
-                $gejala_minor_subjektif = $request->input('gejala_minor_subjektif');
-
-                foreach ($gejala_minor_subjektif as $gejala_minor_subjektif_item) {
-                    $this->updateGejala($gejala_minor_subjektif_item, 'Minor', 'Subjektif', $diagnosaId);
-                }
-            }
-
-
-            // Gejala Minor Objektif
-            if ($request->input('gejala_minor_objektif') != null && $request->input('gejala_minor_objektif') != '') {
-                $gejala_minor_objektif = $request->input('gejala_minor_objektif');
-
-                foreach ($gejala_minor_objektif as $gejala_minor_objektif_item) {
-                    $this->updateGejala($gejala_minor_objektif_item, 'Minor', 'Objektif', $diagnosaId);
-                }
-            }
-            // Penyebab Psikologis
-            // Array of penyebab types
+            $this->updateGejala($gejalaMinorObjektifArray, 'Minor', 'Objektif', $diagnosaId);
+            // Process Penyebab
             $penyebabTypes = ['psikologis', 'situasional', 'fisiologis'];
 
             foreach ($penyebabTypes as $penyebabType) {
                 $inputName = 'penyebab_' . $penyebabType;
+                $penyebabData = $request->input($inputName);
+                $penyebabDataArray = is_array($penyebabData) ? $penyebabData : explode(', ', $penyebabData);
 
-                if ($request->input($inputName) != null && $request->input($inputName) != '') {
-                    $penyebabData = $request->input($inputName);
-
-                    foreach ($penyebabData as $penyebabItem) {
-                        $this->updatePenyebab($penyebabItem, ucfirst($penyebabType), $diagnosaId);
-                    }
-                }
+                $this->updatePenyebab($penyebabDataArray, ucfirst($penyebabType), $diagnosaId);
             }
 
             DB::commit();
         } catch (\Exception $e) {
+            dd($e);
         }
-        // Temukan diagnosa berdasarkan ID
-
-        return response()->json(['message' => 'Diagnosa berhasil diperbarui', 'data' => $diagnosa]);
+        return response()->json(['message' => 'Diagnosa berhasil diperbarui']);
     }
 
     public function hapusDiagnosa($id)
@@ -308,9 +285,9 @@ class InputDiagnosaController extends Controller
 
         DB::beginTransaction();
         try {
-            // if (!$diagnosa) {
-            //     return response()->json(['message' => 'Diagnosa tidak ditemukan'], 404);
-            // }
+            if (!$diagnosa) {
+                return response()->json(['message' => 'Diagnosa tidak ditemukan'], 404);
+            }
 
             // Hapus faktor risiko yang terkait dengan diagnosa
             FaktorResiko::where('id_diagnosa', $id)->delete();
@@ -332,58 +309,57 @@ class InputDiagnosaController extends Controller
         return response()->json(['message' => 'Diagnosa berhasil dihapus']);
     }
 
-    private function updateFaktorResiko($faktorResiko, $diagnosaId)
+    private function updateFaktorResiko($faktorResikoInputs, $diagnosaId)
     {
-        // Hapus faktor risiko yang terkait dengan diagnosa
         FaktorResiko::where('id_diagnosa', $diagnosaId)->delete();
 
-        // Simpan faktor risiko baru
-        $faktorResikoArray = $faktorResiko;
-        foreach ($faktorResikoArray as $item) {
-            $faktorResikoModel = new FaktorResiko();
-            $faktorResikoModel->id_diagnosa = $diagnosaId;
-            $faktorResikoModel->nama = $item;
-            $faktorResikoModel->save();
+        foreach ($faktorResikoInputs as $faktorResikoInput) {
+            $diagnosa = Diagnosa::where('id', $diagnosaId)->pluck('id')->first();
+            $faktorResiko = new FaktorResiko([
+                'id_diagnosa' => $diagnosa,
+                'nama' => $faktorResikoInput,
+            ]);
+
+            $faktorResiko->save();
         }
     }
 
-    private function updateGejala($gejalaInput, $jenisGejala, $kategoriGejala, $diagnosaId)
+    private function updateGejala($gejalaInputs, $jenisGejala, $kategoriGejala, $diagnosaId)
     {
-        // Hapus gejala yang terkait dengan diagnosa
         Gejala::where('id_diagnosa', $diagnosaId)
             ->where('id_jenis_gejala', JenisGejala::where('nama_jenis_gejala', $jenisGejala)->first()->id)
             ->where('id_kategori_gejala', KategoriGejala::where('nama_kategori_gejala', $kategoriGejala)->first()->id)
             ->delete();
 
-        // Simpan gejala baru
-        $gejalaArray = implode(',', $gejalaInput);
-        foreach ($gejalaArray as $item) {
-            $gejalaModel = new Gejala();
-            $gejalaModel->id_diagnosa = $diagnosaId;
-            $gejalaModel->id_jenis_gejala = JenisGejala::where('nama_jenis_gejala', $jenisGejala)->first()->id;
-            $gejalaModel->id_kategori_gejala = KategoriGejala::where('nama_kategori_gejala', $kategoriGejala)->first()->id;
-            $gejalaModel->nama_gejala = trim($item); // Menggunakan trim
-            $gejalaModel->save();
+        foreach ($gejalaInputs as $gejalaInput) {
+            $idJenisGejala = JenisGejala::where('nama_jenis_gejala', $jenisGejala)->pluck('id')->first();
+            $idKategoriGejala = KategoriGejala::where('nama_kategori_gejala', $kategoriGejala)->pluck('id')->first();
+
+            $gejala = new Gejala([
+                'id_diagnosa' => $diagnosaId,
+                'id_kategori_gejala' => $idKategoriGejala,
+                'id_jenis_gejala' => $idJenisGejala,
+                'nama_gejala' => $gejalaInput,
+            ]);
+            $gejala->save();
         }
     }
 
-    private function updatePenyebab($penyebabInput, $jenisPenyebab, $diagnosaId)
+    private function updatePenyebab($penyebabInputs, $jenisPenyebab, $diagnosaId)
     {
-        // Hapus penyebab yang terkait dengan diagnosa
         DetailPenyebab::where('id_diagnosa', $diagnosaId)
             ->where('id_jenis_penyebab', JenisPenyebab::where('nama_jenis_penyebab', $jenisPenyebab)->first()->id)
             ->delete();
 
-        // Simpan penyebab baru
-        $penyebabArray = implode(',', $penyebabInput);
-        foreach ($penyebabArray as $item) {
+        foreach ($penyebabInputs as $penyebabInput) {
             $penyebabModel = new DetailPenyebab();
             $penyebabModel->id_diagnosa = $diagnosaId;
             $penyebabModel->id_jenis_penyebab = JenisPenyebab::where('nama_jenis_penyebab', $jenisPenyebab)->first()->id;
-            $penyebabModel->nama_penyebab = $item;
+            $penyebabModel->nama_penyebab = $penyebabInput;
             $penyebabModel->save();
         }
     }
+
 
     private function saveFaktorResiko($diagnosaId, $faktorResiko)
     {
