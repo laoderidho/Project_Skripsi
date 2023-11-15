@@ -262,7 +262,7 @@ class InputDiagnosaController extends Controller
             $this->updateGejala($gejalaMinorObjektifArray, 'Minor', 'Objektif', $diagnosaId);
             // Process Penyebab
             $penyebabTypes = ['psikologis', 'situasional', 'fisiologis'];
-
+    
             foreach ($penyebabTypes as $penyebabType) {
                 $inputName = 'penyebab_' . $penyebabType;
                 $penyebabData = $request->input($inputName);
