@@ -218,6 +218,7 @@ class InputDiagnosaController extends Controller
 
         try {
             $diagnosa = Diagnosa::find($id);
+            $diagnosaId = $diagnosa->id;
 
             if (!$diagnosa) {
                 return response()->json(['message' => 'Diagnosa tidak ditemukan'], 404);
