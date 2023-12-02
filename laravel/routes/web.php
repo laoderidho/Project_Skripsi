@@ -117,7 +117,9 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/login', [AuthController::class, 'viewLogin'])->name('login');
 Route::post('/tambah', [UserController::class, 'addUser']);
 
-
+Route::get('/home', function () {
+    return view('home');
+});
 /*
 |--------------------------------------------------------------------------
 | Web Routes
