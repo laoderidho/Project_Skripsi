@@ -24,9 +24,9 @@ return new class extends Migration
             $table->string('nadi', 255);
             $table->string('laju_respirasi', 255);
             $table->string('kesadaran', 255);
-            $table->string('gcs_eyes', 255);
-            $table->string('gcs_motoric', 255);
-            $table->string('gcs_visual', 255);
+            $table->string('eye', 255);
+            $table->string('motor', 255);
+            $table->string('visual', 255);
             $table->string('pemeriksaan_fisik', 255);
             $table->timestamps();
 

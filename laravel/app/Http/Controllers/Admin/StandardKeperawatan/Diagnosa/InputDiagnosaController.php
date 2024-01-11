@@ -33,6 +33,7 @@ class InputDiagnosaController extends Controller
             'nama_diagnosa' => 'required|string|max:255|unique:diagnosa,nama_diagnosa',
             'faktor_risiko' => 'array|nullable',
             'penyebab_psikologis' => 'array|nullable',
+            'penyebab_umum' => 'array|nullable',
             'penyebab_situasional' => 'array|nullable',
             'penyebab_fisiologis' => 'array|nullable',
             'gejala_mayor_subjektif' => 'array|nullable',
@@ -111,7 +112,7 @@ class InputDiagnosaController extends Controller
 
             // Penyebab Psikologis
             // Array of penyebab types
-            $penyebabTypes = ['psikologis', 'situasional', 'fisiologis'];
+            $penyebabTypes = ['psikologis', 'situasional', 'fisiologis','umum'];
 
             foreach ($penyebabTypes as $penyebabType) {
                 $inputName = 'penyebab_' . $penyebabType;
@@ -179,6 +180,10 @@ class InputDiagnosaController extends Controller
             ->where('id_jenis_penyebab', 3) // Sesuaikan dengan ID jenis penyebab fisiologis
             ->pluck('nama_penyebab')
             ->toArray();
+        $penyebabUmum = DetailPenyebab::where('id_diagnosa', $id)
+            ->where('id_jenis_penyebab', 4) // Sesuaikan dengan ID jenis penyebab fisiologis
+            ->pluck('nama_penyebab')
+            ->toArray();
         $faktorResiko = FaktorResiko::where('id_diagnosa', $id)
             ->pluck('nama')
             ->toArray();
@@ -190,6 +195,7 @@ class InputDiagnosaController extends Controller
         $diagnosa->penyebab_psikologis = $penyebabPsikologis;
         $diagnosa->penyebab_situasional = $penyebabSituasional;
         $diagnosa->penyebab_fisiologis = $penyebabFisiologis;
+        $diagnosa->penyebab_umum = $penyebabUmum;
         $diagnosa->faktor_risiko = $faktorResiko;
         return response()->json(['data' => $diagnosa]);
     }
@@ -208,6 +214,7 @@ class InputDiagnosaController extends Controller
             'penyebab_psikologis' => 'array|nullable',
             'penyebab_situasional' => 'array|nullable',
             'penyebab_fisiologis' => 'array|nullable',
+            'penyebab_umum' => 'array|nullable',
         ]);
 
         if ($validator->fails()) {
@@ -261,8 +268,8 @@ class InputDiagnosaController extends Controller
 
             $this->updateGejala($gejalaMinorObjektifArray, 'Minor', 'Objektif', $diagnosaId);
             // Process Penyebab
-            $penyebabTypes = ['psikologis', 'situasional', 'fisiologis'];
-    
+            $penyebabTypes = ['psikologis', 'situasional', 'fisiologis','umum'];
+
             foreach ($penyebabTypes as $penyebabType) {
                 $inputName = 'penyebab_' . $penyebabType;
                 $penyebabData = $request->input($inputName);
