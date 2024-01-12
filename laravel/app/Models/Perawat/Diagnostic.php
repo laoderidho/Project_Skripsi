@@ -4,9 +4,12 @@ namespace App\Models\Perawat;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Admin\Pasien;
 
 class Diagnostic extends Model
 {
+    use HasFactory;
+
     protected $table = 'data_diagnostik';
 
     protected $fillable = [
@@ -14,17 +17,21 @@ class Diagnostic extends Model
         'keluhan_utama',
         'riwayat_penyakit',
         'riwayat_alergi',
-        'resiko_jatuh',
-        'resiko_nyeri',
+        'risiko_jatuh',
+        'risiko_nyeri',
         'suhu',
         'tekanan_darah',
         'nadi',
         'laju_respirasi',
         'kesadaran',
-        'gcs_eyes',
-        'gcs_motoric',
-        'gcs_visual',
+        'eye',
+        'motor',
+        'visual',
         'pemeriksaan_fisik',
     ];
-    use HasFactory;
+
+    public function Pasien()
+    {
+        return $this->hasMany(Pasien::class, 'id_pasien');
+    }
 }
