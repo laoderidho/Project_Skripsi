@@ -28,6 +28,8 @@ class IntervensiController extends Controller
                 'nama_intervensi'=> 'required|string|max:255',
             ]);
 
+
+
             $observasi = $request->input('observasi');
             $terapeutik = $request->input('terapeutik');
             $edukasi = $request->input('edukasi');
@@ -47,25 +49,25 @@ class IntervensiController extends Controller
 
                 $intervensi->save();
 
-                if($observasi!=null || $observasi!=''){
+                if($observasi!=null){
+
                     foreach($observasi as $obs){
                         $this->intervensiAction($intervensi->id, $obs, 'Observasi');
                     }
                 }
-
-                if($terapeutik!=null || $terapeutik!=''){
+                if($terapeutik!=null){
                     foreach($terapeutik as $ter){
                         $this->intervensiAction($intervensi->id, $ter, 'Terapeutik');
                     }
                 }
 
-                if($edukasi!=null || $edukasi!=''){
+                if($edukasi!=null){
                     foreach($edukasi as $edu){
                         $this->intervensiAction($intervensi->id, $edu, 'Edukasi');
                     }
                 }
 
-                if($kolaborasi!=null || $kolaborasi!=''){
+                if($kolaborasi!=null){
                     foreach($kolaborasi as $kol){
                         $this->intervensiAction($intervensi->id, $kol, 'Kolaborasi');
                     }
@@ -114,10 +116,12 @@ class IntervensiController extends Controller
             $tindakan_observasi = $tindakan_intervensi->where('id_kategori_tindakan', 1);
             $tindakan_terapeutik = $tindakan_intervensi->where('id_kategori_tindakan', 2);
             $tindakan_edukasi = $tindakan_intervensi->where('id_kategori_tindakan', 3);
+            $tindakan_kolaborasi = $tindakan_intervensi->where('id_kategori_tindakan', 4);
 
             $tindakan_observasi = $tindakan_observasi->pluck('nama_tindakan_intervensi');
             $tindakan_terapeutik = $tindakan_terapeutik->pluck('nama_tindakan_intervensi');
             $tindakan_edukasi = $tindakan_edukasi->pluck('nama_tindakan_intervensi');
+            $tindakan_kolaborasi = $tindakan_kolaborasi->pluck('nama_tindakan_intervensi');
 
             return response()->json([
                 'message' => 'Success',
@@ -125,6 +129,7 @@ class IntervensiController extends Controller
                 'observasi'=> $tindakan_observasi,
                 'terapeutik'=> $tindakan_terapeutik,
                 'edukasi'=> $tindakan_edukasi,
+                'kolaborasi'=> $tindakan_kolaborasi,
             ]);
     }
 
@@ -155,7 +160,7 @@ class IntervensiController extends Controller
 
             $intervensi->update();
 
-            if($observasi!=null || $observasi!=''){
+            if($observasi!=null){
                 $i = 0;
                 foreach($observasi as $obs){
                     $this->updateIntervensiAction($intervensi->id, $obs, 'Observasi', $i);
@@ -163,7 +168,7 @@ class IntervensiController extends Controller
                 }
             }
 
-            if($terapeutik!=null || $terapeutik!=''){
+            if($terapeutik!=null){
                 $i = 0;
                 foreach($terapeutik as $ter){
                     $this->updateIntervensiAction($intervensi->id, $ter, 'Terapeutik', $i);
@@ -171,7 +176,7 @@ class IntervensiController extends Controller
                 }
             }
 
-            if($edukasi!=null || $edukasi!=''){
+            if($edukasi!=null){
                 $i = 0;
                 foreach($edukasi as $edu){
                     $this->updateIntervensiAction($intervensi->id, $edu, 'Edukasi', $i);
@@ -179,7 +184,7 @@ class IntervensiController extends Controller
                 }
             }
 
-            if($kolaborasi!=null || $kolaborasi!=''){
+            if($kolaborasi!=null){
                 $i = 0;
                 foreach($kolaborasi as $kol){
                     $this->updateIntervensiAction($intervensi->id, $kol, 'Kolaborasi', $i);
