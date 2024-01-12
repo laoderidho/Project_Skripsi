@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Perawat\Diagnostic;
 
 use App\Http\Controllers\Controller;
-use App\Models\Admin\Diagnostic;
+use App\Models\Perawat\Diagnostic;
 use App\Models\Admin\Pasien;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
