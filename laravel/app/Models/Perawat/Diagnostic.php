@@ -13,6 +13,7 @@ class Diagnostic extends Model
 
     protected $fillable = [
         'id_pasien',
+        'id_perawat',
         'keluhan_utama',
         'riwayat_penyakit',
         'riwayat_alergi',
@@ -31,6 +32,10 @@ class Diagnostic extends Model
 
     public function Pasien()
     {
-        return $this->hasMany(Pasien::class, 'id_pasien');
+        return $this->belongsTo(Pasien::class, 'id_pasien');
+    }
+    public function Perawat()
+    {
+        return $this->belongsTo(Perawat::class, 'id_perawat');
     }
 }
