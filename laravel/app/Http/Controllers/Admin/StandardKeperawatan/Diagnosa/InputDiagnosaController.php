@@ -61,9 +61,7 @@ class InputDiagnosaController extends Controller
             if ($faktor_resiko != null) {
                 $faktorResikoArray = $faktor_resiko;
 
-                $faktorResikoString = explode(', ', $faktorResikoArray);
-
-                foreach ($faktorResikoString as $faktor_item) {
+                foreach ($faktorResikoArray as $faktor_item) {
                     $this->saveFaktorResiko($diagnosaId, $faktor_item);
                 }
             } else {
@@ -122,7 +120,7 @@ class InputDiagnosaController extends Controller
                         $this->savePenyebab($penyebabItem, ucfirst($penyebabType), $diagnosaId);
                     }
                 } else {
-                    $this->savePenyebab('', ucfirst($penyebabType), $diagnosaId);
+                    continue;
                 }
             }
             DB::commit();
@@ -180,10 +178,12 @@ class InputDiagnosaController extends Controller
             ->where('id_jenis_penyebab', 3) // Sesuaikan dengan ID jenis penyebab fisiologis
             ->pluck('nama_penyebab')
             ->toArray();
+
         $penyebabUmum = DetailPenyebab::where('id_diagnosa', $id)
             ->where('id_jenis_penyebab', 4) // Sesuaikan dengan ID jenis penyebab fisiologis
             ->pluck('nama_penyebab')
             ->toArray();
+            
         $faktorResiko = FaktorResiko::where('id_diagnosa', $id)
             ->pluck('nama')
             ->toArray();

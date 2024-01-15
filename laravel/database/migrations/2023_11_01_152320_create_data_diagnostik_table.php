@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('data_diagnostik', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_pasien');
+            $table->unsignedBigInteger('id_perawat');
             $table->string('keluhan_utama', 255);
             $table->string('riwayat_penyakit', 255);
             $table->string('riwayat_alergi', 255);
@@ -31,6 +32,8 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('id_pasien')->references('id')->on('pasien');
+            $table->foreign('id_perawat')->references('id')->on('perawat');
+
 
         });
     }

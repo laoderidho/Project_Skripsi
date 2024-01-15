@@ -17,6 +17,8 @@ class DiagnosticController extends Controller
        $pasien = Pasien::find($id);
 
        $validator = Validator::make($request->all(),[
+        'id_pasien' =>'required|unsignedBigInt',
+        'id_perawat' =>'required|unsignedBigInt',
         'keluhan_utama'=> 'required|string|max:255',
         'penyebab_umum'=> 'required|string|max:255',
         'riwayat_penyakit'=>'string|max:255',
@@ -42,6 +44,8 @@ class DiagnosticController extends Controller
        DB::beginTransaction();
        try{
         $diagnostic = new Diagnostic();
+        $diagnostic -> id_pasien = $request -> input('id_pasien');
+        $diagnostic -> id_perawat = $request -> input('id_perawat');
         $diagnostic -> keluhan_utama = $request -> input('keluhan_utama');
         $diagnostic -> riwayat_penyakit = $request -> input('riwayat_penyakit');
         $diagnostic -> riwayat_alergi= $request -> input('riwayat_alergi');
@@ -79,6 +83,8 @@ class DiagnosticController extends Controller
 
         if($diagnostic){
          $validator = Validator::make($request->all(),[
+            'id_pasien' =>'required|unsignedBigInt',
+            'id_perawat' =>'required|unsignedBigInt',
              'keluhan_utama'=> 'required|string|max:255',
              'riwayat_penyakit'=>'string|max:255',
              'riwayat_alergi'=>'string|max:255',
@@ -102,6 +108,8 @@ class DiagnosticController extends Controller
 
             DB::beginTransaction();
             try{
+             $diagnostic -> id_pasien = $request -> input('id_pasien');
+             $diagnostic -> id_perawat = $request -> input('id_perawat');
              $diagnostic -> keluhan_utama = $request -> input('keluhan_utama');
              $diagnostic -> riwayat_penyakit = $request -> input('riwayat_penyakit');
              $diagnostic -> riwayat_alergi= $request -> input('riwayat_alergi');
