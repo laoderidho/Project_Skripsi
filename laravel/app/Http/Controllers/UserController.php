@@ -64,8 +64,8 @@ class UserController extends Controller
             'password' => 'required|string|max:20|',
             'role' => 'required|string|max:10',
             'photo' => 'nullable|file|image|mimes:png,jpg,jpeg,svg|max:2048',
-            'shift' => 'required_if:role,perawat',
-            'status' => 'required_if:role,perawat',
+            'shift' => 'required_if:role,perawat|nullable',
+            'status' => 'required_if:role,perawat|nullable',
         ]);
 
 
@@ -93,6 +93,8 @@ class UserController extends Controller
             'password' => bcrypt($request->password),
             'role' => $request->role,
             'photo' => $photoPath,
+            'shift' =>$request->shift,
+            'status'=>$request->status,
         ]);
 
         if($request->role == 'perawat'){

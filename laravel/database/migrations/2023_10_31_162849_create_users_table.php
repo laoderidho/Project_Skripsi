@@ -22,6 +22,9 @@ return new class extends Migration
             $table->string('password');
             $table->string('role');
             $table->string('photo')->nullable();
+            $table->integer('shift')->nullable();
+            $table->boolean('status')->nullable();
+
             $table->timestamps();
 
         });
