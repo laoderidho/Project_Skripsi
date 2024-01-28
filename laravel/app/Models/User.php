@@ -27,7 +27,9 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'photo'
+        'photo',
+        'shift',
+        'status',
     ];
 
     /**
@@ -53,5 +55,9 @@ class User extends Authenticatable
     public function perawat()
     {
         return $this->hasOne(Perawat::class, 'id_user');
+    }
+    public function shift()
+    {
+        return $this->hasOne(WaktuShift::class, 'id');
     }
 }

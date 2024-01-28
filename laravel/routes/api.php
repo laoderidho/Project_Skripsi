@@ -16,9 +16,7 @@ use App\Http\Controllers\Admin\StandardKeperawatan\Intervensi\IntervensiControll
 //Controller Perawat
 use App\Http\Controllers\Perawat\StandarForm\DiagnosaController;
 use App\Http\Controllers\Perawat\StandarForm\IntervensiFormController;
-use App\Http\Controllers\Perawat\StandarForm\LuaranFormController;
-
-use App\Http\Controllers\Perawat\Diagnostic\DiagnosticController;
+use App\Http\Controllers\Perawat\StandarForm\DiagnosticController;
 
 //
 
@@ -45,7 +43,6 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/update/{id}', [UserController::class, 'updateUser']);
             Route::post('/detail/{id}', [UserController::class, 'detailUser']);
         });
-
 
         Route::prefix('daftarpasien')->group(function () {
             Route::post('/tambah', [PasienController::class, 'addPasien']);
@@ -101,15 +98,23 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/', [DiagnosaController::class, 'getDiagnosa']);
             Route::post('/detail/{id}', [DiagnosaController::class, 'validationDiagnosaAttribute']);
         });
-
-        Route::prefix('intervensi')->group(function () {
+        Route::prefix('intervensi')->group(function(){
             Route::post('/', [IntervensiController::class, 'getIntervensi']);
         });
+        
+        Route::prefix('daftarpasien')->group(function () {
+            Route::post('/tambah', [PasienController::class, 'addPasien']);
+            Route::post('/', [PasienController::class, 'getPasien']);
+            Route::post('/edit/{id}', [PasienController::class, 'update']);
+            Route::post('/detail/{id}', [PasienController::class, 'getDetail']);
+            Route::post('/delete/{id}', [PasienController::class, 'delete']);
 
-        Route::prefix('luaran')->group(function () {
-            Route::post('/', [InputLuaranController::class, 'getLuaran']);
-            Route::post('detail/{id}', [InputLuaranController::class, 'detailLuaran']);
         });
+        Route::prefix('diagnostic')->group(function(){
+            Route::post('/add',[DiagnosticController::class,'addDiagnostic']);
+            Route::post('/get',[DiagnosticController::class,'getDiagnostic']);
+            Route::post('/update',[DiagnosticController::class,'updateDiagnostic']);
+            Route::post('/delete',[DiagnosticController::class,'deleteDiagnostic']);
 
         Route::prefix('diagnostic')->group(function () {
             Route::post('/{id}', [DiagnosticController::class, 'addDiagnostic']);
