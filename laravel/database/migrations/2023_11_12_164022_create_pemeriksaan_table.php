@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('pemeriksaan', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('id_perawat');
             $table->unsignedBigInteger('id_perawatan');
             $table->unsignedBigInteger('id_form_diagnosa');
             $table->unsignedBigInteger('id_tindakan_intervensi');
@@ -24,7 +25,8 @@ return new class extends Migration
             $table->time('jam_penilaian_evaluasi');
             $table->timestamps();
 
-            $table->foreign('id_perawatan')->references('id')->on('perawat');
+            $table->foreign('id_perawatan')->references('id')->on('perawatan');
+            $table->foreign('id_perawat')->references('id')->on('perawat');
             $table->foreign('id_form_diagnosa')->references('id')->on('form_diagnosa');
             $table->foreign('id_tindakan_intervensi')->references('id')->on('tindakan_intervensi');
             $table->foreign('id_implementasi')->references('id')->on('implementasi');

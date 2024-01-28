@@ -13,15 +13,13 @@ return new class extends Migration
     {
         Schema::create('perawatan', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_perawat');
+            $table->unsignedBigInteger('id_pasien');
             $table->unsignedBigInteger('id_data_diagnostik');
             $table->string('bed', 5);
             $table->time('waktu_pencatatan');
             $table->timestamps();
-
-            $table->foreign('id_perawat')->references('id')->on('perawat');
             $table->foreign('id_data_diagnostik')->references('id')->on('data_diagnostik');
-
+            $table->foreign('id_pasien')->references('id')->on('pasien');
         });
     }
 
