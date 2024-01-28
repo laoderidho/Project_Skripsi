@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Perawat;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Admin\Pasien;
 
 class RawatInap extends Model
 {

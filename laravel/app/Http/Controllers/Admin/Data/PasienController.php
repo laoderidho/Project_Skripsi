@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Admin\Pasien;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Perawat\RawatInap;
+use Illuminate\Support\Facades\DB;
 
 class PasienController extends Controller
 {
@@ -126,6 +128,75 @@ class PasienController extends Controller
         return response()->json([
             'message'=> 'Pasien Updated',
             'data'=> $pasien,
+        ]);
+    }
+
+    // add rawat inap function
+    public function addRawatInap(Request $request, $id)
+    {
+        $pasien = Pasien::find($id);
+
+        // dd($pasien->id);
+
+        if ($pasien) {
+            $findIdByTriase = RawatInap::where('id_pasien', $pasien->id)->first();
+            if($findIdByTriase){
+                $findIdByTriase->status = $request->status;
+                $findIdByTriase->triase = $request->triase;
+                $findIdByTriase->update();
+                return response()->json(['message' => 'status Pasien Telah diubah']);
+            }else{
+                $rawatInap = new RawatInap();
+                $rawatInap->id_pasien = $pasien->id;
+                $rawatInap->status = $request->input('status');
+                $rawatInap->triase = $request->input('triase');
+                $rawatInap->save();
+
+                return response()->json(['message' => 'Pasien telah berhasil ditambahkan ke rawat inap']);
+            }
+        }
+    }
+
+    public function getStatusRawatInap($id){
+        $pasien = Pasien::find($id);
+        $rawatInap = RawatInap::where('id_pasien', $pasien->id)->first();
+
+        if ($rawatInap) {
+           if($rawatInap->status == 1){
+                $triase = $rawatInap->triase;
+                $rawatInap = $triase;
+                return response()->json(['message' => $rawatInap]);
+           }
+           else{
+            $rawatInap = 'tidak dirawat inap';
+            return response()->json(['message' => $rawatInap]);
+           }
+        }else{
+            $rawatInap = 'tidak dirawat inap';
+            return response()->json(['message' => $rawatInap]);
+        }
+    }
+
+    public function filterStatusRawatInap(){
+        $results = DB::table('pasien AS p')
+            ->join('rawat_inap AS r', 'p.id', '=', 'r.id_pasien')
+            ->where('r.status', '=', 1)
+            ->orderByRaw('
+            CASE
+                WHEN r.triase = "merah" THEN 1
+                WHEN r.triase = "kuning" THEN 2
+                WHEN r.triase = "hijau" THEN 3
+                WHEN r.triase = "hitam" THEN 4
+                ELSE 5
+            END,
+            r.updated_at ASC
+        ')
+        ->select('p.id', 'p.nama_lengkap', 'r.id_pasien', 'r.status', 'r.triase')
+        ->get();
+
+        return response()->json([
+            'message'=> 'Success',
+            'data'=> $results,
         ]);
     }
 }
