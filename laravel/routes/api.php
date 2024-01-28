@@ -105,7 +105,7 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/edit/{id}', [PasienController::class, 'update']);
             Route::post('/detail/{id}', [PasienController::class, 'getDetail']);
             Route::post('/delete/{id}', [PasienController::class, 'delete']);
-        
+
         });
         Route::prefix('diagnostic')->group(function(){
             Route::post('/add',[DiagnosticController::class,'addDiagnostic']);
@@ -113,6 +113,10 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/update',[DiagnosticController::class,'updateDiagnostic']);
             Route::post('/delete',[DiagnosticController::class,'deleteDiagnostic']);
 
+        });
+
+        Route::prefix('diagnostic')->group(function(){
+            Route::post('/{id}', [DiagnosticController::class, 'addDiagnostic']);
         });
     });
 });

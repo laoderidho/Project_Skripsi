@@ -36,7 +36,7 @@ class DiagnosaController extends Controller
         $gejala_tanda_minor_subjektif = Gejala::where('id_diagnosa', $diagnosa->id)->where('id_jenis_gejala', 2)->where('id_kategori_gejala', 1)->get();
         $gejala_tanda_minor_objektif = Gejala::where('id_diagnosa', $diagnosa->id)->where('id_jenis_gejala', 2)->where('id_kategori_gejala', 2)->get();
 
-        $faktor_resiko = FaktorResiko::where('id_diagnosa', $diagnosa->id)->get();
+        $faktor_risiko = FaktorResiko::where('id_diagnosa', $diagnosa->id)->get();
 
         $penyebab_psikologis = DetailPenyebab::where('id_diagnosa', $diagnosa->id)->where('id_jenis_penyebab', 1)->get();
         $penyebab_situasional = DetailPenyebab::where('id_diagnosa', $diagnosa->id)->where('id_jenis_penyebab', 2)->get();
@@ -50,7 +50,7 @@ class DiagnosaController extends Controller
             'gejala_tanda_mayor_objektif' => $gejala_tanda_mayor_objektif,
             'gejala_tanda_minor_subjektif' => $gejala_tanda_minor_subjektif,
             'gejala_tanda_minor_objektif' => $gejala_tanda_minor_objektif,
-            'faktor_resiko' => $faktor_resiko,
+            'faktor_risiko' => $faktor_risiko,
             'penyebab_psikologis' => $penyebab_psikologis,
             'penyebab_situasional' => $penyebab_situasional,
             'penyebab_fisiologis' => $penyebab_fisiologis,
