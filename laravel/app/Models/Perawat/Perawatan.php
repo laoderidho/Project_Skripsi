@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Admin\Perawat;;
 
 class Perawatan extends Model
 {
@@ -15,6 +16,7 @@ class Perawatan extends Model
         'id_data_diagnostik',
         'bed',
         'waktu_pencatatan',
+        'status_pasien'
     ];
 
     public function perawat()

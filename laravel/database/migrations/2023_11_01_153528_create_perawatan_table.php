@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_data_diagnostik');
             $table->string('bed', 5);
             $table->time('waktu_pencatatan');
+            $table->string('status_pasien', 10);
             $table->timestamps();
 
             $table->foreign('id_perawat')->references('id')->on('perawat');
