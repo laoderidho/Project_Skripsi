@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Perawat\Diagnostic;
+namespace App\Http\Controllers\Perawat\StandarForm\Diagnostic;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Pasien;
