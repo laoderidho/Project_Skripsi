@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Perawat\PerawatController;
 
 //Controller Admin
@@ -15,6 +14,7 @@ use App\Http\Controllers\Admin\StandardKeperawatan\Intervensi\IntervensiControll
 use App\Http\Controllers\Perawat\StandarForm\DiagnosaController;
 use App\Http\Controllers\Perawat\StandarForm\IntervensiFormController;
 use App\Http\Controllers\Perawat\StandarForm\Diagnostic\DiagnosticController;
+use App\Http\Controllers\Perawat\PerawatanController;
 
 //
 
@@ -29,10 +29,6 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
 
     Route::prefix('admin')->group(function () {
-        Route::post('/', [AdminController::class, 'getAll']);
-        Route::post('/getAll', [AdminController::class, 'getAll']);
-        Route::post('/hello', [AdminController::class, 'hello']);
-        Route::post('/view', [AdminController::class, 'getAll']);
 
         Route::prefix('users')->group(function () {
             Route::post('/tambah', [UserController::class, 'addUser']);
@@ -109,10 +105,14 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 
         });
         Route::prefix('diagnostic')->group(function(){
-            Route::post('/add',[DiagnosticController::class,'addDiagnostic']);
+            Route::post('/add/{id}',[DiagnosticController::class,'addDiagnostic']);
             Route::post('/get',[DiagnosticController::class,'getDiagnostic']);
             Route::post('/update',[DiagnosticController::class,'updateDiagnostic']);
             Route::post('/delete',[DiagnosticController::class,'deleteDiagnostic']);
+        });
+
+        Route::prefix('perawatan')->group(function(){
+            Route::post('/add', [PerawatanController::class, 'AddPerawatan']);
         });
 
         Route::prefix('pasien')->group(function () {

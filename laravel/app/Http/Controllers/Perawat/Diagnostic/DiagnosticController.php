@@ -70,6 +70,7 @@ class DiagnosticController extends Controller
        }
        return response()->json(['message' => 'Data Diagnostik berhasil ditambahkan', 'data' => $diagnostic]);
     }
+
     public function getDiagnostic($id){
         $diagnostic = Diagnostic::find($id);
         if($diagnostic){
