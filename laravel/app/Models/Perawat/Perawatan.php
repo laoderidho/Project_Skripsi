@@ -12,20 +12,19 @@ class Perawatan extends Model
     protected $table = 'perawatan';
 
     protected $fillable = [
-        'id_perawat',
+        'id_pasien',
         'id_data_diagnostik',
         'bed',
         'waktu_pencatatan',
         'status_pasien'
     ];
 
-    public function perawat()
-    {
-        return $this->belongsTo(Perawat::class, 'id_perawat');
-    }
-
     public function dataDiagnostik()
     {
         return $this->belongsTo(DataDiagnostik::class, 'id_data_diagnostik');
+    }
+    public function Pasien()
+    {
+        return $this->belongsTo(Pasien::class, 'id_pasien');
     }
 }

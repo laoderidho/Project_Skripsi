@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('kesadaran', 255);
             $table->string('eye', 255);
             $table->string('motor', 255);
-            $table->string('visual', 255);
+            $table->string('verbal', 255);
             $table->string('pemeriksaan_fisik', 255);
             $table->timestamps();
 

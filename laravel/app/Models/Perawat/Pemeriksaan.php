@@ -1,6 +1,13 @@
 <?php
 
 namespace App\Models\Perawat;
+namespace App\Models\Perawatan;
+namespace App\Models\Admin\Diagnosa;
+namespace App\Models\Admin\Implementasi;
+namespace App\Models\Admin\TindakanIntervensi;
+namespace App\Models\Admin\Evaluasi;
+
+
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,7 +16,8 @@ class Pemeriksaan extends Model
     protected $table = 'pemeriksaan'; // Gantilah 'nama_tabel_pemeriksaan' dengan nama tabel sesuai database Anda
 
     protected $fillable = [
-        'id_perawatan', // Diubah dari 'id_perawatanan'
+        'id_perawatan',
+        'id_perawat',
         'id_form_diagnosa',
         'id_tindakan_intervensi',
         'id_implementasi',
@@ -25,7 +33,10 @@ class Pemeriksaan extends Model
     {
         return $this->belongsTo(Perawatan::class, 'id_perawatan');
     }
-
+    public function perawat()
+    {
+        return $this->belongsTo(Perawatan::class, 'id_perawat');
+    }
     public function formDiagnosa()
     {
         return $this->belongsTo(FormDiagnosa::class, 'id_form_diagnosa');

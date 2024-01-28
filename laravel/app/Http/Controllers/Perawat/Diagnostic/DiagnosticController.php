@@ -33,7 +33,7 @@ class DiagnosticController extends Controller
         'laju_respirasi'=>'required|int',
         'eye' => 'required|int',
         'motor' => 'required|int',
-        'visual' => 'required|int',
+        'verbal' => 'required|int',
         'pemeriksaan_fisik'=> 'required|string|max:255',
        ]);
 
@@ -58,7 +58,7 @@ class DiagnosticController extends Controller
         $diagnostic -> laju_respirasi = $request -> input('laju_respirasi');
         $diagnostic -> eye= $request -> input('eye');
         $diagnostic -> motor= $request -> input('motor');
-        $diagnostic -> visual= $request -> input('visual');
+        $diagnostic -> verbal= $request -> input('verbal');
         $diagnostic -> pemeriksaan_fisik= $request -> input('pemeriksaan_fisik');
 
         $diagnostic->save();
@@ -99,7 +99,7 @@ class DiagnosticController extends Controller
              'laju_respirasi'=>'required|int',
              'eye' => 'required|int',
              'motor' => 'required|int',
-             'visual' => 'required|int',
+             'verbal' => 'required|int',
              'pemeriksaan_fisik'=> 'required|string|max:255',
             ]);
 
@@ -123,7 +123,7 @@ class DiagnosticController extends Controller
              $diagnostic -> laju_respirasi = $request -> input('laju_respirasi');
              $diagnostic -> eye= $request -> input('eye');
              $diagnostic -> motor= $request -> input('motor');
-             $diagnostic -> visual= $request -> input('visual');
+             $diagnostic -> verbal= $request -> input('verbal');
              $diagnostic -> pemeriksaan_fisik= $request -> input('pemeriksaan_fisik');
 
              $diagnostic->save();

@@ -22,12 +22,12 @@ class Diagnostic extends Model
         'risiko_nyeri',
         'suhu',
         'tekanan_darah',
-        'nadi', 
+        'nadi',
         'laju_respirasi',
         'kesadaran',
         'eye',
         'motor',
-        'visual',
+        'verbal',
         'pemeriksaan_fisik',
     ];
 
