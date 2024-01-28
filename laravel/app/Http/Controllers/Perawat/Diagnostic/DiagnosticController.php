@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Perawat\StandarForm\Diagnostic;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Pasien;
-use App\Models\Perawat\Diagnostic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 // db suport

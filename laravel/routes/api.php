@@ -13,8 +13,7 @@ use App\Http\Controllers\Admin\StandardKeperawatan\Intervensi\IntervensiControll
 //Controller Perawat
 use App\Http\Controllers\Perawat\StandarForm\DiagnosaController;
 use App\Http\Controllers\Perawat\StandarForm\IntervensiFormController;
-use App\Http\Controllers\Perawat\StandarForm\Diagnostic\DiagnosticController;
-use App\Http\Controllers\Perawat\PerawatanController;
+use App\Http\Controllers\Perawat\StandarForm\DiagnosticController;
 
 //
 
