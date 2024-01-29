@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('data_diagnostik', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_pasien');
-            $table->unsignedBigInteger('id_perawat');
+            $table->foreignId('id_pasien')->constrained('pasien','id');
+            $table->foreignId('id_perawat')->constrained('perawat','id');
             $table->string('keluhan_utama', 255);
             $table->string('riwayat_penyakit', 255);
             $table->string('riwayat_alergi', 255);
@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('risiko_nyeri', 255);
             $table->string('suhu', 3);
             $table->string('tekanan_darah', 255);
+            $table->integer('sistolik');
+            $table->integer('diastolik');
             $table->string('nadi', 255);
             $table->string('laju_respirasi', 255);
             $table->string('kesadaran', 255);
@@ -31,8 +33,6 @@ return new class extends Migration
             $table->string('pemeriksaan_fisik', 255);
             $table->timestamps();
 
-            $table->foreign('id_pasien')->references('id')->on('pasien');
-            $table->foreign('id_perawat')->references('id')->on('perawat');
 
 
         });

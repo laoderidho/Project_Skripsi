@@ -22,6 +22,8 @@ class Diagnostic extends Model
         'risiko_nyeri',
         'suhu',
         'tekanan_darah',
+        'sistolik',
+        'diastolik',
         'nadi',
         'laju_respirasi',
         'kesadaran',
