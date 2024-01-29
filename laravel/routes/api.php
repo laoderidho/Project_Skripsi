@@ -13,7 +13,8 @@ use App\Http\Controllers\Admin\StandardKeperawatan\Intervensi\IntervensiControll
 //Controller Perawat
 use App\Http\Controllers\Perawat\StandarForm\DiagnosaController;
 use App\Http\Controllers\Perawat\StandarForm\IntervensiFormController;
-use App\Http\Controllers\Perawat\StandarForm\DiagnosticController;
+use App\Http\Controllers\Perawat\Diagnostic\DiagnosticController;
+use App\Http\Controllers\Perawat\PerawatanController;
 
 //
 
@@ -98,9 +99,9 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
         Route::prefix('daftarpasien')->group(function () {
             Route::post('/tambah', [PasienController::class, 'addPasien']);
             Route::post('/', [PasienController::class, 'getPasien']);
-            Route::post('/edit/{id}', [PasienController::class, 'update']);
-            Route::post('/detail/{id}', [PasienController::class, 'getDetail']);
-            Route::post('/delete/{id}', [PasienController::class, 'delete']);
+            // Route::post('/edit/{id}', [PasienController::class, 'update']);
+            // Route::post('/detail/{id}', [PasienController::class, 'getDetail']);
+            // Route::post('/delete/{id}', [PasienController::class, 'delete']);
 
         });
         Route::prefix('diagnostic')->group(function(){
@@ -111,7 +112,7 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
         });
 
         Route::prefix('perawatan')->group(function(){
-            Route::post('/add', [PerawatanController::class, 'AddPerawatan']);
+            Route::post('/add', [PerawatController::class, 'AddPerawatan']);
         });
 
         Route::prefix('pasien')->group(function () {

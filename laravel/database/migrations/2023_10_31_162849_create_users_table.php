@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('role');
             $table->string('photo')->nullable();
             $table->boolean('status')->nullable();
+            $table->integer('shift')->nullable();
 
             $table->timestamps();
 

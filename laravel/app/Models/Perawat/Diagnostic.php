@@ -6,6 +6,7 @@ namespace App\Models\Perawat;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Admin\Pasien;
+use App\Models\Admin\Perawat;
 
 class Diagnostic extends Model
 {

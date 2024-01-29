@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Perawat\StandarForm\Diagnostic;
+namespace App\Http\Controllers\Perawat\Diagnostic;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Pasien;
@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 // db suport
 use Illuminate\Support\Facades\DB;
+use App\Models\Perawat\Diagnostic;
 
 
 class DiagnosticController extends Controller
