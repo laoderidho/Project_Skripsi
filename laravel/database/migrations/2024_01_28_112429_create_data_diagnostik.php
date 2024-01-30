@@ -15,22 +15,22 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_pasien')->constrained('pasien','id');
             $table->foreignId('id_perawat')->constrained('perawat','id');
-            $table->string('keluhan_utama', 255);
-            $table->string('riwayat_penyakit', 255);
-            $table->string('riwayat_alergi', 255);
-            $table->string('risiko_jatuh', 255);
-            $table->string('risiko_nyeri', 255);
-            $table->string('suhu', 3);
-            $table->string('tekanan_darah', 255);
-            $table->integer('sistolik');
-            $table->integer('diastolik');
-            $table->string('nadi', 255);
-            $table->string('laju_respirasi', 255);
-            $table->string('kesadaran', 255);
-            $table->string('eye', 255);
-            $table->string('motor', 255);
-            $table->string('verbal', 255);
-            $table->string('pemeriksaan_fisik', 255);
+            $table->string('keluhan_utama', 1000)->nullable();
+            $table->string('riwayat_penyakit', 1000)->nullable();
+            $table->string('riwayat_alergi', 1000)->nullable();
+            $table->string('risiko_jatuh', 1000)->nullable();
+            $table->string('risiko_nyeri', 1000)->nullable();
+            $table->string('suhu', 30)->nullable();
+            $table->string('tekanan_darah', 255)->nullable();
+            $table->integer('sistolik')->nullable();
+            $table->integer('diastolik')->nullable();
+            $table->string('nadi', 255)->nullable();
+            $table->string('laju_respirasi', 255)->nullable();
+            $table->string('kesadaran', 255)->nullable();
+            $table->string('eye', 255)->nullable();
+            $table->string('motor', 255)->nullable();
+            $table->string('verbal', 255)->nullable();
+            $table->string('pemeriksaan_fisik', 1000)->nullable();
             $table->timestamps();
 
 

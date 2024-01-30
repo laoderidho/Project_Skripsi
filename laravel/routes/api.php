@@ -98,16 +98,15 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/tambah', [PasienController::class, 'addPasien']);
             Route::post('/', [PasienController::class, 'getPasien']);
             // Route::post('/edit/{id}', [PasienController::class, 'update']);
-            // Route::post('/detail/{id}', [PasienController::class, 'getDetail']);
+            Route::post('/detail/{id}', [PasienController::class, 'getDetail']);
             // Route::post('/delete/{id}', [PasienController::class, 'delete']);
 
         });
         Route::prefix('diagnostic')->group(function(){
-            Route::post('/add',[DiagnosticController::class,'addDiagnostic']);
+            Route::post('/add/{id}',[DiagnosticController::class,'addDiagnostic']);
             Route::post('/',[DiagnosticController::class,'index']);
             Route::post('/get/{id}',[DiagnosticController::class,'getDiagnostic']);
-            Route::post('/update/{id}',[DiagnosticController::class,'updateDiagnostic']);
-            Route::post('/delete/{id}',[DiagnosticController::class,'deleteDiagnostic']);
+            Route::post('/getlist/{id}',[DiagnosticController::class,'getListDiagnostik']);
 
         });
     });
