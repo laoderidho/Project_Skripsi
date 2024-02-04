@@ -45,4 +45,12 @@ class PerawatanController extends Controller
             "data" => $perawatan
         ], 201);
     }
+    public function RiwayatPerawatan(Request $request, $id_pasien){
+        $perawatan = Perawatan::find($id_pasien);
+        if($perawatan){
+            return response()->json($perawatan);
+        } else {
+            return response()->json(['message' => 'Riwayat tidak ditemukan'], 404);
+        }
+    }
 }
