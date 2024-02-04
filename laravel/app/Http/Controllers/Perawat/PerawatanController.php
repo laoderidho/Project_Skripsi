@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Perawat\Perawatan;
 use App\Models\Perawat\RawatInap;
+use App\Models\Admin\Bed;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 class PerawatanController extends Controller
 {
-    public function Add(Request $request, $id_pasien, $id_data_diagnostik)
+    public function Add(Request $request, $id_pasien)
     {
         $validator = Validator::make($request->all(), [
             'bed' => 'required||string',
@@ -24,17 +25,23 @@ class PerawatanController extends Controller
 
         $perawatan = new Perawatan;
         $perawatan->id_pasien = $id_pasien;
-        $perawatan->id_data_diagnostik = $id_data_diagnostik;
         $perawatan->bed = $request->bed;
         $perawatan->waktu_pencatatan = Carbon::now();
         $perawatan->status_pasien = "sakit";
         $perawatan->save();
 
+        $bed = Bed::where('no_bed', $request->bed)->first();
+        $bed->status = 1;
+        $bed->update();
+
         $rawat_inap = new RawatInap;
         $rawat_inap->id_pasien = $id_pasien;
         $rawat_inap->triase = request('triase');
-        $rawat_inap->status = "rawat inap";
+        $rawat_inap->status = "1";
         $rawat_inap->save();
+
+
+
 
 
         return response()->json([

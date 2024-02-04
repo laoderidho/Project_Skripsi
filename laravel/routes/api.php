@@ -85,6 +85,9 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/delete/{id_luaran}', [InputLuaranController::class, 'delete']);
         });
 
+        Route::prefix('perawatan')->group(function () {
+            Route::post('/add/{id}', [PerawatanController::class, 'Add']);
+        });
 
         Route::post('/pasien/create', [PasienController::class, 'store']);
     });
@@ -117,11 +120,6 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/get/{id}',[DiagnosticController::class,'getDiagnostic']);
             Route::post('/getlist/{id}',[DiagnosticController::class,'getListDiagnostik']);
         });
-
-        Route::prefix('perawatan')->group(function(){
-            Route::post('/add/{id_pasien}/{id_data_diagnostik}',[PerawatanController::class,'Add']);
-        });
-
     });
 });
 
