@@ -20,7 +20,7 @@ class IntervensiFormController extends Controller
 
     public function validationIntervensiAttribute($id){
         $intervensi = Intervensi::find($id);
-
+        
         if($intervensi == null){
             return response()->json([
                 'message' => 'Intervensi tidak ditemukan',
