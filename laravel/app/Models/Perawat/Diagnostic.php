@@ -17,7 +17,7 @@ class Diagnostic extends Model
     protected $fillable = [
         'id_pasien',
         'id_perawat',
-         'keluhan_utama',
+        'keluhan_utama',
         'riwayat_penyakit',
         'riwayat_alergi',
         'risiko_jatuh',

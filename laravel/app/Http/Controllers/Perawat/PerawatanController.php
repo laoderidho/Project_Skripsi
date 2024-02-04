@@ -1,85 +1,45 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Perawat;
 
-use App\Models\Perawatan;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Perawat\Perawatan;
+use App\Models\Perawat\RawatInap;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
 
 class PerawatanController extends Controller
 {
-
-
-    public function store(Request $request)
+    public function Add(Request $request, $id_pasien, $id_data_diagnostik)
     {
-        $validator = Validator::make($request->all(),[
-            'id_pasien'=>'required|bigInt|max:255',
-            'id_data_diagnostik'=>'required|bigInt|max:255',
-            'bed'=>'required|string|max:255',
-            'waktu_pencatatan'=>'required|dateTime'
+        $validator = Validator::make($request->all(), [
+            'bed' => 'required||string',
+            'triase' => 'required|string|in:merah,kuning,hijau,hitam'
         ]);
 
-        if($validator->fails()){
-            return response() -> json(['message' => 'Data Failed']);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
         }
 
-        DB::beginTransaction();
-        try{
-            $perawatan = new Perawatan();
-            $perawatan->id_pasien = $request->input('id_pasien');
-            $perawatan->id_data_diagnostik = $request->input('id_data_diagnostik');
-            $perawatan->bed = $request->input('bed');
-            $perawatan->waktu_pencatatan = $request->input('waktu_pencatatan');
-            $perawatan ->save();
+        $perawatan = new Perawatan;
+        $perawatan->id_pasien = $id_pasien;
+        $perawatan->id_data_diagnostik = $id_data_diagnostik;
+        $perawatan->bed = $request->bed;
+        $perawatan->waktu_pencatatan = Carbon::now();
+        $perawatan->status_pasien = "sakit";
+        $perawatan->save();
 
-            DB::commit();
-        }catch(\Exception $e){
-            DB::rollback();
-        }
-        return response()->json(['message' => 'Data berhasil ditambahkan', 'data' => $perawatan]);
+        $rawat_inap = new RawatInap;
+        $rawat_inap->id_pasien = $id_pasien;
+        $rawat_inap->triase = request('triase');
+        $rawat_inap->status = "rawat inap";
+        $rawat_inap->save();
 
-    }
-    public function show($id)
-    {
-        $perawatan = Perawatan::find($id);
-        return response()->json($perawatan);
-    }
 
-    public function update(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(),[
-            'id_pasien'=>'required|bigInt|max:255',
-            'id_data_diagnostik'=>'required|bigInt|max:255',
-            'bed'=>'required|string|max:255',
-            'waktu_pencatatan'=>'required|dateTime'
-        ]);
-
-        if($validator->fails()){
-            return response() -> json(['message' => 'Data Failed']);
-        }
-
-        DB::beginTransaction();
-        try{
-            $perawatan = Perawatan::find($id);
-            $perawatan->id_pasien = $request->input('id_pasien');
-            $perawatan->id_data_diagnostik = $request->input('id_data_diagnostik');
-            $perawatan->bed = $request->input('bed');
-            $perawatan->waktu_pencatatan = $request->input('waktu_pencatatan');
-            $perawatan ->save();
-
-            DB::commit();
-        }catch(\Exception $e){
-            DB::rollback();
-        }
-        return response()->json(['message' => 'Data berhasil diupdate', 'data' => $perawatan]);
-    }
-
-    public function destroy($id)
-    {
-        $perawatan = Perawatan::find($id);
-        $perawatan->delete();
-
-        return response()->json(['message' => 'Data berhasil dihapus']);
+        return response()->json([
+            "message" => "Berhasil menambahkan data perawatan",
+            "data" => $perawatan
+        ], 201);
     }
 }

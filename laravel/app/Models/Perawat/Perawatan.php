@@ -1,10 +1,11 @@
 <?php
-namespace App\Models;
+namespace App\Models\Perawat;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Admin\Perawat;;
-
+use App\Models\Admin\Perawat;
+use App\Models\Admin\Pasien;
+use App\Models\Perawat\Diagnostic;
 class Perawatan extends Model
 {
     use HasFactory;
@@ -13,16 +14,11 @@ class Perawatan extends Model
 
     protected $fillable = [
         'id_pasien',
-        'id_data_diagnostik',
         'bed',
         'waktu_pencatatan',
         'status_pasien'
     ];
 
-    public function dataDiagnostik()
-    {
-        return $this->belongsTo(DataDiagnostik::class, 'id_data_diagnostik');
-    }
     public function Pasien()
     {
         return $this->belongsTo(Pasien::class, 'id_pasien');

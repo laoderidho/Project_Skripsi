@@ -14,6 +14,8 @@ use App\Http\Controllers\Admin\StandardKeperawatan\Intervensi\IntervensiControll
 //Controller Perawat
 use App\Http\Controllers\Perawat\StandarForm\DiagnosaController;
 use App\Http\Controllers\Perawat\StandarForm\IntervensiFormController;
+use App\Http\Controllers\Admin\Data\BedController;
+use App\Http\Controllers\Perawat\PerawatanController;
 //
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -36,6 +38,7 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/detail/{id}', [UserController::class, 'detailUser']);
         });
 
+
         Route::prefix('daftarpasien')->group(function () {
             Route::post('/tambah', [PasienController::class, 'addPasien']);
             Route::post('/', [PasienController::class, 'getPasien']);
@@ -43,6 +46,12 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/detail/{id}', [PasienController::class, 'getDetail']);
             Route::post('/delete/{id}', [PasienController::class, 'delete']);
         });
+
+        Route::prefix('bed')->group((function () {
+            Route::post('/', [BedController::class, 'getBed']);
+            Route::post('/tambah', [BedController::class, 'addBed']);
+            Route::post('/filter', [BedController::class, 'filterBed']);
+        }));
 
         Route::prefix('intervensi')->group(function () {
             Route::post('/', [IntervensiController::class, 'getIntervensi']);
@@ -107,8 +116,12 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/',[DiagnosticController::class,'index']);
             Route::post('/get/{id}',[DiagnosticController::class,'getDiagnostic']);
             Route::post('/getlist/{id}',[DiagnosticController::class,'getListDiagnostik']);
-
         });
+
+        Route::prefix('perawatan')->group(function(){
+            Route::post('/add/{id_pasien}/{id_data_diagnostik}',[PerawatanController::class,'Add']);
+        });
+
     });
 });
 
