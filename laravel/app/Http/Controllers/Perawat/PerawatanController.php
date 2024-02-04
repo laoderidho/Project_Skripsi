@@ -40,10 +40,6 @@ class PerawatanController extends Controller
         $rawat_inap->status = "1";
         $rawat_inap->save();
 
-
-
-
-
         return response()->json([
             "message" => "Berhasil menambahkan data perawatan",
             "data" => $perawatan
