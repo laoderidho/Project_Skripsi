@@ -178,21 +178,18 @@ class PasienController extends Controller
     }
 
     public function filterStatusRawatInap(){
-        $results = DB::table('pasien AS p')
-            ->join('rawat_inap AS r', 'p.id', '=', 'r.id_pasien')
-            ->where('r.status', '=', 1)
-            ->orderByRaw('
-            CASE
-                WHEN r.triase = "merah" THEN 1
-                WHEN r.triase = "kuning" THEN 2
-                WHEN r.triase = "hijau" THEN 3
-                WHEN r.triase = "hitam" THEN 4
-                ELSE 5
-            END,
-            r.updated_at ASC
-        ')
-        ->select('p.id', 'p.nama_lengkap', 'r.id_pasien', 'r.status', 'r.triase')
-        ->get();
+        $results = DB::table('pasien as p')
+            ->select('p.id', 'p.nama_lengkap', 'r.triase', 'p.no_medical_record')
+            ->join('perawatan as pr', 'p.id', '=', 'pr.id_pasien')
+            ->join('rawat_inap as r', 'p.id', '=', 'r.id_pasien')
+            ->where('pr.status_pasien', '=', 'sakit')
+            ->orderByRaw("CASE
+                WHEN r.triase = 'merah' THEN 1
+                WHEN r.triase = 'kuning' THEN 2
+                WHEN r.triase = 'hijau' THEN 3
+                WHEN r.triase = 'hitam' THEN 4
+                ELSE 5 END")
+            ->get();
 
         return response()->json([
             'message'=> 'Success',

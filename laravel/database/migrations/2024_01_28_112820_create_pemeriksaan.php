@@ -15,23 +15,21 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_perawat');
             $table->unsignedBigInteger('id_perawatan');
-            $table->unsignedBigInteger('id_form_diagnosa');
-            $table->unsignedBigInteger('id_tindakan_intervensi');
-            $table->unsignedBigInteger('id_implementasi');
-            $table->unsignedBigInteger('id_evaluasi');
-            $table->time('jam_pemberian_diagnosa');
-            $table->time('jam_pemberian_gejala');
-            $table->time('jam_pemberian_implementasi');
-            $table->time('jam_penilaian_evaluasi');
+            $table->string('nama_intervensi', 255)->nullable();
+            $table->string('tindakan_intervensi', 255)->nullable();
+            $table->string('catatan_intervensi', 255)->nullable();
+            $table->string('catatan_evaluasi', 255)->nullable();
+            $table->string('catatan_luaran', 255)->nullable();
+            $table->string('catatan_implementasi', 255)->nullable();
+            $table->time('jam_pemberian_diagnosa')->nullable();
+            $table->time('jam_pemberian_intervensi')->nullable();
+            $table->time('jam_pemberian_implementasi')->nullable();
+            $table->time('jam_penilaian_luaran')->nullable();
+            $table->time('jam_pemberian_evaluasi')->nullable();
             $table->timestamps();
-
+            
             $table->foreign('id_perawatan')->references('id')->on('perawatan');
             $table->foreign('id_perawat')->references('id')->on('perawat');
-            $table->foreign('id_form_diagnosa')->references('id')->on('form_diagnosa');
-            $table->foreign('id_tindakan_intervensi')->references('id')->on('tindakan_intervensi');
-            $table->foreign('id_implementasi')->references('id')->on('implementasi');
-            $table->foreign('id_evaluasi')->references('id')->on('evaluasi');
-
         });
     }
 
