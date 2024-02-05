@@ -102,8 +102,14 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/', [DiagnosaController::class, 'getDiagnosa']);
             Route::post('/detail/{id}', [DiagnosaController::class, 'validationDiagnosaAttribute']);
         });
+
+        Route::prefix('luaran')->group(function(){
+            Route::post('/detail/{id}', [IntervensiController::class, 'detailIntervensi']);
+        });
+
         Route::prefix('intervensi')->group(function(){
             Route::post('/', [IntervensiController::class, 'getIntervensi']);
+            Route::post('/detail/{id}', [IntervensiController::class, 'detailIntervensi']);
         });
 
         Route::prefix('daftarpasien')->group(function () {
