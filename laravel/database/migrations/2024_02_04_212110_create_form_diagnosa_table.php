@@ -13,16 +13,20 @@ return new class extends Migration
     {
         Schema::create('form_diagnosa', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_diagnosa');
             $table->unsignedBigInteger('id_pemeriksaan');
             $table->string('nama_diagnosa', 255)->nullable();
-            $table->string('gejala', 5000)->nullable();
-            $table->string('penyebab', 5000)->nullable();
-            $table->string('faktor_risiko', 5000)->nullable();
+            $table->text('gejala_tanda_mayor_objektif')->nullable();
+            $table->text('gejala_tanda_mayor_subjektif')->nullable();
+            $table->text('gejala_tanda_minor_objektif')->nullable();
+            $table->text('gejala_tanda_minor_subjektif')->nullable();
+            $table->text('penyebab_psikologis')->nullable();
+            $table->text('penyebab_situasional')->nullable();
+            $table->text('penyebab_fisiologis')->nullable();
+            $table->text('penyebab_umum')->nullable();
+            $table->text('faktor_risiko')->nullable();
             $table->string('catatan_diagnosa', 255)->nullable();
             $table->timestamps();
 
-            $table->foreign('id_diagnosa')->references('id')->on('diagnosa');
             $table->foreign('id_pemeriksaan')->references('id')->on('pemeriksaan');
         });
     }
