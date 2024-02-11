@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Perawat\PerawatController;
 use App\Http\Controllers\Perawat\Diagnostic\DiagnosticController;
-
 //Controller Admin
 use App\Http\Controllers\Admin\Data\PasienController;
 use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\InputDiagnosaController;
@@ -106,6 +105,15 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/add/{id}', [DiagnosaController::class, 'addPasienDiagnosa']);
         });
 
+        Route::prefix('intervensi')->group(function () {
+            // routes/api.php
+
+        Route::post('/intervensi', [IntervensiFormController::class, 'getIntervensi']);
+        Route::post('/intervensi/validation/{id}', [IntervensiFormController::class, 'validationIntervensiAttribute']);
+        Route::post('/intervensi/update/{id_pemeriksaan}', [IntervensiFormController::class, 'updateIntervensi']);
+
+        });
+
         Route::prefix('luaran')->group(function(){
             Route::post('/detail/{id}', [IntervensiController::class, 'detailIntervensi']);
         });
@@ -113,6 +121,7 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
         Route::prefix('intervensi')->group(function(){
             Route::post('/', [IntervensiController::class, 'getIntervensi']);
             Route::post('/detail/{id}', [IntervensiFormController::class, 'validationIntervensiAttribute']);
+
         });
 
         Route::prefix('daftarpasien')->group(function () {

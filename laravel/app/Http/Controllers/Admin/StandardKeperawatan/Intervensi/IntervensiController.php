@@ -13,6 +13,61 @@ use Illuminate\Support\Facades\DB;
 class IntervensiController extends Controller
 {
 
+    public function handlePemeriksaanRequest(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'id_pemeriksaan' => 'required|string',
+            'id_perawat' => 'required|string',
+            'nama_intervensi' => 'required|string|max:255',
+            'tindakan_intervensi' => 'required|array',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $id_pemeriksaan = $request->input('id_pemeriksaan');
+            $id_perawat = $request->input('id_perawat');
+            $nama_intervensi = $request->input('nama_intervensi');
+            $tindakan_intervensi = $request->input('tindakan_intervensi');
+
+            $intervensi = new Intervensi([
+                'id_pemeriksaan' => $id_pemeriksaan,
+                'id_perawat' => $id_perawat,
+                'nama_intervensi' => $nama_intervensi,
+            ]);
+
+            $intervensi->save();
+
+            foreach ($tindakan_intervensi as $tindakan) {
+                $this->intervensiAction($intervensi->id, $tindakan);
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['message' => 'Failed to handle pemeriksaan: ' . $e->getMessage()], 500);
+        }
+
+        return response()->json(['message' => 'Pemeriksaan handled successfully'], 201);
+    }
+
+    private function intervensiAction($id_intervensi, $data_tindakan) {
+        try {
+            $tindakanIntervensi = new TindakanIntervensi([
+                'id_intervensi' => $id_intervensi,
+                'nama_tindakan_intervensi' => $data_tindakan,
+            ]);
+
+            $tindakanIntervensi->save();
+        } catch (\Exception $e) {
+            throw new \Exception('Failed to perform intervensi action: ' . $e->getMessage());
+        }
+    }
+
+
     public function getIntervensi(){
         $intervensi = Intervensi::all();
 
@@ -27,6 +82,8 @@ class IntervensiController extends Controller
                 'kode_intervensi'=> 'required|string|max:10|unique:intervensi',
                 'nama_intervensi'=> 'required|string|max:255',
             ]);
+
+
 
             $observasi = $request->input('observasi');
             $terapeutik = $request->input('terapeutik');
@@ -82,22 +139,6 @@ class IntervensiController extends Controller
                 'message' => 'Intervensi successfully added',
                 'intervensi' => $intervensi
             ], 201);
-    }
-
-    private function intervensiAction($id_intervensi, $data_tindakan, $jenis_tindakan){
-            $intervensi = Intervensi::find($id_intervensi);
-            $getIdIntervensi = $intervensi->id;
-            $tindakan = KategoriTindakan::where('nama_kategori_tindakan', $jenis_tindakan)->first();
-            $id_tindakan = $tindakan->id;
-
-            $tindakanIntervensi = new TindakanIntervensi([
-                'id_kategori_tindakan' => $id_tindakan,
-                'id_intervensi' => $getIdIntervensi,
-                'nama_tindakan_intervensi' => $data_tindakan,
-            ]);
-
-
-            $tindakanIntervensi->save();
     }
 
 
@@ -256,4 +297,19 @@ class IntervensiController extends Controller
             'message' => 'Intervensi successfully deleted',
         ], 201);
     }
+
+    private function intervensi($id_intervensi, $data_tindakan, $jenis_tindakan){
+        $intervensi = Intervensi::find($id_intervensi);
+        $getIdIntervensi = $intervensi->id;
+        $tindakan = KategoriTindakan::where('nama_kategori_tindakan', $jenis_tindakan)->first();
+        $id_tindakan = $tindakan->id;
+
+        $tindakanIntervensi = new TindakanIntervensi([
+            'id_kategori_tindakan' => $id_tindakan,
+            'id_intervensi' => $getIdIntervensi,
+            'nama_tindakan_intervensi' => $data_tindakan,
+        ]);
+
+        $tindakanIntervensi->save();
+}
 }
