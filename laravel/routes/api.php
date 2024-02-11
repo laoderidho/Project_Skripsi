@@ -105,6 +105,9 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 
             // form diagnosa
             Route::post('/add/{id}', [DiagnosaController::class, 'addPasienDiagnosa']);
+
+            // detail date diagnosa
+            Route::post('/getdate/{id}', [DiagnosaController::class, 'filterDiagnosa']);
         });
 
         Route::prefix('luaran')->group(function(){
