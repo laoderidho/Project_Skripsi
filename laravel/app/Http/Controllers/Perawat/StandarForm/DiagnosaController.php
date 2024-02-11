@@ -7,12 +7,23 @@ use App\Models\Admin\DetailPenyebab;
 use App\Models\Admin\Diagnosa;
 use App\Models\Admin\FaktorResiko;
 use App\Models\Admin\Gejala;
-use App\Models\Admin\JenisPenyebab;
 use Illuminate\Http\Request;
+
+use App\Models\Perawat\Pemeriksaan;
+use App\Models\Perawat\StandarForm\Form_Diagnosa;
+use App\Models\Admin\Perawat;
+// auth suport
+use Illuminate\Support\Facades\Auth;
+// validator suport
+use Illuminate\Support\Facades\Validator;
+// db suport
+use Illuminate\Support\Facades\DB;
+
 
 class DiagnosaController extends Controller
 {
-    public function getDiagnosa(){
+    public function getDiagnosa()
+    {
         $diagnosa = Diagnosa::all();
 
         return response()->json([
@@ -21,10 +32,11 @@ class DiagnosaController extends Controller
         ]);
     }
 
-    public function validationDiagnosaAttribute($id){
+    public function validationDiagnosaAttribute($id)
+    {
         $diagnosa = Diagnosa::find($id);
 
-        if($diagnosa == null){
+        if ($diagnosa == null) {
             return response()->json([
                 'message' => 'Diagnosa tidak ditemukan',
             ], 404);
@@ -55,5 +67,73 @@ class DiagnosaController extends Controller
             'penyebab_situasional' => $penyebab_situasional,
             'penyebab_fisiologis' => $penyebab_fisiologis,
         ]);
+    }
+
+    public function addPasienDiagnosa(Request $request, $id_perawatan)
+    {
+        $users = Auth::user()->id;
+        $perawat = Perawat::where('id_user', $users)->first();
+        $perawat = $perawat->id;
+
+        $validator = Validator::make($request->all(), [
+            'nama_diagnosa' => 'required|string|max:255',
+            'gejala_tanda_mayor_objektif' => 'nullable|string|max:5000',
+            'gejala_tanda_mayor_subjektif' => 'nullable|string|max:5000',
+            'gejala_tanda_minor_objektif' => 'nullable|string|max:5000',
+            'gejala_tanda_minor_subjektif' => 'nullable|string|max:5000',
+            'penyebab_situasional' => 'nullable|string|max:5000',
+            'penyebab_psikologis' => 'nullable|string|max:5000',
+            'penyebab_fisiologis' => 'nullable|string|max:5000',
+            'penyebab_umum' => 'nullable|string|max:5000',
+            'faktor_risiko' => 'nullable|string|max:5000',
+            'catatan_diagnosa' => 'nullable|string|max:255',
+            'shift' => 'required|in:1,2,3',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+
+        // transaction db
+        DB::beginTransaction();
+
+        try {
+            $pemeriksaan = new Pemeriksaan();
+
+            $pemeriksaan->id_perawat = $perawat;
+            $pemeriksaan->id_perawatan = $id_perawatan;
+            $pemeriksaan->jam_pemberian_diagnosa = date('H:i:s');
+            $pemeriksaan->shift = $request->shift;
+            $pemeriksaan->save();
+
+            $form_diagnosa = new Form_Diagnosa();
+
+            $form_diagnosa->id_pemeriksaan = $pemeriksaan->id;
+            $form_diagnosa->nama_diagnosa = $request->nama_diagnosa;
+            $form_diagnosa->gejala_tanda_mayor_objektif = $request->gejala_tanda_mayor_objektif;
+            $form_diagnosa->gejala_tanda_mayor_subjektif = $request->gejala_tanda_mayor_subjektif;
+            $form_diagnosa->gejala_tanda_minor_objektif = $request->gejala_tanda_minor_objektif;
+            $form_diagnosa->gejala_tanda_minor_subjektif = $request->gejala_tanda_minor_subjektif;
+            $form_diagnosa->penyebab_psikologis = $request->penyebab_psikologis;
+            $form_diagnosa->penyebab_situasional = $request->penyebab_situasional;
+            $form_diagnosa->penyebab_fisiologis = $request->penyebab_fisiologis;
+            $form_diagnosa->penyebab_umum = $request->penyebab_umum;
+            $form_diagnosa->faktor_risiko = $request->faktor_risiko;
+            $form_diagnosa->catatan_diagnosa = $request->catatan_diagnosa;
+            $form_diagnosa->save();
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Success',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'message' => 'Failed',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }
