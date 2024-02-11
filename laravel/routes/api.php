@@ -16,6 +16,7 @@ use App\Http\Controllers\Perawat\StandarForm\DiagnosaController;
 use App\Http\Controllers\Perawat\StandarForm\IntervensiFormController;
 use App\Http\Controllers\Admin\Data\BedController;
 use App\Http\Controllers\Perawat\PerawatanController;
+use App\Http\Controllers\Perawat\StandarForm\ManajemenListController;
 //
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -123,11 +124,16 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             // Route::post('/delete/{id}', [PasienController::class, 'delete']);
 
         });
+
         Route::prefix('diagnostic')->group(function(){
             Route::post('/add/{id}',[DiagnosticController::class,'addDiagnostic']);
             Route::post('/',[DiagnosticController::class,'index']);
             Route::post('/get/{id}',[DiagnosticController::class,'getDiagnostic']);
             Route::post('/getlist/{id}',[DiagnosticController::class,'getListDiagnostik']);
+        });
+
+        Route::prefix('listaskep')->group(function(){
+            Route::post('/setname/{id}',[ManajemenListController::class, 'setNameWithPerawatan']);
         });
     });
 });
