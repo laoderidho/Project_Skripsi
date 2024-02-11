@@ -28,8 +28,6 @@ class IntervensiController extends Controller
                 'nama_intervensi'=> 'required|string|max:255',
             ]);
 
-
-
             $observasi = $request->input('observasi');
             $terapeutik = $request->input('terapeutik');
             $edukasi = $request->input('edukasi');
