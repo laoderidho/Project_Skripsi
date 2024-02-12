@@ -84,7 +84,6 @@ class IntervensiController extends Controller
             ]);
 
 
-
             $observasi = $request->input('observasi');
             $terapeutik = $request->input('terapeutik');
             $edukasi = $request->input('edukasi');

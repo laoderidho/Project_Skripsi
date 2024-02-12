@@ -95,8 +95,6 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
 Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 
     Route::prefix('perawat')->group(function () {
-        Route::post('/', [PerawatController::class, 'hello']);
-
         Route::prefix('diagnosa')->group(function () {
             Route::post('/', [DiagnosaController::class, 'getDiagnosa']);
             Route::post('/detail/{id}', [DiagnosaController::class, 'validationDiagnosaAttribute']);
@@ -104,25 +102,14 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             // form diagnosa
             Route::post('/add/{id}', [DiagnosaController::class, 'addPasienDiagnosa']);
         });
-
-        Route::prefix('intervensi')->group(function () {
-            // routes/api.php
-
-        Route::post('/intervensi', [IntervensiFormController::class, 'getIntervensi']);
-        Route::post('/intervensi/validation/{id}', [IntervensiFormController::class, 'validationIntervensiAttribute']);
-        Route::post('/intervensi/update/{id_pemeriksaan}', [IntervensiFormController::class, 'updateIntervensi']);
-
-        });
-
-        Route::prefix('luaran')->group(function(){
-            Route::post('/detail/{id}', [IntervensiController::class, 'detailIntervensi']);
-        });
-
         Route::prefix('intervensi')->group(function(){
-            Route::post('/', [IntervensiController::class, 'getIntervensi']);
+            Route::post('/', [IntervensiFormController::class,'getIntervensi']);
             Route::post('/detail/{id}', [IntervensiFormController::class, 'validationIntervensiAttribute']);
-
+            Route::post('/update/{id_pemeriksaan}', [IntervensiFormController::class, 'updateIntervensi']);
         });
+        });
+
+
 
         Route::prefix('daftarpasien')->group(function () {
             Route::post('/tambah', [PasienController::class, 'addPasien']);
@@ -139,7 +126,6 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/getlist/{id}',[DiagnosticController::class,'getListDiagnostik']);
         });
     });
-});
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/login', [AuthController::class, 'viewLogin'])->name('login');

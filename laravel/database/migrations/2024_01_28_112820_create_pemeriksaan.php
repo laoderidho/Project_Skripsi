@@ -27,7 +27,8 @@ return new class extends Migration
             $table->time('jam_penilaian_luaran')->nullable();
             $table->time('jam_pemberian_evaluasi')->nullable();
             $table->timestamps();
-            
+            $table->integer('shift');
+
             $table->foreign('id_perawatan')->references('id')->on('perawatan');
             $table->foreign('id_perawat')->references('id')->on('perawat');
         });
