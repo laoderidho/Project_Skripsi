@@ -35,4 +35,8 @@ class LuaranFormController extends Controller
             'kriteria_luaran' => $kriteria_luaran,
         ]);
     }
+
+    public function add($id_pemeriksaan){
+        
+    }
 }

@@ -152,7 +152,7 @@ class DiagnosaController extends Controller
 
     public function filterDiagnosa($id_perawatan){
         $displayDate = DB::table('pemeriksaan as p')
-        ->select(
+        ->select('p.id',
             DB::raw("DATE_FORMAT(fd.updated_at, '%d-%m-%Y') as tanggal"),
             DB::raw("CASE DAYOFWEEK(fd.updated_at)
                             WHEN 1 THEN 'Minggu'
@@ -172,4 +172,32 @@ class DiagnosaController extends Controller
 
         return response()->json($displayDate);
     }
+
+    public function getDetailDiagnosaPasien($id_pemeriksaan){
+
+        $pemeriksaan = Pemeriksaan::find($id_pemeriksaan);
+
+        if($pemeriksaan == null){
+            return response()->json([
+                'message' => 'Pemeriksaan tidak ditemukan',
+            ], 404);
+        }
+
+        $form_diagnosa = Form_Diagnosa::where('id_pemeriksaan', $id_pemeriksaan)->first();
+
+        if($form_diagnosa == null){
+            return response()->json([
+                'message' => 'Form Diagnosa tidak ditemukan',
+            ], 404);
+        }
+
+        $result = $form_diagnosa;
+
+        return response()->json([
+            'message' => 'Success',
+            'data' => $result,
+        ]);
+
+    }
+
 }

@@ -107,6 +107,9 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 
             // detail date diagnosa
             Route::post('/getdate/{id}', [DiagnosaController::class, 'filterDiagnosa']);
+
+            // detail askep diagnosa
+            Route::post('/detail-askep-pasien/{id}', [DiagnosaController::class, 'getDetailDiagnosaPasien']);
         });
 
         Route::prefix('intervensi')->group(function () {
