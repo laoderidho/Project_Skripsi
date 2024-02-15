@@ -9,7 +9,7 @@ class Form_Intervensi extends Model
     protected $table = 'form_intervensi';
 
     protected $fillable = [
-        'id_perawatan',
+        'id_pemeriksaan',
         'nama_intervensi',
         'tindakan_intervensi'
     ];
