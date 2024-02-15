@@ -15,6 +15,7 @@ use App\Http\Controllers\Perawat\StandarForm\DiagnosaController;
 use App\Http\Controllers\Perawat\StandarForm\IntervensiFormController;
 use App\Http\Controllers\Admin\Data\BedController;
 use App\Http\Controllers\Perawat\PerawatanController;
+use App\Http\Controllers\Perawat\StandarForm\LuaranFormController;
 use App\Http\Controllers\Perawat\StandarForm\ManajemenListController;
 //
 
@@ -112,23 +113,16 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/detail-askep-pasien/{id}', [DiagnosaController::class, 'getDetailDiagnosaPasien']);
         });
 
+        // perawat/luaran/detail/{id}
+        Route::prefix('luaran')->group(function () {
+            Route::post('/detail/{id}', [LuaranFormController::class, 'validationLuaranAttribute']);
+            Route::post('/add/{id}', [LuaranFormController::class, 'add']);
+        });
+
         Route::prefix('intervensi')->group(function () {
-            // routes/api.php
-
-        Route::post('/intervensi', [IntervensiFormController::class, 'getIntervensi']);
-        Route::post('/intervensi/validation/{id}', [IntervensiFormController::class, 'validationIntervensiAttribute']);
-        Route::post('/intervensi/update/{id_pemeriksaan}', [IntervensiFormController::class, 'updateIntervensi']);
-
-        });
-
-        Route::prefix('luaran')->group(function(){
-            Route::post('/detail/{id}', [IntervensiController::class, 'detailIntervensi']);
-        });
-
-        Route::prefix('intervensi')->group(function(){
             Route::post('/', [IntervensiController::class, 'getIntervensi']);
             Route::post('/detail/{id}', [IntervensiFormController::class, 'validationIntervensiAttribute']);
-
+            Route::post('/update/{id_pemeriksaan}', [IntervensiFormController::class, 'updateIntervensi']);
         });
 
         Route::prefix('daftarpasien')->group(function () {
@@ -140,15 +134,15 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 
         });
 
-        Route::prefix('diagnostic')->group(function(){
-            Route::post('/add/{id}',[DiagnosticController::class,'addDiagnostic']);
-            Route::post('/',[DiagnosticController::class,'index']);
-            Route::post('/get/{id}',[DiagnosticController::class,'getDiagnostic']);
-            Route::post('/getlist/{id}',[DiagnosticController::class,'getListDiagnostik']);
+        Route::prefix('diagnostic')->group(function () {
+            Route::post('/add/{id}', [DiagnosticController::class, 'addDiagnostic']);
+            Route::post('/', [DiagnosticController::class, 'index']);
+            Route::post('/get/{id}', [DiagnosticController::class, 'getDiagnostic']);
+            Route::post('/getlist/{id}', [DiagnosticController::class, 'getListDiagnostik']);
         });
 
-        Route::prefix('listaskep')->group(function(){
-            Route::post('/setname/{id}',[ManajemenListController::class, 'setNameWithPerawatan']);
+        Route::prefix('listaskep')->group(function () {
+            Route::post('/setname/{id}', [ManajemenListController::class, 'setNameWithPerawatan']);
         });
     });
 });
@@ -157,6 +151,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/login', [AuthController::class, 'viewLogin'])->name('login');
 Route::post('/tambah', [UserController::class, 'addUser']);
 
- Route::get('/home', function () {
+Route::get('/home', function () {
     return view('home');
 });

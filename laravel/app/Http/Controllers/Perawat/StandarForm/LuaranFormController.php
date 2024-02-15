@@ -6,10 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin\KriteriaLuaran;
 use App\Models\Admin\Luaran;
 use Illuminate\Http\Request;
+use App\Models\Perawat\Pemeriksaan;
+// validator suport
+use Illuminate\Support\Facades\Validator;
 
 class LuaranFormController extends Controller
 {
-    public function getLuaran(){
+    public function getLuaran()
+    {
         $luaran = Luaran::all();
 
         return response()->json([
@@ -18,10 +22,11 @@ class LuaranFormController extends Controller
         ]);
     }
 
-    public function validationLuaranAttribute($id){
+    public function validationLuaranAttribute($id)
+    {
         $luaran = Luaran::find($id);
 
-        if($luaran == null){
+        if ($luaran == null) {
             return response()->json([
                 'message' => 'Luaran tidak ditemukan',
             ], 404);
@@ -36,7 +41,27 @@ class LuaranFormController extends Controller
         ]);
     }
 
-    public function add($id_pemeriksaan){
-        
+    public function add(Request $request, $id_pemeriksaan)
+    {
+        $pemeriksaan = Pemeriksaan::find($id_pemeriksaan);
+
+        if ($pemeriksaan == null) {
+            return response()->json([
+                'message' => 'Pemeriksaan tidak ditemukan',
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'nama_luaran' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+        $nama_luaran = $request->nama_luaran;
     }
 }

@@ -8,7 +8,6 @@ use App\Models\Admin\Diagnosa;
 use App\Models\Admin\FaktorResiko;
 use App\Models\Admin\Gejala;
 use Illuminate\Http\Request;
-
 use App\Models\Perawat\Pemeriksaan;
 use App\Models\Perawat\StandarForm\Form_Diagnosa;
 use App\Models\Admin\Perawat;
@@ -77,7 +76,6 @@ class DiagnosaController extends Controller
         $users = Auth::user()->id;
         $perawat = Perawat::where('id_user', $users)->first();
         $perawat = $perawat->id;
-
         $validator = Validator::make($request->all(), [
             'nama_diagnosa' => 'required|string|max:255',
             'gejala_tanda_mayor_objektif' => 'nullable|string|max:5000',
