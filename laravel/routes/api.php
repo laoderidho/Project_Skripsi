@@ -14,9 +14,12 @@ use App\Http\Controllers\Admin\StandardKeperawatan\Intervensi\IntervensiControll
 use App\Http\Controllers\Perawat\StandarForm\DiagnosaController;
 use App\Http\Controllers\Perawat\StandarForm\IntervensiFormController;
 use App\Http\Controllers\Admin\Data\BedController;
+use App\Http\Controllers\LuaranController;
 use App\Http\Controllers\Perawat\PerawatanController;
 use App\Http\Controllers\Perawat\StandarForm\LuaranFormController;
 use App\Http\Controllers\Perawat\StandarForm\ManajemenListController;
+use App\Models\Admin\Luaran;
+
 //
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -115,6 +118,7 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 
         // perawat/luaran/detail/{id}
         Route::prefix('luaran')->group(function () {
+            Route::post('/', [LuaranController::class, 'index']);
             Route::post('/detail/{id}', [LuaranFormController::class, 'validationLuaranAttribute']);
             Route::post('/add/{id}', [LuaranFormController::class, 'add']);
         });
