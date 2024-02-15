@@ -118,7 +118,7 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 
         // perawat/luaran/detail/{id}
         Route::prefix('luaran')->group(function () {
-            Route::post('/', [LuaranController::class, 'index']);
+            Route::post('/', [InputLuaranController::class, 'getLuaran']);
             Route::post('/detail/{id}', [LuaranFormController::class, 'validationLuaranAttribute']);
             Route::post('/add/{id}', [LuaranFormController::class, 'add']);
         });

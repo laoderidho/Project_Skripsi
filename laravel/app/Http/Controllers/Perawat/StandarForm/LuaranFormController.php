@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 use App\Models\Perawat\Pemeriksaan;
 // validator suport
 use Illuminate\Support\Facades\Validator;
+// db support
+use Illuminate\Support\Facades\DB;
+use App\Models\Perawat\StandarForm\Form_Evaluasi;
+use Carbon\Carbon;
 
 class LuaranFormController extends Controller
 {
@@ -53,6 +57,7 @@ class LuaranFormController extends Controller
 
         $validator = Validator::make($request->all(), [
             'nama_luaran' => 'required|string',
+            'catatan_luaran' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -61,7 +66,35 @@ class LuaranFormController extends Controller
                 'errors' => $validator->errors(),
             ], 400);
         }
+        $pemeriksaan->jam_penilaian_luaran = Carbon::now();
+        $pemeriksaan->catatan_luaran = $request->catatan_luaran;
+        $pemeriksaan->update();
 
-        $nama_luaran = $request->nama_luaran;
+        $nama_luaran = explode(',', $request->nama_luaran);
+
+
+       DB::beginTransaction();
+
+       try{
+            foreach ($nama_luaran as $nl) {
+                $luaran = new Form_Evaluasi();
+                $luaran->id_pemeriksaan = $pemeriksaan->id;
+                $luaran->nama_luaran = $nl;
+                $luaran->save();
+            }
+
+            db::commit();
+
+            return response()->json([
+                'message' => 'Berhasil menambahkan luaran',
+            ]);
+       }catch(\Exception $e){
+           DB::rollBack();
+           return response()->json([
+               'message' => 'Gagal menambahkan luaran',
+               'errors' => $e->getMessage(),
+           ], 500);
+       }
+
     }
 }
