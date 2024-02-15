@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('form_intervensi', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_pemeriksaan');
-            $table->foreign('id_pemeriksaan')->references('id')->on('pemeriksaan')->onDelete('cascade');
+            $table->unsignedBigInteger('id_perawatan');
+            $table->foreign('id_perawatan')->references('id')->on('perawatan')->onDelete('cascade');
             $table->string('nama_intervensi');
             $table->string('tindakan_intervensi');
             $table->string('catatan_intervensi')->nullable();
