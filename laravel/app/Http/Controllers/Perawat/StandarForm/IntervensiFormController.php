@@ -49,8 +49,7 @@ class IntervensiFormController extends Controller
             'tindakan_edukasi' => $tindakan_edukasi,
         ]);
     }
-
-    public function updateIntervensi(Request $request, $id_perawatan){
+    public function updateIntervensi(Request $request, $id_pemeriksaan){
         $users = Auth::user()->id;
         $perawat = Perawat::where('id_user', $users)->first();
         $perawat = $perawat->id;
@@ -69,13 +68,13 @@ class IntervensiFormController extends Controller
         DB::beginTransaction();
         try{
             // Mencari pemeriksaan terkait
-            $pemeriksaan = Pemeriksaan::where('id_perawatan', $id_perawatan)->first();
+            $pemeriksaan = Pemeriksaan::where('id', $id_pemeriksaan)->first();
 
             // Jika pemeriksaan tidak ditemukan, buat yang baru
             if(!$pemeriksaan) {
                 $pemeriksaan = new Pemeriksaan();
                 $pemeriksaan->id_perawat = $perawat;
-                $pemeriksaan->id_perawatan = $id_perawatan;
+                $pemeriksaan->id_pemeriksaan = $id_pemeriksaan;
             }
 
             // Menambahkan atau memperbarui waktu pemberian intervensi

@@ -149,21 +149,25 @@ class DiagnosaController extends Controller
 
 
     public function filterDiagnosa($id_perawatan){
-        $displayDate = DB::table('pemeriksaan as p')
-        ->select('p.id',
-            DB::raw("DATE_FORMAT(fd.updated_at, '%d-%m-%Y') as tanggal"),
-            DB::raw("CASE DAYOFWEEK(fd.updated_at)
-                            WHEN 1 THEN 'Minggu'
-                            WHEN 2 THEN 'Senin'
-                            WHEN 3 THEN 'Selasa'
-                            WHEN 4 THEN 'Rabu'
-                            WHEN 5 THEN 'Kamis'
-                            WHEN 6 THEN 'Jumat'
-                            WHEN 7 THEN 'Sabtu'
-                        END AS hari"),
-            DB::raw("DATE_FORMAT(p.jam_pemberian_diagnosa, '%H:%i') as jam_diagnosa")
+        $displayDate = Pemeriksaan::select(
+            'p.jam_pemberian_diagnosa',
+            'p.jam_pemberian_intervensi',
+            'p.jam_penilaian_luaran',
+            'p.jam_pemberian_evaluasi',
+            'p.jam_pemberian_implementasi',
+            DB::raw('DATE_FORMAT(fd.updated_at, "%d-%m-%Y") as tanggal'),
+            DB::raw('CASE DAYOFWEEK(fd.updated_at)
+                            WHEN 1 THEN "Minggu"
+                            WHEN 2 THEN "Senin"
+                            WHEN 3 THEN "Selasa"
+                            WHEN 4 THEN "Rabu"
+                            WHEN 5 THEN "Kamis"
+                            WHEN 6 THEN "Jumat"
+                            WHEN 7 THEN "Sabtu"
+                        END AS Hari'),
+            'p.id'
         )
-            ->join('form_diagnosa as fd', 'fd.id_pemeriksaan', '=', 'p.id')
+            ->join('form_diagnosa as fd', 'p.id', '=', 'fd.id_pemeriksaan')
             ->join('perawatan as pr', 'pr.id', '=', 'p.id_perawatan')
             ->where('pr.id', $id_perawatan)
             ->get();
