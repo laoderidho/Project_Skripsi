@@ -148,32 +148,7 @@ class DiagnosaController extends Controller
     }
 
 
-    public function filterDiagnosa($id_perawatan){
-        $displayDate = Pemeriksaan::select(
-            'p.jam_pemberian_diagnosa',
-            'p.jam_pemberian_intervensi',
-            'p.jam_penilaian_luaran',
-            'p.jam_pemberian_evaluasi',
-            'p.jam_pemberian_implementasi',
-            DB::raw('DATE_FORMAT(fd.updated_at, "%d-%m-%Y") as tanggal'),
-            DB::raw('CASE DAYOFWEEK(fd.updated_at)
-                            WHEN 1 THEN "Minggu"
-                            WHEN 2 THEN "Senin"
-                            WHEN 3 THEN "Selasa"
-                            WHEN 4 THEN "Rabu"
-                            WHEN 5 THEN "Kamis"
-                            WHEN 6 THEN "Jumat"
-                            WHEN 7 THEN "Sabtu"
-                        END AS Hari'),
-            'p.id'
-        )
-            ->join('form_diagnosa as fd', 'p.id', '=', 'fd.id_pemeriksaan')
-            ->join('perawatan as pr', 'pr.id', '=', 'p.id_perawatan')
-            ->where('pr.id', $id_perawatan)
-            ->get();
-
-        return response()->json($displayDate);
-    }
+   
 
     public function getDetailDiagnosaPasien($id_pemeriksaan){
 

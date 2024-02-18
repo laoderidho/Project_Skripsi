@@ -18,7 +18,7 @@ use App\Http\Controllers\LuaranController;
 use App\Http\Controllers\Perawat\PerawatanController;
 use App\Http\Controllers\Perawat\StandarForm\LuaranFormController;
 use App\Http\Controllers\Perawat\StandarForm\ManajemenListController;
-use App\Models\Admin\Luaran;
+use App\Http\Controllers\Perawat\StandarForm\EvaluasiController;
 
 //
 
@@ -109,18 +109,24 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             // form diagnosa
             Route::post('/add/{id}', [DiagnosaController::class, 'addPasienDiagnosa']);
 
-            // detail date diagnosa
-            Route::post('/getdate/{id}', [DiagnosaController::class, 'filterDiagnosa']);
-
             // detail askep diagnosa
             Route::post('/detail-askep-pasien/{id}', [DiagnosaController::class, 'getDetailDiagnosaPasien']);
         });
+
+        Route::post('/list-askep/{id}', [ManajemenListController::class, 'listTimeAskep']);
 
         // perawat/luaran/detail/{id}
         Route::prefix('luaran')->group(function () {
             Route::post('/', [InputLuaranController::class, 'getLuaran']);
             Route::post('/detail/{id}', [LuaranFormController::class, 'validationLuaranAttribute']);
             Route::post('/add/{id}', [LuaranFormController::class, 'add']);
+        });
+
+
+        Route::prefix('evaluasi')->group(function () {
+            Route::post('/get/{id_pemeriksaan}', [EvaluasiController::class, 'getLuaran']);
+            Route::post('/penilaian-luaran', [EvaluasiController::class, 'PenilaianLuaran']);
+            Route::post('/hasil-evaluasi/{id_pemeriksaan}', [EvaluasiController::class, 'resultEvaluasi']);
         });
 
         Route::prefix('intervensi')->group(function () {
