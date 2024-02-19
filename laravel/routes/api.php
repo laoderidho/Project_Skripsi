@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\StandardKeperawatan\Intervensi\IntervensiControll
 //Controller Perawat
 use App\Http\Controllers\Perawat\StandarForm\DiagnosaController;
 use App\Http\Controllers\Perawat\StandarForm\IntervensiFormController;
+use App\Http\Controllers\Perawat\StandarForm\InputImplementasiController;
 use App\Http\Controllers\Admin\Data\BedController;
 use App\Http\Controllers\Perawat\PerawatanController;
 //
@@ -107,6 +108,10 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/detail/{id}', [IntervensiFormController::class, 'validationIntervensiAttribute']);
             Route::post('/update/{id_pemeriksaan}', [IntervensiFormController::class, 'updateIntervensi']);
         });
+        Route::prefix('implementasi')->group(function(){
+            Route::post('/{id}',[InputImplementasiController::class,'getIndex']);
+            Route::post('/update/{id_pemeriksaan}',[InputImplementasiController::class,'checkList']);
+        });
         });
 
 
@@ -125,6 +130,7 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/get/{id}',[DiagnosticController::class,'getDiagnostic']);
             Route::post('/getlist/{id}',[DiagnosticController::class,'getListDiagnostik']);
         });
+
     });
 
 Route::post('/login', [AuthController::class, 'login']);

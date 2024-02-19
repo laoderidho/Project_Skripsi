@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Perawat\StandarForm;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Admin\DeclensionController;
 use Illuminate\Http\Request;
 use App\Models\Perawat\Pemeriksaan;
 use App\Models\Perawat\StandarForm\Form_Intervensi;
-use App\Models\Admin\Intervensi;
+use App\Models\Perawat\StandarForm\Form_Implementasi;
+use App\Models\Admin\Declension;
 use App\Models\Admin\Perawat;
 // auth suport
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +28,18 @@ class IntervensiFormController extends Controller
         ]);
     }
 
+    protected $declensionController;
+
+    public function __construct(DeclensionController $declensionController)
+    {
+        $this->declensionController = $declensionController;
+    }
+
+    public function Peluruhan(Request $request, $kalimat){
+        return $this->DeclensionController->peluruhan($request, $kalimat);
+    }
+
+
     public function validationIntervensiAttribute($id){
         $intervensi = Intervensi::find($id);
 
@@ -39,7 +53,8 @@ class IntervensiFormController extends Controller
             'data' => $intervensi,
         ]);
     }
-    public function updateIntervensi(Request $request, $id_pemeriksaan){
+    public function updateIntervensi(Request $request, $id_pemeriksaan)
+    {
         $users = Auth::user()->id;
         $perawat = Perawat::where('id_user', $users)->first();
         $perawat = $perawat->id;
@@ -70,36 +85,55 @@ class IntervensiFormController extends Controller
             // Menambahkan atau memperbarui waktu pemberian intervensi
             $pemeriksaan->jam_pemberian_intervensi = date('H:i:s');
 
-          // Menyimpan perubahan
+            // Menyimpan perubahan
             $pemeriksaan->update();
 
             // Membuat atau memperbarui data pada tabel form_intervensi
             $form_intervensi = new Form_Intervensi();
+            $form_implementasi = new Form_Implementasi();
 
             $form_intervensi->id_pemeriksaan = $pemeriksaan->id; //
             $form_intervensi->nama_intervensi = $request->input('nama_intervensi');
-            $form_intervensi->tindakan_intervensi = $request->input('tindakan_intervensi');
-
             $tindakan_intervensi = explode(',', $request->input('tindakan_intervensi'));
-            foreach ($tindakan_intervensi as $item) {
-                $new_intervensi = new Form_Intervensi();
-                $new_intervensi->id_pemeriksaan = $pemeriksaan->id;
+
+            // Insert or update form_intervensi for each tindakan_intervensi
+            foreach ($tindakan_intervensi as $tindakan) {
+                $new_intervensi = Form_Intervensi::where('id_pemeriksaan', $pemeriksaan->id)
+                    ->where('nama_intervensi', $request->input('nama_intervensi'))
+                    ->where('tindakan_intervensi', trim($tindakan))
+                    ->first();
+
+                if (!$new_intervensi) {
+                    $new_intervensi = new Form_Intervensi();
+                    $new_intervensi->id_pemeriksaan = $pemeriksaan->id;
+                }
                 $new_intervensi->nama_intervensi = $request->input('nama_intervensi');
-                $new_intervensi->tindakan_intervensi = trim($item);
+                $new_intervensi->tindakan_intervensi = trim($tindakan);
                 $new_intervensi->save();
             }
 
-            DB::commit();
-            return response()->json([
-                'message' => 'Success'
-            ]);
+            // Insert or update form_implementasi for each tindakan_intervensi
+            foreach ($tindakan_intervensi as $tindakan) {
+                $tindakan = trim($tindakan);
+                $nama_implementasi = $this->declensionController->peluruhan($tindakan);
+                $new_implementasi = Form_Implementasi::where('id_pemeriksaan', $pemeriksaan->id)->where('nama_implementasi', $nama_implementasi)->where('tindakan_implementasi', 0) ->first();
 
-        }catch (\Exception $e) {
-            DB::rollback();
-            return response()->json([
-                'message' => 'Failed',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
+                if (!$new_implementasi) { $new_implementasi = new Form_Implementasi(); $new_implementasi->id_pemeriksaan = $pemeriksaan->id; }
+                $new_implementasi->nama_implementasi = $nama_implementasi;
+                $new_implementasi->tindakan_implementasi = 0;
+                $new_implementasi->jam_ceklis = null;
+                $new_implementasi->save(); }
+                DB::commit();
+                return response()->json([
+                    'message' => 'Success',
+                    'data' => $new_implementasi ]);
+
+                } catch (\Exception $e)
+                  {
+                    DB::rollback();
+                    return response()->json([
+                        'message' => 'Failed',
+                        'error' => $e->getMessage(), ],
+                        500); }
+                    }
 }
