@@ -9,6 +9,8 @@ use App\Models\Perawat\Pemeriksaan;
 use App\Models\Perawat\StandarForm\Form_Intervensi;
 use App\Models\Perawat\StandarForm\Form_Implementasi;
 use App\Models\Admin\Declension;
+use App\Models\Admin\Intervensi;
+use App\Models\Admin\TindakanIntervensi;
 use App\Models\Admin\Perawat;
 // auth suport
 use Illuminate\Support\Facades\Auth;
@@ -48,9 +50,18 @@ class IntervensiFormController extends Controller
                 'message' => 'Intervensi tidak ditemukan',
             ], 404);
         }
+
+        $tindakan_observasi = TindakanIntervensi::where('id_intervensi', $intervensi->id)->where('id_kategori_tindakan', 1)->get();
+        $tindakan_teraupetik = TindakanIntervensi::where('id_intervensi', $intervensi->id)->where('id_kategori_tindakan', 2)->get();
+        $tindakan_edukasi = TindakanIntervensi::where('id_intervensi', $intervensi->id)->where('id_kategori_tindakan', 3)->get();
+
+
         return response()->json([
             'message' => 'Success',
             'data' => $intervensi,
+            'tindakan_observasi' => $tindakan_observasi,
+            'tindakan_teraupetik' => $tindakan_teraupetik,
+            'tindakan_edukasi' => $tindakan_edukasi,
         ]);
     }
     public function updateIntervensi(Request $request, $id_pemeriksaan)

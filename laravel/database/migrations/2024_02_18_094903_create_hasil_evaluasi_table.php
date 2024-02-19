@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('implementasi', function (Blueprint $table) {
+        Schema::create('hasil_evaluasi', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_tindakan_intervensi');
-            $table->unsignedBigInteger('id_tindakan_implementasi');
-            $table->string('status_implementasi', 255);
+            $table->foreignId('id_pemeriksaan')->constrained('pemeriksaan');
+            $table->string('subjektif')->nullable();
+            $table->string('objektif')->nullable();
+            $table->string('perencanaan');
+            $table->string('catatan_lainnya')->nullable();
             $table->timestamps();
-
-            $table->foreign('id_tindakan_intervensi')->references('id')->on('tindakan_intervensi');
-
         });
     }
 
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('implementasi');
+        Schema::dropIfExists('hasil_evaluasi');
     }
 };
