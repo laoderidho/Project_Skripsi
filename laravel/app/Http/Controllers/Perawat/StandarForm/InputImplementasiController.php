@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\DB;
 class InputImplementasiController extends Controller
 {
     public function getIndex($id){
-        $implementasi = Form_Implementasi::where('id',$id)->first();
+        $implementasi = Form_Implementasi::where('id_pemeriksaan',$id)->get();
         return response()->json([
             'message' => 'Sukses',
             'data' => $implementasi,
