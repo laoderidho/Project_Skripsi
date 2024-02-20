@@ -11,42 +11,21 @@ class DeclensionController extends Controller
 {
     private function peluruhanKata($kataPerintah)
     {
-        // Daftar bunyi nasal
-        $bunyiNasal = ['m', 'n', 'ng', 'ny'];
-
-        // Ambil huruf pertama dan terakhir dari kata perintah
-        $hurufPertama = substr($kataPerintah, 0, 1);
-        $akhirKataPerintah = substr($kataPerintah, -1);
-
-        // Tentukan awalan berdasarkan aturan yang telah diberikan
-        if (in_array($hurufPertama, $bunyiNasal)) {
-            if ($akhirKataPerintah == 'i') {
-                return 'meng' . $kataPerintah;
-            } else {
-                return 'me' . $kataPerintah;
-            }
+        if (strpos('rlnmwy', $kataPerintah[0]) !== false) {
+            return 'Me' . $kataPerintah;
+        } elseif (strpos('bfv', $kataPerintah[0]) !== false) {
+            return 'Mem' . $kataPerintah;
+        } elseif (strpos('cdjz', $kataPerintah[0]) !== false) {
+            return 'Men' . $kataPerintah;
+        } elseif (strpos('aioueghq', $kataPerintah[0]) !== false) {
+            return 'Meng' . $kataPerintah;
+        } elseif (strpos('s', $kataPerintah[0]) !== false) {
+            return 'Meny' . substr($kataPerintah, 1); // Menggunakan substr() untuk mengambil bagian dari kata setelah huruf 's'.
+        } elseif (strpos('kt', $kataPerintah[0]) !== false) {
+            return 'Me' . $kataPerintah;
         } else {
-            if (in_array($akhirKataPerintah, ['i', 'kan'])) {
-                return 'men' . $kataPerintah;
-            } elseif (in_array($hurufPertama, ['b', 'f', 'v', 'p'])) {
-                return 'mem' . $kataPerintah;
-            } elseif (in_array($hurufPertama, ['c', 'd', 'j', 'z', 't'])) {
-                return 'men' . $kataPerintah;
-            } elseif (in_array($hurufPertama, ['g', 'h', 'q', 'k'])) {
-                return 'meng' . $kataPerintah;
-            } elseif ($hurufPertama == 'r') {
-                return 'me' . $kataPerintah;
-            } elseif ($hurufPertama == 'l') {
-                return 'me' . $kataPerintah;
-            } elseif ($hurufPertama == 's') {
-                return 'meny' . substr($kataPerintah, 1);
-            } else {
-                return 'me' . $kataPerintah;
-            }
+            return 'Me' . $kataPerintah;
         }
-
-        // Jika tidak ada aturan yang cocok, kembalikan kata perintah saja
-        return $kataPerintah;
     }
 
     public function peluruhan($kataPerintah)
