@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('subjektif')->nullable();
             $table->string('objektif')->nullable();
             $table->string('perencanaan');
+            $table->string('pencapaian');
             $table->string('catatan_lainnya')->nullable();
             $table->timestamps();
         });

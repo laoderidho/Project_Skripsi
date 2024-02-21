@@ -98,6 +98,7 @@ class EvaluasiController extends Controller
             'subjektif' => 'nullable|string',
             'objektif' => 'nullable|string',
             'perencanaan' => 'required|string',
+            'pencapaian' => 'required|string',
             'catatan_lainnya' => 'nullable|string',
         ]);
 
@@ -114,6 +115,7 @@ class EvaluasiController extends Controller
         $form_evaluasi->subjektif = $request->subjektif;
         $form_evaluasi->objektif = $request->objektif;
         $form_evaluasi->perencanaan = $request->perencanaan;
+        $form_evaluasi->pencapaian = $request->pencapaian;
         $form_evaluasi->catatan_lainnya = $request->catatan_lainnya;
         $form_evaluasi->save();
 

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_perawat');
             $table->unsignedBigInteger('id_perawatan');
             $table->string('nama_intervensi', 255)->nullable();
+            $table->string('nama_luaran', 255)->nullable();
             $table->string('catatan_intervensi', 255)->nullable();
             $table->string('catatan_evaluasi', 255)->nullable();
             $table->string('catatan_luaran', 255)->nullable();

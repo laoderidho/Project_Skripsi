@@ -51,11 +51,11 @@ class LuaranFormController extends Controller
         // select id and nama pemeriksaan
         $form_evaluasi = Form_Evaluasi::select('id', 'nama_luaran')->where('id_pemeriksaan', $id)->get();
 
-        if ($form_evaluasi == null) {
-            return response()->json([
-                'message' => 'Form Evaluasi tidak ditemukan',
-            ], 404);
-        }
+       if($form_evaluasi->isEmpty()){
+           return response()->json([
+               'message' => 'Data tidak ditemukan',
+           ], 404);
+         }
 
         return response()->json([
             'message' => 'Success',

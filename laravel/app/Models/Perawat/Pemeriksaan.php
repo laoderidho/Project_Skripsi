@@ -17,6 +17,7 @@ class Pemeriksaan extends Model
         'id_perawat',
         'id_perawatan',
         'nama_intervensi',
+        'nama_luaran',
         'tindakan_intervensi',
         'catatan_intervensi',
         'catatan_evaluasi',

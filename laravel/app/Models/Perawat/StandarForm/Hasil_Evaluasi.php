@@ -17,6 +17,7 @@ class Hasil_Evaluasi extends Model
         'subjektif',
         'objektif',
         'perencanaan',
+        'pencapaian',
         'catatan_lainnya'
     ];
 
