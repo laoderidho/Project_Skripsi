@@ -45,6 +45,24 @@ class LuaranFormController extends Controller
         ]);
     }
 
+
+    public function detailAskepLuaran($id){
+
+        // select id and nama pemeriksaan
+        $form_evaluasi = Form_Evaluasi::select('id', 'nama_luaran')->where('id_pemeriksaan', $id)->get();
+
+        if ($form_evaluasi == null) {
+            return response()->json([
+                'message' => 'Form Evaluasi tidak ditemukan',
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Success',
+            'data' => $form_evaluasi,
+        ]);
+    }
+
     public function add(Request $request, $id_pemeriksaan)
     {
         $pemeriksaan = Pemeriksaan::find($id_pemeriksaan);
