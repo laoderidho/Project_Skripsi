@@ -10,6 +10,7 @@ use App\Models\Perawat\StandarForm\Form_Intervensi;
 use App\Models\Perawat\StandarForm\Form_Implementasi;
 use App\Models\Admin\Declension;
 use App\Models\Admin\Perawat;
+use App\Models\Perawat\StandarForm\Form_Evaluasi;
 // auth suport
 use Illuminate\Support\Facades\Auth;
 // validator suport
@@ -64,5 +65,19 @@ class InputImplementasiController extends Controller
             'error' => $e->getMessage(), ],
             500); }
         }
-    }
+
+        public function getImplementasiPasien($id_pemeriksaan){
+
+            $pemeriksaan = Pemeriksaan::find($id_pemeriksaan);
+
+            if ($pemeriksaan == null) {
+                return response()->json([
+                    'message' => 'Pemeriksaan tidak ditemukan',
+                ], 404);
+            }
+
+            // select
+            
+        }
+}
 
