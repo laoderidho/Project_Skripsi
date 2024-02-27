@@ -65,7 +65,7 @@ class ManajemenListController extends Controller
         )
             ->join('form_diagnosa as fd', 'p.id', '=', 'fd.id_pemeriksaan')
             ->join('perawatan as pr', 'pr.id', '=', 'p.id_perawatan')
-            ->where('pr.id', 1)
+            ->where('pr.id', $id_perawatan)
             ->get();
 
         return response()->json($displayDate);

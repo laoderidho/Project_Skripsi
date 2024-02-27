@@ -139,7 +139,9 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
         });
         Route::prefix('implementasi')->group(function(){
             Route::post('/{id}',[InputImplementasiController::class,'getIndex']);
-            Route::post('/update/{id_pemeriksaan}',[InputImplementasiController::class,'checkList']);
+            Route::post('/update',[InputImplementasiController::class,'checkList']);
+
+            Route::post('/get-implementasi-pasien/{id_pemeriksaan}', [InputImplementasiController::class, 'getImplementasiPasien']);
         });
 
         Route::prefix('daftarpasien')->group(function () {

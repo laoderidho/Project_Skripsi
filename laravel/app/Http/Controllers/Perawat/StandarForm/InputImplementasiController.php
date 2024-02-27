@@ -27,44 +27,35 @@ class InputImplementasiController extends Controller
         ]);
     }
 
-    public function checkList(Request $request, $id){
-        $users = Auth::user()->id;
-        $perawat = Perawat::where('id_user',$users)->first();
-        $perawat = $perawat->id;
+    public function checkList(Request $request){
+        dd($request->all());
+        // $users = Auth::user()->id;
+        // $perawat = Perawat::where('id_user',$users)->first();
+        // $perawat = $perawat->id;
 
-        $validator = Validator::make($request->all(),[
-            'tindakan_implementasi'=>'required|in:0,1',
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
-        }
+        // $validator = Validator::make($request->all(),[
+        //     'id'=>'required',
+        // ]);
+        // if ($validator->fails()) {
+        //     return response()->json($validator->errors()->toJson(), 400);
+        // }
+        // $id_implementasi = $request->id;
+        // $id_implementasi = explode(',', $id_implementasi);
+
+        // dd($id_implementasi);
         // transaction db
-        DB::beginTransaction();
-        try{
-            $form_implementasi = Form_Implementasi::where('id',$id)->first();
-            $form_implementasi->tindakan_implementasi = $request->input('tindakan_implementasi');
-            $pemeriksaan = Pemeriksaan::where('id',$form_implementasi->id_pemeriksaan)->first();
-            $form_implementasi->id_pemeriksaan = $pemeriksaan->id; // set the correct id_pemeriksaan value
-            if($form_implementasi->tindakan_implementasi==1){
-                $pemeriksaan->jam_pemberian_implementasi = date('H:i:s');
-                $form_implementasi->jam_ceklis = date('H:i:s');
-                $pemeriksaan->update();
-            }
-            $form_implementasi->update();
-            DB::commit();
-            return response()->json([
-                'message' => 'Success',
-                'data' => $form_implementasi]);
+        // DB::beginTransaction();
+        // try{
 
-            }
-            catch (\Exception $e)
-            {
-            DB::rollback();
-            return response()->json([
-            'message' => 'Failed',
-            'error' => $e->getMessage(), ],
-            500); }
-        }
+        // }
+        // catch (\Exception $e)
+        // {
+        //     DB::rollback();
+        //     return response()->json([
+        //     'message' => 'Failed',
+        //     'error' => $e->getMessage(), ],
+        //     500); }
+    }
 
         public function getImplementasiPasien($id_pemeriksaan){
 
@@ -77,7 +68,19 @@ class InputImplementasiController extends Controller
             }
 
             // select
-            
+
+            $form_evaluasi = Form_Implementasi::where('id_pemeriksaan', $id_pemeriksaan)->whereNull('jam_ceklis')->get();
+
+            if ($form_evaluasi->isEmpty()) {
+                return response()->json([
+                    'message' => 'Data tidak ditemukan',
+                ], 404);
+            }
+
+            return response()->json([
+                'message' => 'Success',
+                'data' => $form_evaluasi,
+            ]);
         }
 }
 

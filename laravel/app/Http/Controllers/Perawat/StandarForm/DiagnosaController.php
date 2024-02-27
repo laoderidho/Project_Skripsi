@@ -104,7 +104,6 @@ class DiagnosaController extends Controller
             $pemeriksaan->id_perawat = $perawat;
             $pemeriksaan->id_perawatan = $id_perawatan;
             $pemeriksaan->jam_pemberian_diagnosa = Carbon::now();
-
             $time = $pemeriksaan->jam_pemberian_diagnosa->hour;
 
             if($time >= 3 && $time < 11){
@@ -148,7 +147,7 @@ class DiagnosaController extends Controller
     }
 
 
-   
+
 
     public function getDetailDiagnosaPasien($id_pemeriksaan){
 
