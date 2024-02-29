@@ -35,7 +35,7 @@ class DeclensionController extends Controller
 
         // Peluruhan setiap kata dalam array (konversi ke lowercase)
         $kataPerintahArray = array_map(function ($kata) {
-            return strtolower($kata);
+            return strtolower($kata );
         }, $kataPerintahArray);
 
         // Peluruhan setiap kata dalam array
