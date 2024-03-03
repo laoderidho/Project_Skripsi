@@ -11,12 +11,14 @@ return new class extends Migration
         Schema::create('rawat_inap', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_pasien')->unsigned();
+            // timestamp data type
+            $table->timestamp('tanggal_masuk');
+            $table->timestamp('tanggal_keluar')->nullable();
             $table->string('triase');
             $table->string('status');
             $table->timestamps();
 
             $table->foreign('id_pasien')->references('id')->on('pasien');
-
         });
     }
 
