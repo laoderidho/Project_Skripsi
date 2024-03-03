@@ -19,6 +19,9 @@ class BedController extends Controller
     public function addBed(Request $request){
         $validator = Validator::make($request->all(),[
             'no_bed'=>'required|string|max:255',
+            'lantai'=>'required|string|max:255',
+            'nama_fasilitas'=>'required|string|max:255',
+            'nama_ruangan'=>'required|string|max:255'
         ]);
 
         if($validator->fails()){
@@ -27,6 +30,9 @@ class BedController extends Controller
 
         $bed = new Bed();
         $bed->no_bed = $request->input('no_bed');
+        $bed->lantai = $request->input('lantai');
+        $bed->nama_fasilitas = $request->input('nama_fasilitas');
+        $bed->nama_ruangan = $request->input('nama_ruangan');
         $bed->status = 0;
         $bed->save();
 
