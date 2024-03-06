@@ -13,6 +13,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_pasien')->unsigned();
             // timestamp data type
             $table->timestamp('tanggal_masuk');
+            $table->time('jam_masuk');
             $table->timestamp('tanggal_keluar')->nullable();
             $table->string('triase');
             $table->string('status');
