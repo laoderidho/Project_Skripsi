@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('lantai');
             $table->string('nama_fasilitas');
-            $table->string('nama_ruangan');
+            $table->string('jenis_ruangan');
             $table->string('no_bed');
             $table->boolean('status');
             $table->timestamps();

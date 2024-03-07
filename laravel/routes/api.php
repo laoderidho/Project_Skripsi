@@ -56,6 +56,14 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/', [BedController::class, 'getBed']);
             Route::post('/tambah', [BedController::class, 'addBed']);
             Route::post('/filter', [BedController::class, 'filterBed']);
+            Route::post('/edit/{id}', [BedController::class, 'editBed']);
+            Route::post('/delete/{id}', [BedController::class, 'deleteBed']);
+        }));
+
+        Route::prefix('ruangan')->group((function () {
+            Route::post('/nama-fasilitas', [BedController::class, 'getNamaFasilitas']);
+            Route::post('/jenis-ruangan', [BedController::class, 'getJenisRuangan']);
+            Route::post('/lantai', [BedController::class, 'getLantai']);
         }));
 
         Route::prefix('intervensi')->group(function () {
@@ -137,9 +145,9 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/detail/{id}', [IntervensiFormController::class, 'validationIntervensiAttribute']);
             Route::post('/update/{id_pemeriksaan}', [IntervensiFormController::class, 'updateIntervensi']);
         });
-        Route::prefix('implementasi')->group(function(){
-            Route::post('/{id}',[InputImplementasiController::class,'getIndex']);
-            Route::post('/update',[InputImplementasiController::class,'checkList']);
+        Route::prefix('implementasi')->group(function () {
+            Route::post('/{id}', [InputImplementasiController::class, 'getIndex']);
+            Route::post('/update', [InputImplementasiController::class, 'checkList']);
 
             Route::post('/get-implementasi-pasien/{id_pemeriksaan}', [InputImplementasiController::class, 'getImplementasiPasien']);
         });
@@ -163,7 +171,6 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
         Route::prefix('listaskep')->group(function () {
             Route::post('/setname/{id}', [ManajemenListController::class, 'setNameWithPerawatan']);
         });
-
     });
 });
 
