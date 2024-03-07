@@ -144,7 +144,6 @@ class PasienController extends Controller
     public function addRawatInap(Request $request, $id)
     {
         $pasien = Pasien::find($id);
-
         // dd($pasien->id);
 
         if ($pasien) {
@@ -159,6 +158,7 @@ class PasienController extends Controller
                 $rawatInap->id_pasien = $pasien->id;
                 $rawatInap->status = $request->input('status');
                 $rawatInap->triase = $request->input('triase');
+                $rawatInap->jam_masuk = now();
                 $rawatInap->save();
 
                 return response()->json(['message' => 'Pasien telah berhasil ditambahkan ke rawat inap']);
