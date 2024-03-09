@@ -8,6 +8,7 @@ use App\Models\Admin\Pasien;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Perawat\RawatInap;
+use App\Models\Perawat\Perawatan;
 use Illuminate\Support\Facades\DB;
 
 class PasienController extends Controller
@@ -144,26 +145,45 @@ class PasienController extends Controller
     public function addRawatInap(Request $request, $id)
     {
         $pasien = Pasien::find($id);
-        // dd($pasien->id);
 
-        if ($pasien) {
-            $findIdByTriase = RawatInap::where('id_pasien', $pasien->id)->first();
-            if ($findIdByTriase) {
-                $findIdByTriase->status = $request->status;
-                $findIdByTriase->triase = $request->triase;
-                $findIdByTriase->update();
-                return response()->json(['message' => 'status Pasien Telah diubah']);
-            } else {
-                $rawatInap = new RawatInap();
-                $rawatInap->id_pasien = $pasien->id;
-                $rawatInap->status = $request->input('status');
-                $rawatInap->triase = $request->input('triase');
-                $rawatInap->jam_masuk = now();
-                $rawatInap->save();
-
-                return response()->json(['message' => 'Pasien telah berhasil ditambahkan ke rawat inap']);
-            }
+        if (!$pasien) {
+            return response()->json(['message' => 'Pasien tidak ditemukan']);
         }
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'status' => 'required|boolean',
+                'triase' => 'required|string|max:255',
+                'no_bed' => 'required|string|max:255',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+
+
+        $rawatInap = new RawatInap();
+        $rawatInap->id_pasien = $pasien->id;
+        $rawatInap->status = $request->input('status');
+        $rawatInap->triase = $request->input('triase');
+        $rawatInap->jam_masuk = now();
+        $rawatInap->tanggal_masuk = now();
+        $rawatInap->save();
+
+        $perawatan = new Perawatan();
+        $perawatan->id_pasien = $pasien->id;
+        $perawatan->bed = $request->input('no_bed');
+        $perawatan->tanggal_masuk = now();
+        $perawatan->waktu_pencatatan = now();
+        $perawatan->status_pasien = 'sakit';
+        $perawatan->save();
+
+        return response()->json([
+            'message' => 'Pasien berhasil di tambah di rawat inap'
+        ]);
     }
 
     public function getStatusRawatInap($id)

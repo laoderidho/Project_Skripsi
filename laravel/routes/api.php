@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/update-password', [AuthController::class, 'changePassword']);
-    Route::post('/pasien/rawat-inap/{id}', [PasienController::class, 'addRawatInap']);
+
     Route::post('/pasien/rawat-inap/detailStatus/{id}', [PasienController::class, 'getStatusRawatInap']);
 });
 
@@ -75,7 +75,11 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         });
 
 
-        Route::post('/pasien', [PasienController::class, 'index']);
+        Route::prefix('pasien')->group(function () {
+            Route::post('/', [PasienController::class, 'index']);
+            Route::post('/rawat-inap/{id}', [PasienController::class, 'addRawatInap']);
+            Route::post('/create', [PasienController::class, 'store']);
+        });
 
         //Diagnosa
 
@@ -102,7 +106,7 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/add/{id}', [PerawatanController::class, 'Add']);
         });
 
-        Route::post('/pasien/create', [PasienController::class, 'store']);
+        Route::post('/create', [PasienController::class, 'store']);
     });
 });
 
