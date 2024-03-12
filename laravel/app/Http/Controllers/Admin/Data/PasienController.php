@@ -206,4 +206,22 @@ class PasienController extends Controller
             'data' => $results,
         ]);
     }
+    public function getdataPasienRawatInap(){
+        $results = DB::table('pasien as p')
+        ->select('r.id_pasien', 'p.nama_lengkap', 'r.triase', 'p.no_medical_record', 'r.tanggal_masuk')
+        ->join('rawat_inap as r', 'p.id', '=', 'r.id_pasien')
+        ->where('r.status', '=', 0)
+        ->orderByRaw("CASE
+            WHEN r.triase = 'merah' THEN 1
+            WHEN r.triase = 'kuning' THEN 2
+            WHEN r.triase = 'hijau' THEN 3
+            WHEN r.triase = 'hitam' THEN 4
+            ELSE 5 END")
+        ->get();
+
+    return response()->json([
+        'message' => 'Success',
+        'data' => $results,
+    ]);
+    }
 }

@@ -147,6 +147,7 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
         Route::prefix('daftarpasien')->group(function () {
             Route::post('/tambah', [PasienController::class, 'addPasien']);
             Route::post('/', [PasienController::class, 'getPasien']);
+            Route::post('/status=0',[PasienController::class, 'getdataPasienRawatInap']);
             Route::post('/rawat-inap', [PasienController::class, 'filterStatusRawatInap']);
             Route::post('/detail/{id}', [PasienController::class, 'getDetail']);
             // Route::post('/delete/{id}', [PasienController::class, 'delete']);
