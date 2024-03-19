@@ -27,7 +27,22 @@ class ManajemenListController extends Controller
         ]);
     }
 
-    public function listTimeAskep($id_perawatan)
+
+    public function listPemeriksaan($id){
+
+        $list = "SELECT distinct DATE_FORMAT(p.jam_pemberian_diagnosa, '%d-%m-%Y') as tanggal_pemeriksaan
+                FROM pemeriksaan p
+                INNER JOIN perawatan pr ON pr.id = p.id_perawatan
+                WHERE
+                pr.id = $id";
+
+        $list = DB::select($list);
+
+        return response()->json($list);
+
+    }
+
+    public function listTimeAskep($id_perawatan, $shift, $tanggal)
     {
         $users = Auth::user();
         $users = $users->id;
@@ -43,30 +58,21 @@ class ManajemenListController extends Controller
         }
 
 
-        $displayDate =
-        DB::table('pemeriksaan as p')
-        ->select(
-            'p.jam_pemberian_diagnosa',
-            'p.jam_pemberian_intervensi',
-            'p.jam_penilaian_luaran',
-            'p.jam_pemberian_evaluasi',
-            'p.jam_pemberian_implementasi',
-            DB::raw("DATE_FORMAT(fd.updated_at, '%d-%m-%Y') as tanggal"),
-            DB::raw("CASE DAYOFWEEK(fd.updated_at)
-                            WHEN 1 THEN 'Minggu'
-                            WHEN 2 THEN 'Senin'
-                            WHEN 3 THEN 'Selasa'
-                            WHEN 4 THEN 'Rabu'
-                            WHEN 5 THEN 'Kamis'
-                            WHEN 6 THEN 'Jumat'
-                            WHEN 7 THEN 'Sabtu'
-                        END as Hari"),
-            'p.id'
-        )
-            ->join('form_diagnosa as fd', 'p.id', '=', 'fd.id_pemeriksaan')
-            ->join('perawatan as pr', 'pr.id', '=', 'p.id_perawatan')
-            ->where('pr.id', $id_perawatan)
-            ->get();
+            $displayDate = "SELECT date_format(p.jam_pemberian_diagnosa, '%d-%m-%Y') as tanggal_pemberian_diagnosa,
+                date_format(p.jam_pemberian_diagnosa, '%H:%i') as jam_pemberian_diagnosa,
+                p.jam_pemberian_intervensi,
+                p.jam_penilaian_luaran,
+                p.jam_pemberian_evaluasi,
+                p.jam_pemberian_implementasi,
+                p.id
+                FROM
+                pemeriksaan p
+                inner join perawatan pr
+                on pr.id = p.id_perawatan
+                where pr.id = $id_perawatan and p.shift = $shift and date_format(p.jam_pemberian_diagnosa, '%d-%m-%Y') = $tanggal ";
+
+            $displayDate = DB::select($displayDate);
+
 
         return response()->json($displayDate);
     }

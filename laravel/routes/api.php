@@ -61,6 +61,9 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         }));
 
         Route::prefix('ruangan')->group((function () {
+            Route::post('/filter-bed/{nama_fasilitas}/{jenis_ruangan}/{lantai}', [BedController::class, 'filterBedWithAll']);
+            Route::post('/filter-lantai/{nama_fasilitas}/{jenis_ruangan}', [BedController::class, 'filterLantai']);
+            Route::post('/filter-ruangan/{nama_fasilitas}', [BedController::class, 'filterJenisRuangan']);
             Route::post('/nama-fasilitas', [BedController::class, 'getNamaFasilitas']);
             Route::post('/jenis-ruangan', [BedController::class, 'getJenisRuangan']);
             Route::post('/lantai', [BedController::class, 'getLantai']);
@@ -79,6 +82,7 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/', [PasienController::class, 'index']);
             Route::post('/rawat-inap/{id}', [PasienController::class, 'addRawatInap']);
             Route::post('/create', [PasienController::class, 'store']);
+            Route::post('/tanggal-rawat/{id}', [PasienController::class, 'getDateRawatInapPasien']);
         });
 
         //Diagnosa
@@ -113,7 +117,6 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
 Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 
     Route::prefix('perawat')->group(function () {
-        Route::post('/', [PerawatController::class, 'hello']);
 
         Route::prefix('diagnosa')->group(function () {
             Route::post('/', [DiagnosaController::class, 'getDiagnosa']);
@@ -126,7 +129,7 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/detail-askep-pasien/{id}', [DiagnosaController::class, 'getDetailDiagnosaPasien']);
         });
 
-        Route::post('/list-askep/{id}', [ManajemenListController::class, 'listTimeAskep']);
+        Route::post('/list-askep/{id}/{shift}/{tanggal}', [ManajemenListController::class, 'listTimeAskep']);
 
         // perawat/luaran/detail/{id}
         Route::prefix('luaran')->group(function () {
@@ -157,7 +160,6 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
         });
 
         Route::prefix('daftarpasien')->group(function () {
-            Route::post('/tambah', [PasienController::class, 'addPasien']);
             Route::post('/', [PasienController::class, 'getPasien']);
             Route::post('/rawat-inap', [PasienController::class, 'filterStatusRawatInap']);
             Route::post('/detail/{id}', [PasienController::class, 'getDetail']);
@@ -174,6 +176,7 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 
         Route::prefix('listaskep')->group(function () {
             Route::post('/setname/{id}', [ManajemenListController::class, 'setNameWithPerawatan']);
+            Route::post('/list-pemeriksaan/{id}', [ManajemenListController::class, 'listPemeriksaan']);
         });
     });
 });

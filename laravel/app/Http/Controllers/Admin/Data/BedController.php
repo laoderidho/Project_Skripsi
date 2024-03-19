@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Admin\Bed;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class BedController extends Controller
 {
@@ -35,6 +36,36 @@ class BedController extends Controller
     public function getLantai()
     {
         $bed = Bed::select('lantai')->distinct()->get();
+
+        return response()->json(['data' => $bed]);
+    }
+
+    public function filterJenisRuangan($namaFasilitas){
+        $jenisRuangan = Bed::select('jenis_ruangan')
+        ->where('nama_fasilitas', $namaFasilitas)
+        ->distinct()
+        ->pluck('jenis_ruangan');
+
+        return response()->json(['data' => $jenisRuangan]);
+    }
+
+    public function filterLantai($nama_fasilitas, $jenisRuangan){
+        $lantai = Bed::select('lantai')
+        ->where('nama_fasilitas', $nama_fasilitas)
+        ->where('jenis_ruangan', $jenisRuangan)
+        ->distinct()
+        ->pluck('lantai');
+
+        return response()->json(['data' => $lantai]);
+    }
+
+    public function filterBedWithAll($nama_fasilitas, $jenisRuangan, $lantai){
+        $bed =Bed::select('id','no_bed')
+        ->where('nama_fasilitas', $nama_fasilitas)
+        ->where('jenis_ruangan', $jenisRuangan)
+        ->where('lantai', $lantai)
+        ->where('status', 0)
+        ->get();
 
         return response()->json(['data' => $bed]);
     }
@@ -70,7 +101,8 @@ class BedController extends Controller
         return response()->json(['data' => $bed]);
     }
 
-    public function editBed(Request $request, $id){
+    public function editBed(Request $request, $id)
+    {
         $bed = Bed::find($id);
 
         if ($bed == null) {
@@ -100,7 +132,8 @@ class BedController extends Controller
     }
 
 
-    public function deleteBed($id){
+    public function deleteBed($id)
+    {
         $bed = Bed::find($id);
 
         if ($bed == null) {
