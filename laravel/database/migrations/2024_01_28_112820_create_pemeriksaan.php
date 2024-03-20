@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('catatan_implementasi', 255)->nullable();
             $table->timestamp('jam_pemberian_diagnosa')->nullable();
             $table->timestamp('jam_pemberian_intervensi')->nullable();
-            $table->timestaamp('jam_pemberian_implementasi')->nullable();
+            $table->timestamp('jam_pemberian_implementasi')->nullable();
             $table->timestamp('jam_penilaian_luaran')->nullable();
             $table->timestamp('jam_pemberian_evaluasi')->nullable();
             $table->timestamps();

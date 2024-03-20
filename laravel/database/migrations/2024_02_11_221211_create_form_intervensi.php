@@ -12,10 +12,12 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_pemeriksaan');
             $table->foreign('id_pemeriksaan')->references('id')->on('pemeriksaan')->onDelete('cascade');
-            $table->string('nama_intervensi');
+            $table->unsignedBigInteger('nama_intervensi');
             $table->string('tindakan_intervensi');
             $table->string('catatan_intervensi')->nullable();
             $table->timestamps();
+
+            $table->foreign('nama_intervensi')->references('id')->on('intervensi');
         });
     }
 

@@ -21,14 +21,28 @@ return new class extends Migration
             $table->time('waktu_keluar')->nullable();
             $table->string('status_pasien', 10);
             $table->timestamps();
-            $table->foreign('id_pasien')->references('id')->on('pasien');
-            $table->foreign('bed')->references('id')->on('beds');
         });
+
+        if (Schema::hasTable('pasien')) {
+            // Define foreign key constraint
+            Schema::table('perawatan', function (Blueprint $table) {
+                $table->foreign('id_pasien')->references('id')->on('pasien');
+            });
+        }
+
+        // Check if the 'beds' table exists
+        if (Schema::hasTable('beds')) {
+            // Define foreign key constraint
+            Schema::table('perawatan', function (Blueprint $table) {
+                $table->foreign('bed')->references('id')->on('beds');
+            });
+        }
     }
 
     /**
      * Reverse the migrations.
      */
+
     public function down(): void
     {
         Schema::dropIfExists('perawatan');
