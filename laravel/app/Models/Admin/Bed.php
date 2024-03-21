@@ -14,7 +14,7 @@ class Bed extends Model
     protected $fillable = [
         'lantai',
         'nama_fasilitas',
-        'nama_ruangan',
+        'jenis_ruangan',
         'no_bed',
         'status'
     ];

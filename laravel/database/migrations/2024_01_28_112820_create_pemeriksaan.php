@@ -21,11 +21,11 @@ return new class extends Migration
             $table->string('catatan_evaluasi', 255)->nullable();
             $table->string('catatan_luaran', 255)->nullable();
             $table->string('catatan_implementasi', 255)->nullable();
-            $table->time('jam_pemberian_diagnosa')->nullable();
-            $table->time('jam_pemberian_intervensi')->nullable();
-            $table->time('jam_pemberian_implementasi')->nullable();
-            $table->time('jam_penilaian_luaran')->nullable();
-            $table->time('jam_pemberian_evaluasi')->nullable();
+            $table->timestamp('jam_pemberian_diagnosa')->nullable();
+            $table->timestamp('jam_pemberian_intervensi')->nullable();
+            $table->timestamp('jam_pemberian_implementasi')->nullable();
+            $table->timestamp('jam_penilaian_luaran')->nullable();
+            $table->timestamp('jam_pemberian_evaluasi')->nullable();
             $table->timestamps();
             $table->integer('shift');
 

@@ -8,6 +8,7 @@ use App\Models\Admin\Pasien;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Perawat\RawatInap;
+use App\Models\Perawat\Perawatan;
 use Illuminate\Support\Facades\DB;
 
 class PasienController extends Controller
@@ -144,26 +145,44 @@ class PasienController extends Controller
     public function addRawatInap(Request $request, $id)
     {
         $pasien = Pasien::find($id);
-        // dd($pasien->id);
 
-        if ($pasien) {
-            $findIdByTriase = RawatInap::where('id_pasien', $pasien->id)->first();
-            if ($findIdByTriase) {
-                $findIdByTriase->status = $request->status;
-                $findIdByTriase->triase = $request->triase;
-                $findIdByTriase->update();
-                return response()->json(['message' => 'status Pasien Telah diubah']);
-            } else {
-                $rawatInap = new RawatInap();
-                $rawatInap->id_pasien = $pasien->id;
-                $rawatInap->status = $request->input('status');
-                $rawatInap->triase = $request->input('triase');
-                $rawatInap->jam_masuk = now();
-                $rawatInap->save();
-
-                return response()->json(['message' => 'Pasien telah berhasil ditambahkan ke rawat inap']);
-            }
+        if (!$pasien) {
+            return response()->json(['message' => 'Pasien tidak ditemukan']);
         }
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'triase' => 'required|string|max:255',
+                'no_bed' => 'required|string|max:255',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+
+
+        $rawatInap = new RawatInap();
+        $rawatInap->id_pasien = $pasien->id;
+        $rawatInap->status = 0;
+        $rawatInap->triase = $request->input('triase');
+        $rawatInap->jam_masuk = now();
+        $rawatInap->tanggal_masuk = now();
+        $rawatInap->save();
+
+        $perawatan = new Perawatan();
+        $perawatan->id_pasien = $pasien->id;
+        $perawatan->bed = $request->input('no_bed');
+        $perawatan->tanggal_masuk = now();
+        $perawatan->waktu_pencatatan = now();
+        $perawatan->status_pasien = 'sakit';
+        $perawatan->save();
+
+        return response()->json([
+            'message' => 'Pasien berhasil di tambah di rawat inap'
+        ]);
     }
 
     public function getStatusRawatInap($id)
@@ -189,10 +208,11 @@ class PasienController extends Controller
     public function filterStatusRawatInap()
     {
         $results = DB::table('pasien as p')
-            ->select('pr.id as perawatan_id', 'p.id', 'p.nama_lengkap', 'r.triase', 'p.no_medical_record')
-            ->join('perawatan as pr', 'p.id', '=', 'pr.id_pasien')
-            ->join('rawat_inap as r', 'p.id', '=', 'r.id_pasien')
-            ->where('pr.status_pasien', '=', 'sakit')
+        ->select('pr.id as perawatan_id', 'p.id', 'p.nama_lengkap', 'r.triase', 'p.no_medical_record', 'pr.status_pasien')
+        ->join('perawatan as pr', 'p.id', '=', 'pr.id_pasien')
+        ->join('rawat_inap as r', 'p.id', '=', 'r.id_pasien')
+        ->where('pr.status_pasien', '=', 'sakit')
+            ->where('r.status', '=', 0)
             ->orderByRaw("CASE
                 WHEN r.triase = 'merah' THEN 1
                 WHEN r.triase = 'kuning' THEN 2
@@ -206,7 +226,27 @@ class PasienController extends Controller
             'data' => $results,
         ]);
     }
-    public function getdataPasienRawatInap(){
+
+    public function getDateRawatInapPasien($id)
+    {
+        $dataRawatInap = DB::table('rawat_inap')
+                        ->select(
+                            'id_pasien',
+                            DB::raw("DATE_FORMAT(tanggal_masuk, '%d-%m-%Y') AS tanggal_masuk"),
+                            DB::raw("DATE_FORMAT(tanggal_keluar, '%d-%m-%Y') AS tanggal_keluar"),
+                            'status',
+                            DB::raw("DATE_FORMAT(jam_masuk, '%H:%i') AS jam_masuk")
+                        )
+                        ->where('id_pasien', $id)
+                        ->get();
+        return response()->json([
+            'message' => 'Success',
+            'data' => $dataRawatInap,
+        ]);
+    }
+
+    public function getdataPasienRawatInap()
+    {
         $results = DB::table('pasien as p')
         ->select('r.id_pasien', 'p.nama_lengkap', 'r.triase', 'p.no_medical_record', 'r.tanggal_masuk')
         ->join('rawat_inap as r', 'p.id', '=', 'r.id_pasien')
@@ -219,9 +259,10 @@ class PasienController extends Controller
             ELSE 5 END")
         ->get();
 
-    return response()->json([
-        'message' => 'Success',
-        'data' => $results,
-    ]);
+        return response()->json([
+            'message' => 'Success',
+            'data' => $results,
+        ]);
     }
+ 
 }

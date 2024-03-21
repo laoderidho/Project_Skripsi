@@ -19,7 +19,6 @@ return new class extends Migration
             $table->timestamps();
             $table->foreign('id_user')->references('id')->on('users');
             $table->foreign('id_waktu_shift')->references('id')->on('waktu_shift');
-
         });
     }
 

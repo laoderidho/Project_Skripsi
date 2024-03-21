@@ -77,7 +77,7 @@ class DiagnosaController extends Controller
         $perawat = Perawat::where('id_user', $users)->first();
         $perawat = $perawat->id;
         $validator = Validator::make($request->all(), [
-            'nama_diagnosa' => 'required|string|max:255',
+            'nama_diagnosa' => 'required|int',
             'gejala_tanda_mayor_objektif' => 'nullable|string|max:5000',
             'gejala_tanda_mayor_subjektif' => 'nullable|string|max:5000',
             'gejala_tanda_minor_objektif' => 'nullable|string|max:5000',
