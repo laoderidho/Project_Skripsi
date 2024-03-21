@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('id_pemeriksaan')->references('id')->on('pemeriksaan');
-            $table->foreign('nama_implementasi')->references('id')->on('intervensi');
+            $table->foreign('nama_implementasi')->references('id')->on('tindakan_intervensi');
         });
     }
 

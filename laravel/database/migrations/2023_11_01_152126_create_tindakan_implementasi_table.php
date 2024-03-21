@@ -18,7 +18,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('id_tindakan_intervensi')->references('id')->on('tindakan_intervensi');
-
         });
     }
 

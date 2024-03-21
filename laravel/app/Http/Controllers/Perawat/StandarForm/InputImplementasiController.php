@@ -71,6 +71,8 @@ class InputImplementasiController extends Controller
 
             $form_evaluasi = Form_Implementasi::where('id_pemeriksaan', $id_pemeriksaan)->whereNull('jam_ceklis')->get();
 
+            dd($form_evaluasi);
+
             if ($form_evaluasi->isEmpty()) {
                 return response()->json([
                     'message' => 'Data tidak ditemukan',

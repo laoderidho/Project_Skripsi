@@ -106,11 +106,11 @@ class DiagnosaController extends Controller
             $pemeriksaan->jam_pemberian_diagnosa = Carbon::now();
             $time = $pemeriksaan->jam_pemberian_diagnosa->hour;
 
-            if($time >= 3 && $time < 11){
+            if ($time >= 3 && $time < 11) {
                 $pemeriksaan->shift = '1';
-            }else if($time >= 11 && $time < 19){
+            } else if ($time >= 11 && $time < 19) {
                 $pemeriksaan->shift = '2';
-            }else{
+            } else {
                 $pemeriksaan->shift = '3';
             }
 
@@ -149,11 +149,12 @@ class DiagnosaController extends Controller
 
 
 
-    public function getDetailDiagnosaPasien($id_pemeriksaan){
+    public function getDetailDiagnosaPasien($id_pemeriksaan)
+    {
 
         $pemeriksaan = Pemeriksaan::find($id_pemeriksaan);
 
-        if($pemeriksaan == null){
+        if ($pemeriksaan == null) {
             return response()->json([
                 'message' => 'Pemeriksaan tidak ditemukan',
             ], 404);
@@ -161,19 +162,58 @@ class DiagnosaController extends Controller
 
         $form_diagnosa = Form_Diagnosa::where('id_pemeriksaan', $id_pemeriksaan)->first();
 
-        if($form_diagnosa == null){
+
+        if ($form_diagnosa == null) {
             return response()->json([
                 'message' => 'Form Diagnosa tidak ditemukan',
             ], 404);
         }
+
+        $nama_diagnosa = Diagnosa::find($form_diagnosa->nama_diagnosa)->nama_diagnosa;
+
+        $penyebab_psikologis = $this->proCessData($form_diagnosa->penyebab_psikologis, DetailPenyebab::class, 'nama_penyebab');
+        $penyebab_situasional = $this->proCessData($form_diagnosa->penyebab_situasional, DetailPenyebab::class, 'nama_penyebab');
+        $penyebab_fisiologis = $this->proCessData($form_diagnosa->penyebab_fisiologis, DetailPenyebab::class, 'nama_penyebab');
+        $penyebab_umum = $this->proCessData($form_diagnosa->penyebab_umum, DetailPenyebab::class, 'nama_penyebab');
+
+        $gejala_tanda_mayor_objektif = $this->proCessData($form_diagnosa->gejala_tanda_mayor_objektif, Gejala::class, 'nama_gejala');
+        $gejala_tanda_mayor_subjektif = $this->proCessData($form_diagnosa->gejala_tanda_mayor_subjektif, Gejala::class, 'nama_gejala');
+
+        $gejala_tanda_minor_objektif = $this->proCessData($form_diagnosa->gejala_tanda_minor_objektif, Gejala::class, 'nama_gejala');
+        $gejala_tanda_minor_subjektif = $this->proCessData($form_diagnosa->gejala_tanda_minor_subjektif, Gejala::class, 'nama_gejala');
+
+
 
         $result = $form_diagnosa;
 
         return response()->json([
             'message' => 'Success',
             'data' => $result,
+            'nama_diagnosa' => $nama_diagnosa,
+            'penyebab_situasional' => $penyebab_situasional,
+            'penyebab_psikologis' => $penyebab_psikologis,
+            'penyebab_fisiologis' => $penyebab_fisiologis,
+            'penyebab_umum' => $penyebab_umum,
+            'gejala_tanda_mayor_objektif' => $gejala_tanda_mayor_objektif,
+            'gejala_tanda_mayor_subjektif' => $gejala_tanda_mayor_subjektif,
+            'gejala_tanda_minor_objektif' => $gejala_tanda_minor_objektif,
+            'gejala_tanda_minor_subjektif' => $gejala_tanda_minor_subjektif,
         ]);
-
     }
 
+    private function proCessData($data, $model, $optionLabel)
+    {
+        $data = explode(',', $data);
+        $result = [];
+
+        foreach ($data as $value) {
+            $id = intval($value);
+            $getModel = $model::find($id);
+
+            if ($getModel) {
+                $result[] = $getModel->$optionLabel;
+            }
+        }
+        return $result;
+    }
 }
