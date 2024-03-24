@@ -83,6 +83,7 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/rawat-inap/{id}', [PasienController::class, 'addRawatInap']);
             Route::post('/create', [PasienController::class, 'store']);
             Route::post('/tanggal-rawat/{id}', [PasienController::class, 'getDateRawatInapPasien']);
+            Route::post('/rawat-inap', [PasienController::class, 'pasienRawatInap']);
         });
 
         //Diagnosa
