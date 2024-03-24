@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('form_evaluasi', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_pemeriksaan');
-            $table->string('nama_luaran', 5000)->nullable();
+            $table->unsignedBigInteger('nama_luaran');
             $table->string('hasil_luaran', 1)->nullable();
             $table->timestamps();
 
             $table->foreign('id_pemeriksaan')->references('id')->on('pemeriksaan');
+            $table->foreign('nama_luaran')->references('id')->on('kriteria_luaran');
         });
     }
 

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_pasien');
             $table->unsignedBigInteger('bed');
+            $table->unsignedBigInteger('id_rawat_inap');
             $table->date('tanggal_masuk');
             $table->time('waktu_pencatatan');
             $table->date('tanggal_keluar')->nullable();
@@ -35,6 +36,13 @@ return new class extends Migration
             // Define foreign key constraint
             Schema::table('perawatan', function (Blueprint $table) {
                 $table->foreign('bed')->references('id')->on('beds');
+            });
+        }
+
+        if(Schema::hasTable('rawat_inap')){
+            // Define foreign key constraint
+            Schema::table('perawatan', function (Blueprint $table) {
+                $table->foreign('id_rawat_inap')->references('id')->on('rawat_inap');
             });
         }
     }

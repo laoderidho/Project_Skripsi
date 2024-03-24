@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Perawat\RawatInap;
 use App\Models\Perawat\Perawatan;
+use App\Models\Admin\Bed;
 use Illuminate\Support\Facades\DB;
 
 class PasienController extends Controller
@@ -162,23 +163,51 @@ class PasienController extends Controller
             return response()->json($validator->errors()->toJson(), 400);
         }
 
+        db::beginTransaction();
+        try{
+            $bed = Bed::find($request->input('no_bed'));
 
+            if (!$bed) {
+                return response()->json(['message' => 'kamar tidak ditemukan']);
+            }else{
+                if ($bed->status == 1) {
+                    return response()->json(['message' => 'kamar sudah terisi']);
+                }else{
+                    $bed->status = 1;
+                    $bed->update();
+                }
+            }
 
-        $rawatInap = new RawatInap();
-        $rawatInap->id_pasien = $pasien->id;
-        $rawatInap->status = 0;
-        $rawatInap->triase = $request->input('triase');
-        $rawatInap->jam_masuk = now();
-        $rawatInap->tanggal_masuk = now();
-        $rawatInap->save();
+            $rawatInap = new RawatInap();
+            $rawatInap->id_pasien = $pasien->id;
+            $rawatInap->status = 0;
+            $rawatInap->triase = $request->input('triase');
+            $rawatInap->jam_masuk = now();
+            $rawatInap->tanggal_masuk = now();
+            $rawatInap->save();
 
-        $perawatan = new Perawatan();
-        $perawatan->id_pasien = $pasien->id;
-        $perawatan->bed = $request->input('no_bed');
-        $perawatan->tanggal_masuk = now();
-        $perawatan->waktu_pencatatan = now();
-        $perawatan->status_pasien = 'sakit';
-        $perawatan->save();
+            $perawatan = new Perawatan();
+            $perawatan->id_pasien = $pasien->id;
+            $perawatan->id_rawat_inap = $rawatInap->id;
+            $perawatan->bed = $request->input('no_bed');
+            $perawatan->tanggal_masuk = now();
+            $perawatan->waktu_pencatatan = now();
+            $perawatan->status_pasien = 'sakit';
+            $perawatan->save();
+
+            db::commit();
+            return response()->json([
+                'message' => 'Pasien berhasil di tambah di rawat inap'
+            ], 201);
+
+        }catch(\Exception $e){
+            db::rollback();
+            return response()->json([
+                'message' => 'gagal ditambahkan',
+                'error' => $e->getMessage()
+            ]);
+        }
+
 
         return response()->json([
             'message' => 'Pasien berhasil di tambah di rawat inap'

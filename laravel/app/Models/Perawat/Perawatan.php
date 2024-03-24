@@ -15,6 +15,7 @@ class Perawatan extends Model
     protected $fillable = [
         'id_pasien',
         'bed',
+        'id_rawat_inap',
         'tanggal_masuk',
         'waktu_pencatatan',
         'tanggal_keluar',
