@@ -83,6 +83,7 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/rawat-inap/{id}', [PasienController::class, 'addRawatInap']);
             Route::post('/create', [PasienController::class, 'store']);
             Route::post('/tanggal-rawat/{id}', [PasienController::class, 'getDateRawatInapPasien']);
+            Route::post('/rawat-inap', [PasienController::class, 'pasienRawatInap']);
         });
 
         //Diagnosa
@@ -151,6 +152,7 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/', [IntervensiController::class, 'getIntervensi']);
             Route::post('/detail/{id}', [IntervensiFormController::class, 'validationIntervensiAttribute']);
             Route::post('/update/{id_pemeriksaan}', [IntervensiFormController::class, 'updateIntervensi']);
+            Route::post('/detail-pasien-intervensi/{id_pemeriksaan}', [IntervensiFormController::class, 'getDetailIntervensi']);
         });
         Route::prefix('implementasi')->group(function () {
             Route::post('/{id}', [InputImplementasiController::class, 'getIndex']);

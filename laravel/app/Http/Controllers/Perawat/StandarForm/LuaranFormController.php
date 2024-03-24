@@ -46,16 +46,22 @@ class LuaranFormController extends Controller
     }
 
 
-    public function detailAskepLuaran($id){
+    public function detailAskepLuaran($id)
+    {
 
         // select id and nama pemeriksaan
-        $form_evaluasi = Form_Evaluasi::select('id', 'nama_luaran')->where('id_pemeriksaan', $id)->get();
+        $form_evaluasi = "select e.id, kl.nama_kriteria_luaran as nama_luaran from form_evaluasi e
+                        inner join kriteria_luaran kl on e.nama_luaran = kl.id
+                        inner join pemeriksaan p on e.id_pemeriksaan = p.id
+                        where e.id_pemeriksaan = $id";
 
-       if($form_evaluasi->isEmpty()){
-           return response()->json([
-               'message' => 'Data tidak ditemukan',
-           ], 404);
-         }
+        $form_evaluasi = DB::select($form_evaluasi);
+
+        if (empty($form_evaluasi)) {
+            return response()->json([
+                'message' => 'Data tidak ditemukan',
+            ], 404);
+        }
 
         return response()->json([
             'message' => 'Success',
@@ -91,13 +97,13 @@ class LuaranFormController extends Controller
         $nama_luaran = explode(',', $request->nama_luaran);
 
 
-       DB::beginTransaction();
+        DB::beginTransaction();
 
-       try{
+        try {
             foreach ($nama_luaran as $nl) {
                 $luaran = new Form_Evaluasi();
                 $luaran->id_pemeriksaan = $pemeriksaan->id;
-                $luaran->nama_luaran = $nl;
+                $luaran->nama_luaran = intval($nl);
                 $luaran->save();
             }
 
@@ -106,13 +112,12 @@ class LuaranFormController extends Controller
             return response()->json([
                 'message' => 'Berhasil menambahkan luaran',
             ]);
-       }catch(\Exception $e){
-           DB::rollBack();
-           return response()->json([
-               'message' => 'Gagal menambahkan luaran',
-               'errors' => $e->getMessage(),
-           ], 500);
-       }
-
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Gagal menambahkan luaran',
+                'errors' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

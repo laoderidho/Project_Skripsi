@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 use App\Models\Perawat\StandarForm\Hasil_Evaluasi;
+use App\Models\Perawat\RawatInap;
+use App\Models\Perawat\Perawatan;
+use App\Models\Admin\Bed;
 
 class EvaluasiController extends Controller
 {
@@ -100,6 +103,7 @@ class EvaluasiController extends Controller
             'perencanaan' => 'required|string',
             'pencapaian' => 'required|string',
             'catatan_lainnya' => 'nullable|string',
+            'status_kesembuhan' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -109,15 +113,41 @@ class EvaluasiController extends Controller
             ], 400);
         }
 
-        $form_evaluasi = new Hasil_Evaluasi();
+        db::beginTransaction();
+        try{
+            $form_evaluasi = new Hasil_Evaluasi();
 
-        $form_evaluasi->id_pemeriksaan = $id_pemeriksaan;
-        $form_evaluasi->subjektif = $request->subjektif;
-        $form_evaluasi->objektif = $request->objektif;
-        $form_evaluasi->perencanaan = $request->perencanaan;
-        $form_evaluasi->pencapaian = $request->pencapaian;
-        $form_evaluasi->catatan_lainnya = $request->catatan_lainnya;
-        $form_evaluasi->save();
+            $form_evaluasi->id_pemeriksaan = $id_pemeriksaan;
+            $form_evaluasi->subjektif = $request->subjektif;
+            $form_evaluasi->objektif = $request->objektif;
+            $form_evaluasi->perencanaan = $request->perencanaan;
+            $form_evaluasi->pencapaian = $request->pencapaian;
+            $form_evaluasi->catatan_lainnya = $request->catatan_lainnya;
+            $form_evaluasi->save();
+
+            $kesembuhan = $request->status_kesembuhan;
+
+            if ($kesembuhan == 'Sembuh') {
+                $pemeriksaan = Pemeriksaan::find($id_pemeriksaan);
+                $pemeriksaan = $pemeriksaan->id_perawatan;
+                $perawatan = Perawatan::find($pemeriksaan);
+                $perawatan->status_pasien = 'Sembuh';
+                $perawatan->update();
+                $bed = Bed::find($perawatan->bed);
+                $bed->status = 0;
+                $bed->update();
+                $rawatInap = RawatInap::find($perawatan->id_rawat_inap);
+                $rawatInap->status = 1;
+                $rawatInap->update();
+            }
+            db::commit();
+        }catch(\Exception $e){
+            db::rollback();
+            return response()->json([
+                'message' => 'Failed',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
 
         return response()->json([
             'message' => 'Success',
