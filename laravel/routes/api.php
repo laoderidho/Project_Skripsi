@@ -111,6 +111,13 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/add/{id}', [PerawatanController::class, 'Add']);
         });
 
+        Route::prefix('rawat-inap')->group(function () {
+            Route::post('/delete/{id}', [PasienController::class, 'deleteRawatInap']);
+            Route::post('/detail/{id}', [PasienController::class, 'getDetailRawatInap']);
+            Route::post('/update/{id}', [PasienController::class, 'UpdateRawatInap']);
+            Route::post('/recover/{id}', [PasienController::class, 'updatePasienRecover']);
+        });
+
         Route::post('/create', [PasienController::class, 'store']);
     });
 });

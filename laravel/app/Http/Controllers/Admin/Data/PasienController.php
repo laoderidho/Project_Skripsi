@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 class PasienController extends Controller
 {
 
+    // pasien Crud
     public function getPasien()
     {
         $pasien = Pasien::all();
@@ -142,7 +143,9 @@ class PasienController extends Controller
         ]);
     }
 
-    // add rawat inap function
+
+
+    // rawat inap
     public function addRawatInap(Request $request, $id)
     {
         $pasien = Pasien::find($id);
@@ -263,7 +266,8 @@ class PasienController extends Controller
                 DB::raw("DATE_FORMAT(tanggal_masuk, '%d-%m-%Y') AS tanggal_masuk"),
                 DB::raw("DATE_FORMAT(tanggal_keluar, '%d-%m-%Y') AS tanggal_keluar"),
                 'status',
-                DB::raw("DATE_FORMAT(jam_masuk, '%H:%i') AS jam_masuk")
+                DB::raw("DATE_FORMAT(jam_masuk, '%H:%i') AS jam_masuk"),
+                'triase'
             )
             ->where('id_pasien', $id)
             ->get();
@@ -295,11 +299,11 @@ class PasienController extends Controller
 
     public function pasienRawatInap()
     {
-        $pasien = "select ps.nama_lengkap, r.status, b.no_bed, p.tanggal_masuk, r.triase
+        $pasien = "select r.id, ps.nama_lengkap, b.no_bed, p.tanggal_masuk, r.triase, b.nama_fasilitas, b.jenis_ruangan, b.lantai
                     from pasien ps join rawat_inap r on r.id_pasien = ps.id
                     join perawatan p on p.id_rawat_inap = r.id
                     join beds b on p.bed = b.id
-                    where r.status = 0";
+                    where r.status =0";
 
         $data = DB::select($pasien);
 
@@ -307,5 +311,155 @@ class PasienController extends Controller
             'message' => 'Success',
             'data' => $data,
         ]);
+    }
+
+
+
+    public function getDetailRawatInap($id_rawat_inap)
+    {
+        $perawatan = Perawatan::where('id_rawat_inap', $id_rawat_inap)->first();
+
+        $beds = bed::find($perawatan->bed);
+        $bed = $beds->id;
+
+        $rawatInap = RawatInap::find($id_rawat_inap);
+        $triase = $rawatInap->triase;
+
+        return response()->json([
+            'message' => 'Success',
+            'triase' => $triase,
+            'bed' => $bed,
+        ]);
+    }
+
+    public function UpdateRawatInap(Request $request, $id_rawat_inap)
+    {
+        $validator = Validator::make($request->all(), [
+            'triase' => 'required|string|max:255',
+            'no_bed' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+
+        db::beginTransaction();
+
+        try {
+            $rawatInap = RawatInap::find($id_rawat_inap);
+            $rawatInap->triase = $request->triase;
+            $rawatInap->update();
+
+            $perawatan = Perawatan::where('id_rawat_inap', $id_rawat_inap)->first();
+            $bed = Bed::find($perawatan->bed);
+            $bed->status = 0;
+            $bed->update();
+
+            $newBed = Bed::find($request->no_bed);
+            $newBed->status = 1;
+            $newBed->update();
+
+            $perawatan->bed = $request->no_bed;
+            $perawatan->update();
+
+            db::commit();
+
+            return response()->json([
+                'message' => 'Rawat Inap Updated',
+                'data' => $rawatInap,
+            ]);
+        } catch (\Exception $e) {
+            db::rollback();
+            return response()->json([
+                'message' => 'gagal diupdate',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public  function deleteRawatInap($id)
+    {
+        $rawatInap = RawatInap::find($id);
+
+        if (!$rawatInap) {
+            return response()->json([
+                'message' => 'Rawat Inap tidak ditemukan',
+            ], 404);
+        }
+
+        if ($rawatInap->status == 1 && $rawatInap->tanggal_keluar != null) {
+            return response()->json([
+                'message' => 'data tidak bisa dihapus',
+            ], 400);
+        }
+
+        db::beginTransaction();
+        try {
+            $perawatan = Perawatan::where('id_rawat_inap', $id)->first();
+            $perawatan->delete();
+
+
+            $rawatInap = RawatInap::find($id);
+            $rawatInap->delete();
+
+
+            $bed = Bed::find($perawatan->bed);
+            $bed->status = 0;
+            $bed->update();
+
+            db::commit();
+
+            return response()->json([
+                'message' => 'Rawat Inap Deleted',
+                'data' => $rawatInap,
+            ]);
+        } catch (\Exception $e) {
+            db::rollback();
+            return response()->json([
+                'message' => 'gagal dihapus',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function updatePasienRecover($id_rawat_inap)
+    {
+        $rawatInap = RawatInap::find($id_rawat_inap);
+
+        if (!$rawatInap) {
+            return response()->json([
+                'message' => 'data tidak ada',
+            ], 400);
+        }
+
+        db::beginTransaction();
+
+        try {
+            $rawatInap->status = 1;
+            $rawatInap->tanggal_keluar = now();
+            $rawatInap->update();
+
+            $perawatan = Perawatan::where('id_rawat_inap', $id_rawat_inap)->first();
+            $perawatan->tanggal_keluar = now();
+            $perawatan->waktu_keluar = now();
+            $perawatan->status_pasien = 'sembuh';
+            $perawatan->update();
+
+            $bed = Bed::find($perawatan->bed);
+            $bed->status = 0;
+            $bed->update();
+            db::commit();
+
+            return response()->json([
+                'message' => 'Pasien telah sembuh',
+            ]);
+        } catch (\Exception $e) {
+            db::rollback();
+            return response()->json([
+                'message' => 'gagal diupdate',
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 }
