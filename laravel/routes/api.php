@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Perawat\PerawatController;
 use App\Http\Controllers\Perawat\Diagnostic\DiagnosticController;
+use App\Http\Controllers\Perawat\Laporan\AskepController;
 //Controller Admin
 use App\Http\Controllers\Admin\Data\PasienController;
 use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\InputDiagnosaController;
@@ -28,7 +29,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/update-password', [AuthController::class, 'changePassword']);
 
-    Route::post('/pasien/rawat-inap/detailStatus/{id}', [PasienController::class, 'getStatusRawatInap']);
+    Route::prefix('laporan')->group(function () {
+        Route::post('/askep/{id_pemeriksaan}', [AskepController::class, 'getReportAskep']);
+    });
 });
 
 Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
@@ -105,10 +108,6 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/detail/{id}', [InputLuaranController::class, 'detailLuaran']);
             Route::post('/update/{id_luaran}', [InputLuaranController::class, 'update']);
             Route::post('/delete/{id_luaran}', [InputLuaranController::class, 'delete']);
-        });
-
-        Route::prefix('perawatan')->group(function () {
-            Route::post('/add/{id}', [PerawatanController::class, 'Add']);
         });
 
         Route::prefix('rawat-inap')->group(function () {
