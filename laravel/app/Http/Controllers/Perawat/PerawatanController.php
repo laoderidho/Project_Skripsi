@@ -34,12 +34,6 @@ class PerawatanController extends Controller
         $bed->status = 1;
         $bed->update();
 
-        $rawat_inap = new RawatInap;
-        $rawat_inap->id_pasien = $id_pasien;
-        $rawat_inap->triase = request('triase');
-        $rawat_inap->status = "1";
-        $rawat_inap->save();
-
         return response()->json([
             "message" => "Berhasil menambahkan data perawatan",
             "data" => $perawatan
