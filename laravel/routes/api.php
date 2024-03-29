@@ -28,10 +28,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/update-password', [AuthController::class, 'changePassword']);
-
-    Route::prefix('laporan')->group(function () {
-        Route::post('/askep/{id_pemeriksaan}', [AskepController::class, 'getReportAskep']);
-    });
 });
 
 Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
@@ -185,6 +181,10 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
         Route::prefix('listaskep')->group(function () {
             Route::post('/setname/{id}', [ManajemenListController::class, 'setNameWithPerawatan']);
             Route::post('/list-pemeriksaan/{id}', [ManajemenListController::class, 'listPemeriksaan']);
+        });
+
+        Route::prefix('laporan')->group(function () {
+            Route::post('/askep/{id_perawatan}', [AskepController::class, 'getReportAskep']);
         });
     });
 });

@@ -30,11 +30,16 @@ class ManajemenListController extends Controller
 
     public function listPemeriksaan($id){
 
+        $auth = Auth::user();
+        $auth = $auth->id;
+        $perawat = Perawat::where('id_user', $auth)->first();
+        $perawat = $perawat->id;
+
         $list = "SELECT distinct DATE_FORMAT(p.jam_pemberian_diagnosa, '%d-%m-%Y') as tanggal_pemeriksaan
                 FROM pemeriksaan p
                 INNER JOIN perawatan pr ON pr.id = p.id_perawatan
                 WHERE
-                pr.id = $id";
+                pr.id = $id and p.id_perawat = $perawat";
 
         $list = DB::select($list);
 
