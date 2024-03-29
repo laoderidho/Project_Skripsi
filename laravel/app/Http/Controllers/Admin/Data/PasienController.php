@@ -276,6 +276,7 @@ class PasienController extends Controller
     //     ]);
     // }
 
+
     public function pasienRawatInap()
     {
         $pasien = "select p.id, ps.nama_lengkap, b.no_bed, p.tanggal_masuk, b.nama_fasilitas, b.jenis_ruangan, b.lantai
