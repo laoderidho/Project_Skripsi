@@ -42,28 +42,23 @@ class AskepController extends Controller
     }
 
     private function getPasien($id){
-        $detailPasien = "select  p.id, ps.nama_lengkap, b.no_bed, p.tanggal_masuk, p.waktu_pencatatan, p.tanggal_keluar, p.waktu_keluar, b.nama_fasilitas, b.jenis_ruangan, b.lantai
-                            from pasien ps
-                            join perawatan p on p.id_pasien =ps.id
-                            join beds b on p.bed = b.id
-                            where p.id = $id";
+        $detailPasien = "select  p.id, ps.nama_lengkap, b.no_bed
+                        from pasien ps
+                        join perawatan p on p.id_pasien =ps.id
+                        join beds b on p.bed = b.id
+                        where p.id = $id";
+                        
         $detailPasien = DB::select($detailPasien);
-
-
 
         return $detailPasien;
     }
 
     private function getPemeriksaan($id){
-        $data = "select p.id, u.nama_lengkap, p.nama_intervensi,
+        $data = "select p.id, p.nama_intervensi,
                 p.nama_luaran, p.catatan_intervensi, p.catatan_evaluasi, p.catatan_luaran, p.catatan_implementasi, p.jam_pemberian_diagnosa,
                 p.jam_pemberian_intervensi, p.jam_pemberian_implementasi, p.jam_penilaian_luaran
                 from perawatan pr join pemeriksaan p
                 on pr.id = p.id_perawatan
-                join perawat per
-                on p.id_perawat = per.id
-                join users u
-                on per.id_user = u.id
                 where pr.id = $id";
 
         $data = DB::select($data);
@@ -73,7 +68,18 @@ class AskepController extends Controller
 
 
 
-    public function getPerawatan($id){
-        
+    public function getDatePerawatan($id){
+        $datePerawatan = "select pr.id, pr.tanggal_masuk
+                        from perawatan pr
+                        inner join pasien p
+                        on  pr.id_pasien = p.id
+                        where id_pasien = $id";
+
+        $datePerawatan = DB::select($datePerawatan);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $datePerawatan
+        ]);
     }
 }
