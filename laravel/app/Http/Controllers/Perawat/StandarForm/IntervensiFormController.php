@@ -150,9 +150,14 @@ class IntervensiFormController extends Controller
 
             foreach ($tindakan_intervensi as $tindakan) {
                 $tindakan = intval($tindakan);
-                $tindakan = TindakanIntervensi::find($tindakan);
-                $nama_tindakan = $tindakan->nama_tindakan_intervensi;
-                array_push($result, $nama_tindakan);
+                $tindakan = "select i.id, i.nama_tindakan_intervensi, kt.nama_kategori_tindakan
+                            from tindakan_intervensi i
+                            join kategori_tindakan kt
+                            on i.id_kategori_tindakan = kt.id
+                            where i.id = $tindakan";
+
+                $tindakan = DB::select($tindakan);
+                array_push($result, $tindakan);
             }
 
             return $result;
