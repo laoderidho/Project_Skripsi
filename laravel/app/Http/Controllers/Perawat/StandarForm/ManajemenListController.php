@@ -73,9 +73,9 @@ class ManajemenListController extends Controller
 
             foreach($displayDate as $d){
                 if($perawat == $d->id_perawat){
-                    $d->acces = true;
+                    $d->access = true;
                 }else{
-                    $d->acces = false;
+                    $d->access = false;
                 }
             }
 
