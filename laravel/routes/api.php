@@ -28,10 +28,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/update-password', [AuthController::class, 'changePassword']);
-
-    Route::prefix('laporan')->group(function () {
-        Route::post('/askep/{id_pemeriksaan}', [AskepController::class, 'getReportAskep']);
-    });
 });
 
 Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
@@ -160,9 +156,10 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/update/{id_pemeriksaan}', [IntervensiFormController::class, 'updateIntervensi']);
             Route::post('/detail-pasien-intervensi/{id_pemeriksaan}', [IntervensiFormController::class, 'getDetailIntervensi']);
         });
+
+
         Route::prefix('implementasi')->group(function () {
-            Route::post('/{id}', [InputImplementasiController::class, 'getIndex']);
-            Route::post('/checkList/{id_implementasi}', [InputImplementasiController::class, 'checkList']);
+            Route::post('/checkList/{id}', [InputImplementasiController::class, 'checkList']);
             Route::post('/get-implementasi-pasien/{id_pemeriksaan}', [InputImplementasiController::class, 'getImplementasiPasien']);
             Route::post('/isDone/{id}', [InputImplementasiController::class, 'isDone']);
         });
@@ -186,6 +183,14 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
         Route::prefix('listaskep')->group(function () {
             Route::post('/setname/{id}', [ManajemenListController::class, 'setNameWithPerawatan']);
             Route::post('/list-pemeriksaan/{id}', [ManajemenListController::class, 'listPemeriksaan']);
+        });
+
+        Route::prefix('laporan')->group(function () {
+            Route::post('/askep/{id_perawatan}', [AskepController::class, 'getReportAskep']);
+        });
+
+        Route::prefix('shift')->group(function () {
+            Route::post('/', [ManajemenListController::class, 'getShift']);
         });
     });
 });

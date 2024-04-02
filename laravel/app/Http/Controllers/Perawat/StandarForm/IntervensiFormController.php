@@ -32,18 +32,6 @@ class IntervensiFormController extends Controller
         ]);
     }
 
-    protected $declensionController;
-
-    public function __construct(DeclensionController $declensionController)
-    {
-        $this->declensionController = $declensionController;
-    }
-
-    public function Peluruhan(Request $request, $kalimat){
-        return $this->DeclensionController->peluruhan($request, $kalimat);
-    }
-
-
     public function validationIntervensiAttribute($id){
         $intervensi = Intervensi::find($id);
 

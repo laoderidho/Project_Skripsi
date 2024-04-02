@@ -49,31 +49,50 @@ class ManajemenListController extends Controller
         $perawat = Perawat::where('id_user', $users)->first();
         $perawat = $perawat->id;
 
-        $pemeriksaan = Pemeriksaan::where('id_perawat', $perawat)->get();
-
-        if ($pemeriksaan->isEmpty()) {
-            return response()->json([
-                'message' => 'Data Kosong',
-            ], 200);
-        }
-
-
-            $displayDate = "SELECT date_format(p.jam_pemberian_diagnosa, '%d-%m-%Y') as tanggal_pemberian_diagnosa,
+        $displayDate = "SELECT date_format(p.jam_pemberian_diagnosa, '%d-%m-%Y') as tanggal_pemberian_diagnosa,
                 date_format(p.jam_pemberian_diagnosa, '%H:%i') as jam_pemberian_diagnosa,
-                p.jam_pemberian_intervensi,
-                p.jam_penilaian_luaran,
-                p.jam_pemberian_evaluasi,
-                p.jam_pemberian_implementasi,
-                p.id
+                date_format(p.jam_pemberian_intervensi, '%d-%m-%Y') as tanggal_pemberian_intervensi,
+                date_format(p.jam_pemberian_intervensi, '%H:%i') as jam_pemberian_intervensi,
+                date_format(p.jam_pemberian_implementasi, '%d-%m-%Y') as tanggal_pemberian_implementasi,
+                date_format(p.jam_pemberian_implementasi, '%H:%i') as jam_pemberian_implementasi,
+                date_format(p.jam_penilaian_luaran, '%d-%m-%Y') as tanggal_pemberian_luaran,
+                date_format(p.jam_penilaian_luaran, '%H:%i') as jam_pemberian_luaran,
+                date_format(p.jam_pemberian_evaluasi, '%d-%m-%Y') as tanggal_pemberian_evaluasi,
+                date_format(p.jam_pemberian_evaluasi, '%H:%i') as jam_pemberian_evaluasi,
+                p.id,
+                p.id_perawat,
+                us.nama_lengkap
                 FROM
                 pemeriksaan p
-                inner join perawatan pr
-                on pr.id = p.id_perawatan
-                where pr.id = $id_perawatan and p.shift = $shift and date_format(p.jam_pemberian_diagnosa, '%d-%m-%Y') = $tanggal ";
+                INNER JOIN perawatan pr ON pr.id = p.id_perawatan
+                INNER JOIN perawat per ON p.id_perawat = per.id
+                INNER JOIN users us ON us.id = per.id_user
+                WHERE pr.id = $id_perawatan AND p.shift = $shift AND date_format(p.jam_pemberian_diagnosa, '%d-%m-%Y') = $tanggal";
 
             $displayDate = DB::select($displayDate);
 
+            foreach($displayDate as $d){
+                if($perawat == $d->id_perawat){
+                    $d->acces = true;
+                }else{
+                    $d->acces = false;
+                }
+            }
+
 
         return response()->json($displayDate);
+    }
+
+
+    public function getShift(){
+        if(date('H') >= 7 && date('H') < 14){
+            $shift = 1;
+        }elseif(date('H') >= 14 && date('H') < 21){
+            $shift = 2;
+        }else{
+            $shift = 3;
+        }
+
+        return response()->json($shift);
     }
 }
