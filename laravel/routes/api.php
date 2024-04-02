@@ -156,9 +156,10 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/update/{id_pemeriksaan}', [IntervensiFormController::class, 'updateIntervensi']);
             Route::post('/detail-pasien-intervensi/{id_pemeriksaan}', [IntervensiFormController::class, 'getDetailIntervensi']);
         });
+
+
         Route::prefix('implementasi')->group(function () {
-            Route::post('/{id}', [InputImplementasiController::class, 'getIndex']);
-            Route::post('/list/{id_implementasi}', [InputImplementasiController::class, 'checkList']);
+            Route::post('/list/{id}', [InputImplementasiController::class, 'checkList']);
             Route::post('/get-implementasi-pasien/{id_pemeriksaan}', [InputImplementasiController::class, 'getImplementasiPasien']);
             Route::post('/isDone/{id}', [InputImplementasiController::class, 'isDone']);
         });
@@ -186,6 +187,10 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 
         Route::prefix('laporan')->group(function () {
             Route::post('/askep/{id_perawatan}', [AskepController::class, 'getReportAskep']);
+        });
+
+        Route::prefix('shift')->group(function () {
+            Route::post('/', [ManajemenListController::class, 'getShift']);
         });
     });
 });
