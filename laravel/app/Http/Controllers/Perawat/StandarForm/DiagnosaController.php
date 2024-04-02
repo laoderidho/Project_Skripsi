@@ -106,9 +106,9 @@ class DiagnosaController extends Controller
             $pemeriksaan->jam_pemberian_diagnosa = Carbon::now();
             $time = $pemeriksaan->jam_pemberian_diagnosa->hour;
 
-            if ($time >= 3 && $time < 11) {
+            if ($time >= 7 && $time < 14) {
                 $pemeriksaan->shift = '1';
-            } else if ($time >= 11 && $time < 19) {
+            } else if ($time >= 14 && $time < 21) {
                 $pemeriksaan->shift = '2';
             } else {
                 $pemeriksaan->shift = '3';
@@ -145,8 +145,6 @@ class DiagnosaController extends Controller
             ], 500);
         }
     }
-
-
 
 
     public function getDetailDiagnosaPasien($id_pemeriksaan)

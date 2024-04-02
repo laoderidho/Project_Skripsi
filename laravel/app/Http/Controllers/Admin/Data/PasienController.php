@@ -26,6 +26,8 @@ class PasienController extends Controller
         ]);
     }
 
+    
+
     public function addPasien(Request $request)
     {
         $user = Auth::user()->id;
