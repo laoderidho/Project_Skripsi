@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('form_diagnosa', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_pemeriksaan');
-            $table->string('nama_diagnosa', 255)->nullable();
+            $table->unsignedBigInteger('nama_diagnosa');
             $table->text('gejala_tanda_mayor_objektif')->nullable();
             $table->text('gejala_tanda_mayor_subjektif')->nullable();
             $table->text('gejala_tanda_minor_objektif')->nullable();
@@ -28,6 +28,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('id_pemeriksaan')->references('id')->on('pemeriksaan');
+            $table->foreign('nama_diagnosa')->references('id')->on('diagnosa');
         });
     }
 

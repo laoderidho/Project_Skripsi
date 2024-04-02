@@ -65,7 +65,7 @@ class InputDiagnosaController extends Controller
                     $this->saveFaktorResiko($diagnosaId, $faktor_item);
                 }
             } else {
-                $this->saveFaktorResiko($diagnosaId, '');
+
             }
 
             // Gejala Mayor Subjektif
@@ -76,7 +76,7 @@ class InputDiagnosaController extends Controller
                     $this->saveGejala($gejala_mayor_subjektif_item, 'Mayor', 'Subjektif', $diagnosaId);
                 }
             } else {
-                $this->saveGejala('', 'Mayor', 'Subjektif', $diagnosaId);
+    
             }
             // Untuk gejala_mayor_objektif
             $gejala_mayor_objektif = $request->input('gejala_mayor_objektif');
@@ -85,7 +85,7 @@ class InputDiagnosaController extends Controller
                     $this->saveGejala($gejala_mayor_objektif_item, 'Mayor', 'Objektif', $diagnosaId);
                 }
             } else {
-                $this->saveGejala('', 'Mayor', 'Objektif', $diagnosaId);
+
             }
 
             // Untuk gejala_minor_subjektif
@@ -95,7 +95,7 @@ class InputDiagnosaController extends Controller
                     $this->saveGejala($gejala_minor_subjektif_item, 'Minor', 'Subjektif', $diagnosaId);
                 }
             } else {
-                $this->saveGejala('', 'Minor', 'Subjektif', $diagnosaId);
+
             }
 
             // Untuk gejala_minor_objektif
@@ -105,7 +105,7 @@ class InputDiagnosaController extends Controller
                     $this->saveGejala($gejala_minor_objektif_item, 'Minor', 'Objektif', $diagnosaId);
                 }
             } else {
-                $this->saveGejala('', 'Minor', 'Objektif', $diagnosaId);
+
             }
 
             // Penyebab Psikologis
@@ -183,7 +183,7 @@ class InputDiagnosaController extends Controller
             ->where('id_jenis_penyebab', 4) // Sesuaikan dengan ID jenis penyebab fisiologis
             ->pluck('nama_penyebab')
             ->toArray();
-            
+
         $faktorResiko = FaktorResiko::where('id_diagnosa', $id)
             ->pluck('nama')
             ->toArray();

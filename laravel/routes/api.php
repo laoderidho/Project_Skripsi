@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Perawat\PerawatController;
 use App\Http\Controllers\Perawat\Diagnostic\DiagnosticController;
+use App\Http\Controllers\Perawat\Laporan\AskepController;
 //Controller Admin
 use App\Http\Controllers\Admin\Data\PasienController;
 use App\Http\Controllers\Admin\StandardKeperawatan\Diagnosa\InputDiagnosaController;
@@ -13,16 +14,20 @@ use App\Http\Controllers\Admin\StandardKeperawatan\Intervensi\IntervensiControll
 //Controller Perawat
 use App\Http\Controllers\Perawat\StandarForm\DiagnosaController;
 use App\Http\Controllers\Perawat\StandarForm\IntervensiFormController;
+use App\Http\Controllers\Perawat\StandarForm\InputImplementasiController;
 use App\Http\Controllers\Admin\Data\BedController;
+use App\Http\Controllers\LuaranController;
 use App\Http\Controllers\Perawat\PerawatanController;
+use App\Http\Controllers\Perawat\StandarForm\LuaranFormController;
+use App\Http\Controllers\Perawat\StandarForm\ManajemenListController;
+use App\Http\Controllers\Perawat\StandarForm\EvaluasiController;
+
 //
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/update-password', [AuthController::class, 'changePassword']);
-    Route::post('/pasien/rawat-inap/{id}', [PasienController::class, 'addRawatInap']);
-    Route::post('/pasien/rawat-inap/detailStatus/{id}', [PasienController::class, 'getStatusRawatInap']);
 });
 
 Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
@@ -50,6 +55,17 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/', [BedController::class, 'getBed']);
             Route::post('/tambah', [BedController::class, 'addBed']);
             Route::post('/filter', [BedController::class, 'filterBed']);
+            Route::post('/edit/{id}', [BedController::class, 'editBed']);
+            Route::post('/delete/{id}', [BedController::class, 'deleteBed']);
+        }));
+
+        Route::prefix('ruangan')->group((function () {
+            Route::post('/filter-bed/{nama_fasilitas}/{jenis_ruangan}/{lantai}', [BedController::class, 'filterBedWithAll']);
+            Route::post('/filter-lantai/{nama_fasilitas}/{jenis_ruangan}', [BedController::class, 'filterLantai']);
+            Route::post('/filter-ruangan/{nama_fasilitas}', [BedController::class, 'filterJenisRuangan']);
+            Route::post('/nama-fasilitas', [BedController::class, 'getNamaFasilitas']);
+            Route::post('/jenis-ruangan', [BedController::class, 'getJenisRuangan']);
+            Route::post('/lantai', [BedController::class, 'getLantai']);
         }));
 
         Route::prefix('intervensi')->group(function () {
@@ -61,7 +77,13 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         });
 
 
-        Route::post('/pasien', [PasienController::class, 'index']);
+        Route::prefix('pasien')->group(function () {
+            Route::post('/', [PasienController::class, 'index']);
+            Route::post('/rawat-inap/{id}', [PasienController::class, 'addRawatInap']);
+            Route::post('/create', [PasienController::class, 'store']);
+            Route::post('/tanggal-rawat/{id}', [PasienController::class, 'getDateRawatInapPasien']);
+            Route::post('/rawat-inap', [PasienController::class, 'pasienRawatInap']);
+        });
 
         //Diagnosa
 
@@ -84,53 +106,94 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/delete/{id_luaran}', [InputLuaranController::class, 'delete']);
         });
 
-        Route::prefix('perawatan')->group(function () {
-            Route::post('/add/{id}', [PerawatanController::class, 'Add']);
+        Route::prefix('rawat-inap')->group(function () {
+            Route::post('/delete/{id}', [PasienController::class, 'deleteRawatInap']);
+            Route::post('/detail/{id}', [PasienController::class, 'getDetailRawatInap']);
+            Route::post('/update/{id}', [PasienController::class, 'UpdateRawatInap']);
+            Route::post('/recover/{id}', [PasienController::class, 'updatePasienRecover']);
         });
 
-        Route::post('/pasien/create', [PasienController::class, 'store']);
+        Route::post('/create', [PasienController::class, 'store']);
     });
 });
 
 Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 
     Route::prefix('perawat')->group(function () {
+
         Route::prefix('diagnosa')->group(function () {
             Route::post('/', [DiagnosaController::class, 'getDiagnosa']);
             Route::post('/detail/{id}', [DiagnosaController::class, 'validationDiagnosaAttribute']);
 
             // form diagnosa
             Route::post('/add/{id}', [DiagnosaController::class, 'addPasienDiagnosa']);
+
+            // detail askep diagnosa
+            Route::post('/detail-askep-pasien/{id}', [DiagnosaController::class, 'getDetailDiagnosaPasien']);
         });
-        Route::prefix('intervensi')->group(function(){
-            Route::post('/', [IntervensiFormController::class,'getIntervensi']);
+
+        Route::post('/list-askep/{id}/{shift}/{tanggal}', [ManajemenListController::class, 'listTimeAskep']);
+
+        // perawat/luaran/detail/{id}
+        Route::prefix('luaran')->group(function () {
+            Route::post('/', [InputLuaranController::class, 'getLuaran']);
+            Route::post('/detail/{id}', [LuaranFormController::class, 'validationLuaranAttribute']);
+            Route::post('/add/{id}', [LuaranFormController::class, 'add']);
+
+            Route::post('/detail-askep-luaran/{id}', [LuaranFormController::class, 'detailAskepLuaran']);
+        });
+
+
+        Route::prefix('evaluasi')->group(function () {
+            Route::post('/get/{id_pemeriksaan}', [EvaluasiController::class, 'getLuaran']);
+            Route::post('/penilaian-luaran', [EvaluasiController::class, 'PenilaianLuaran']);
+            Route::post('/hasil-evaluasi/{id_pemeriksaan}', [EvaluasiController::class, 'resultEvaluasi']);
+        });
+
+        Route::prefix('intervensi')->group(function () {
+            Route::post('/', [IntervensiController::class, 'getIntervensi']);
             Route::post('/detail/{id}', [IntervensiFormController::class, 'validationIntervensiAttribute']);
             Route::post('/update/{id_pemeriksaan}', [IntervensiFormController::class, 'updateIntervensi']);
+            Route::post('/detail-pasien-intervensi/{id_pemeriksaan}', [IntervensiFormController::class, 'getDetailIntervensi']);
         });
+        Route::prefix('implementasi')->group(function () {
+            Route::post('/{id}', [InputImplementasiController::class, 'getIndex']);
+            Route::post('/list/{id_implementasi}', [InputImplementasiController::class, 'checkList']);
+            Route::post('/get-implementasi-pasien/{id_pemeriksaan}', [InputImplementasiController::class, 'getImplementasiPasien']);
+            Route::post('/isDone/{id}', [InputImplementasiController::class, 'isDone']);
         });
-
-
 
         Route::prefix('daftarpasien')->group(function () {
-            Route::post('/tambah', [PasienController::class, 'addPasien']);
             Route::post('/', [PasienController::class, 'getPasien']);
+            Route::post('/status=0',[PasienController::class, 'getdataPasienRawatInap']);
             Route::post('/rawat-inap', [PasienController::class, 'filterStatusRawatInap']);
             Route::post('/detail/{id}', [PasienController::class, 'getDetail']);
             // Route::post('/delete/{id}', [PasienController::class, 'delete']);
 
         });
-        Route::prefix('diagnostic')->group(function(){
-            Route::post('/add/{id}',[DiagnosticController::class,'addDiagnostic']);
-            Route::post('/',[DiagnosticController::class,'index']);
-            Route::post('/get/{id}',[DiagnosticController::class,'getDiagnostic']);
-            Route::post('/getlist/{id}',[DiagnosticController::class,'getListDiagnostik']);
+
+        Route::prefix('diagnostic')->group(function () {
+            Route::post('/add/{id}', [DiagnosticController::class, 'addDiagnostic']);
+            Route::post('/', [DiagnosticController::class, 'index']);
+            Route::post('/get/{id}', [DiagnosticController::class, 'getDiagnostic']);
+            Route::post('/getlist/{id}', [DiagnosticController::class, 'getListDiagnostik']);
+        });
+
+        Route::prefix('listaskep')->group(function () {
+            Route::post('/setname/{id}', [ManajemenListController::class, 'setNameWithPerawatan']);
+            Route::post('/list-pemeriksaan/{id}', [ManajemenListController::class, 'listPemeriksaan']);
+        });
+
+        Route::prefix('laporan')->group(function () {
+            Route::post('/askep/{id_perawatan}', [AskepController::class, 'getReportAskep']);
         });
     });
+});
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/login', [AuthController::class, 'viewLogin'])->name('login');
 Route::post('/tambah', [UserController::class, 'addUser']);
 
- Route::get('/home', function () {
+Route::get('/home', function () {
     return view('home');
 });

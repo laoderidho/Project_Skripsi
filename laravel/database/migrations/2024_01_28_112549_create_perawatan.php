@@ -14,17 +14,35 @@ return new class extends Migration
         Schema::create('perawatan', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_pasien');
-            $table->string('bed', 5);
+            $table->unsignedBigInteger('bed');
+            $table->date('tanggal_masuk');
             $table->time('waktu_pencatatan');
+            $table->date('tanggal_keluar')->nullable();
+            $table->time('waktu_keluar')->nullable();
             $table->string('status_pasien', 10);
             $table->timestamps();
-            $table->foreign('id_pasien')->references('id')->on('pasien');
         });
+
+        if (Schema::hasTable('pasien')) {
+            // Define foreign key constraint
+            Schema::table('perawatan', function (Blueprint $table) {
+                $table->foreign('id_pasien')->references('id')->on('pasien');
+            });
+        }
+
+        // Check if the 'beds' table exists
+        if (Schema::hasTable('beds')) {
+            // Define foreign key constraint
+            Schema::table('perawatan', function (Blueprint $table) {
+                $table->foreign('bed')->references('id')->on('beds');
+            });
+        }
     }
 
     /**
      * Reverse the migrations.
      */
+
     public function down(): void
     {
         Schema::dropIfExists('perawatan');
