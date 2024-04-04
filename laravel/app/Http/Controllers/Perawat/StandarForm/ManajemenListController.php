@@ -73,9 +73,9 @@ class ManajemenListController extends Controller
 
             foreach($displayDate as $d){
                 if($perawat == $d->id_perawat){
-                    $d->acces = true;
+                    $d->access = true;
                 }else{
-                    $d->acces = false;
+                    $d->access = false;
                 }
             }
 
@@ -94,5 +94,16 @@ class ManajemenListController extends Controller
         }
 
         return response()->json($shift);
+    }
+
+
+    public function getDatePerawatan($id){
+        $date = "select id, date_format(tanggal_masuk , '%d-%m-%Y') as tanggal_masuk, date_format(tanggal_keluar, '%d-%m-%Y') as tanggal_keluar
+                from perawatan
+                where id_pasien = $id";
+
+        $date = DB::select($date);
+
+        return response()->json($date);
     }
 }

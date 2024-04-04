@@ -169,6 +169,8 @@ class DiagnosaController extends Controller
 
         $nama_diagnosa = Diagnosa::find($form_diagnosa->nama_diagnosa)->nama_diagnosa;
 
+        $faktor_risiko = $this->proCessData($form_diagnosa->faktor_risiko, FaktorResiko::class, 'nama');
+
         $penyebab_psikologis = $this->proCessData($form_diagnosa->penyebab_psikologis, DetailPenyebab::class, 'nama_penyebab');
         $penyebab_situasional = $this->proCessData($form_diagnosa->penyebab_situasional, DetailPenyebab::class, 'nama_penyebab');
         $penyebab_fisiologis = $this->proCessData($form_diagnosa->penyebab_fisiologis, DetailPenyebab::class, 'nama_penyebab');
@@ -196,6 +198,7 @@ class DiagnosaController extends Controller
             'gejala_tanda_mayor_subjektif' => $gejala_tanda_mayor_subjektif,
             'gejala_tanda_minor_objektif' => $gejala_tanda_minor_objektif,
             'gejala_tanda_minor_subjektif' => $gejala_tanda_minor_subjektif,
+            'faktor_risiko' => $faktor_risiko,
         ]);
     }
 

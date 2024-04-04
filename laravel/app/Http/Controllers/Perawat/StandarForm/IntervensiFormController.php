@@ -135,27 +135,43 @@ class IntervensiFormController extends Controller
                 ], 404);
             }
 
+            $intervensi = Intervensi::find($form_intervensi->nama_intervensi);
+            $nama_intervensi = $intervensi->nama_intervensi;
+            $kode_intervensi = $intervensi->kode_intervensi;
+
+
             $tindakan_intervensi = $this->devideIntervensi($form_intervensi->tindakan_intervensi);
 
             return response()->json([
                 'message' => 'Success',
                 'tindakan_intervensi' => $tindakan_intervensi,
+                'nama_intervensi' => $nama_intervensi,
+                'kode_intervensi' => $kode_intervensi,
             ]);
         }
 
-        private function devideIntervensi($intervensi){
-            $tindakan_intervensi = explode(',', $intervensi);
+    private function devideIntervensi($intervensi)
+    {
+        $tindakan_intervensi = explode(',', $intervensi);
 
-            $result = [];
+        $temp_result = array();
 
-            foreach ($tindakan_intervensi as $tindakan) {
-                $tindakan = intval($tindakan);
-                $tindakan = TindakanIntervensi::find($tindakan);
-                $nama_tindakan = $tindakan->nama_tindakan_intervensi;
-                array_push($result, $nama_tindakan);
+        foreach ($tindakan_intervensi as $tindakan) {
+            $tindakan = intval($tindakan);
+            $tindakan_query = "select i.id, i.nama_tindakan_intervensi, kt.nama_kategori_tindakan
+                    from tindakan_intervensi i
+                    join kategori_tindakan kt
+                    on i.id_kategori_tindakan = kt.id
+                    where i.id = $tindakan";
+
+            $tindakan_data = DB::select($tindakan_query);
+
+            if (!empty($tindakan_data)) {
+                $temp_result[] = $tindakan_data[0]; // Mengambil hanya elemen pertama dari hasil query
             }
-
-            return $result;
-
         }
+
+        return $temp_result;
+    }
+
 }
