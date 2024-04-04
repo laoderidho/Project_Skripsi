@@ -135,12 +135,18 @@ class IntervensiFormController extends Controller
                 ], 404);
             }
 
+            $intervensi = Intervensi::find($form_intervensi->nama_intervensi);
+            $nama_intervensi = $intervensi->nama_intervensi;
+            $kode_intervensi = $intervensi->kode_intervensi;
+
 
             $tindakan_intervensi = $this->devideIntervensi($form_intervensi->tindakan_intervensi);
 
             return response()->json([
                 'message' => 'Success',
                 'tindakan_intervensi' => $tindakan_intervensi,
+                'nama_intervensi' => $nama_intervensi,
+                'kode_intervensi' => $kode_intervensi,
             ]);
         }
 

@@ -21,13 +21,16 @@ class AskepController extends Controller
 
         foreach ($pemeriksaan as $key => $value) {
             $diagnosa = new DiagnosaController();
-            $diagnosa = $diagnosa->validationDiagnosaAttribute($value->id);
+            $diagnosa = $diagnosa->getDetailDiagnosaPasien($value->id);
+            $diagnosa = $diagnosa->getData();
 
             $intervensi = new IntervensiFormController();
             $intervensi = $intervensi->getDetailIntervensi($value->id);
+            $intervensi = $intervensi->getData();
 
             $luaran = new LuaranFormController();
             $luaran = $luaran->detailAskepLuaran($value->id);
+            $luaran = $luaran->getData();
 
             $pemeriksaan[$key]->diagnosa = $diagnosa;
             $pemeriksaan[$key]->intervensi = $intervensi;
@@ -57,7 +60,7 @@ class AskepController extends Controller
     private function getPemeriksaan($id){
         $data = "select p.id, p.nama_intervensi,
                 p.nama_luaran, p.catatan_intervensi, p.catatan_evaluasi, p.catatan_luaran, p.catatan_implementasi, date_format(p.jam_pemberian_diagnosa, '%d-%m-%Y') as tanggal_pemeriksaan, date_format(p.jam_pemberian_diagnosa, '%H:%i') as jam_pemeriksaan,
-                p.jam_pemberian_intervensi, p.jam_pemberian_implementasi, p.jam_penilaian_luaran
+                p.jam_pemberian_intervensi, p.jam_pemberian_implementasi, p.jam_penilaian_luaran, p.shift
                 from perawatan pr join pemeriksaan p
                 on pr.id = p.id_perawatan
                 where pr.id = $id";
