@@ -32,6 +32,7 @@ class AskepController extends Controller
             $pemeriksaan[$key]->diagnosa = $diagnosa;
             $pemeriksaan[$key]->intervensi = $intervensi;
             $pemeriksaan[$key]->luaran = $luaran;
+            $pemeriksaan[$key]->implementasi = $this->getImplementasiData($value->id);
         }
         return response()->json([
             'status' => 'success',
@@ -47,7 +48,7 @@ class AskepController extends Controller
                         join perawatan p on p.id_pasien =ps.id
                         join beds b on p.bed = b.id
                         where p.id = $id";
-                        
+
         $detailPasien = DB::select($detailPasien);
 
         return $detailPasien;
@@ -55,7 +56,7 @@ class AskepController extends Controller
 
     private function getPemeriksaan($id){
         $data = "select p.id, p.nama_intervensi,
-                p.nama_luaran, p.catatan_intervensi, p.catatan_evaluasi, p.catatan_luaran, p.catatan_implementasi, p.jam_pemberian_diagnosa,
+                p.nama_luaran, p.catatan_intervensi, p.catatan_evaluasi, p.catatan_luaran, p.catatan_implementasi, date_format(p.jam_pemberian_diagnosa, '%d-%m-%Y') as tanggal_pemeriksaan, date_format(p.jam_pemberian_diagnosa, '%H:%i') as jam_pemeriksaan,
                 p.jam_pemberian_intervensi, p.jam_pemberian_implementasi, p.jam_penilaian_luaran
                 from perawatan pr join pemeriksaan p
                 on pr.id = p.id_perawatan
@@ -66,6 +67,18 @@ class AskepController extends Controller
         return $data;
     }
 
+    private function getImplementasiData($id){
+        $data = "select i.id, ti.nama_tindakan_intervensi as nama_implementasi, i.tindakan_implementasi
+                                from form_implementasi i
+                                join tindakan_intervensi ti
+                                on i.nama_implementasi = ti.id
+                                join kategori_tindakan kt
+                                on ti.id_kategori_tindakan = kt.id
+                                where i.id_pemeriksaan = $id";
+        $data = DB::select($data);
+
+        return $data;
+    }
 
 
     public function getDatePerawatan($id){

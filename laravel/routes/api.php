@@ -186,6 +186,7 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
         });
 
         Route::prefix('laporan')->group(function () {
+            Route::post('/date-perawatan/{id}', [ManajemenListController::class, 'getDatePerawatan']);
             Route::post('/askep/{id_perawatan}', [AskepController::class, 'getReportAskep']);
         });
 
