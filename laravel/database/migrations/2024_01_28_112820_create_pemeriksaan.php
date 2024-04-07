@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_perawat');
             $table->unsignedBigInteger('id_perawatan');
-            $table->string('nama_intervensi', 255)->nullable();
-            $table->string('nama_luaran', 255)->nullable();
+            $table->unsignedBigInteger('nama_luaran', 255);
             $table->string('catatan_intervensi', 255)->nullable();
             $table->string('catatan_evaluasi', 255)->nullable();
             $table->string('catatan_luaran', 255)->nullable();
@@ -31,6 +30,7 @@ return new class extends Migration
 
             $table->foreign('id_perawatan')->references('id')->on('perawatan');
             $table->foreign('id_perawat')->references('id')->on('perawat');
+            $table->foreign('nama_luaran')->references('id')->on('luaran');
         });
     }
 

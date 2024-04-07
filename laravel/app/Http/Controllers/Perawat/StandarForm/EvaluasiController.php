@@ -82,6 +82,41 @@ class EvaluasiController extends Controller
         ]);
     }
 
+    public function getDetailLuaran($id_pemeriksaan)
+    {
+        $pemeriksaan = Pemeriksaan::find($id_pemeriksaan);
+
+        if ($pemeriksaan == null) {
+            return response()->json([
+                'message' => 'Pemeriksaan tidak ditemukan',
+            ], 404);
+        }
+
+        $luaran = "select e.id, kl.nama_kriteria_luaran as nama_luaran, e.hasil_luaran from form_evaluasi e
+                    inner join kriteria_luaran kl on e.nama_luaran = kl.id
+                    inner join pemeriksaan p on e.id_pemeriksaan = p.id
+                    where e.id_pemeriksaan = $id_pemeriksaan";
+
+        $luaran = DB::select($luaran);
+
+        if (empty($luaran)) {
+            return response()->json([
+                'message' => 'Luaran tidak ditemukan',
+            ], 404);
+        }
+
+        $resultEvaluasiData = Hasil_Evaluasi::where('id_pemeriksaan', $id_pemeriksaan)->first();
+
+
+        return response()->json([
+            'message' => 'Success',
+            'luaran' => $luaran,
+            'resultEvaluasiData' => $resultEvaluasiData,
+        ]);
+    }
+
+
+
     public function resultEvaluasi(Request $request, $id_pemeriksaan)
     {
 

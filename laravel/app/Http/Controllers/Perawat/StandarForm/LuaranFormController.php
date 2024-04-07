@@ -50,7 +50,7 @@ class LuaranFormController extends Controller
     {
 
         // select id and nama pemeriksaan
-        $form_evaluasi = "select e.id, kl.nama_kriteria_luaran as nama_luaran from form_evaluasi e
+        $form_evaluasi = "select e.id as id_evaluasi, kl.id, kl.nama_kriteria_luaran as nama_luaran from form_evaluasi e
                         inner join kriteria_luaran kl on e.nama_luaran = kl.id
                         inner join pemeriksaan p on e.id_pemeriksaan = p.id
                         where e.id_pemeriksaan = $id";

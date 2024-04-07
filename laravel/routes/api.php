@@ -21,6 +21,7 @@ use App\Http\Controllers\Perawat\PerawatanController;
 use App\Http\Controllers\Perawat\StandarForm\LuaranFormController;
 use App\Http\Controllers\Perawat\StandarForm\ManajemenListController;
 use App\Http\Controllers\Perawat\StandarForm\EvaluasiController;
+use App\Http\Controllers\Perawat\ProfileController;
 
 //
 
@@ -148,6 +149,7 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/get/{id_pemeriksaan}', [EvaluasiController::class, 'getLuaran']);
             Route::post('/penilaian-luaran', [EvaluasiController::class, 'PenilaianLuaran']);
             Route::post('/hasil-evaluasi/{id_pemeriksaan}', [EvaluasiController::class, 'resultEvaluasi']);
+            Route::post('/detail/{id_pemeriksaan}', [EvaluasiController::class, 'getDetailLuaran']);
         });
 
         Route::prefix('intervensi')->group(function () {
@@ -193,6 +195,9 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
         Route::prefix('shift')->group(function () {
             Route::post('/', [ManajemenListController::class, 'getShift']);
         });
+
+        Route::post('/profile', [ProfileController::class, 'profile']);
+        Route::post('/statistic', [ManajemenListController::class, 'chart']);
     });
 });
 

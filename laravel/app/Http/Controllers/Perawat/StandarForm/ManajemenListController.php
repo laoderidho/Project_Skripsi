@@ -106,4 +106,26 @@ class ManajemenListController extends Controller
 
         return response()->json($date);
     }
+
+    public function chart(){
+
+        $sum_pasien = "select count(*) as total_pasien from pasien";
+        $sum_pasien = DB::select($sum_pasien);
+
+        $perawatan_sembuh = "select count(*) as total_sembuh from perawatan where status_pasien = 'sembuh' ";
+        $perawatan_sembuh = DB::select($perawatan_sembuh);
+
+        $perawatan_sakit = "select count(*) as total_sakit from perawatan where status_pasien = 'sakit'";
+        $perawatan_sakit = DB::select($perawatan_sakit);
+
+        $perawatan = "select count(*) as total_perawatan from perawatan";
+        $perawatan = DB::select($perawatan);
+
+        return response()->json([
+            'sum_pasien' => $sum_pasien,
+            'perawatan_sembuh' => $perawatan_sembuh,
+            'perawatan_sakit' => $perawatan_sakit,
+            'perawatan' => $perawatan
+        ], 200);
+    }
 }
