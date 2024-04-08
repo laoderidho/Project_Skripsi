@@ -103,11 +103,13 @@ class IntervensiFormController extends Controller
             // Insert or update form_implementasi for each tindakan_intervensi
             foreach ($tindakan_intervensi as $tindakan) {
                 $tindakan = intval($tindakan);
-                $new_implementasi = new Form_Implementasi();
-                $new_implementasi->id_pemeriksaan = $pemeriksaan->id;
-                $new_implementasi->nama_implementasi = $tindakan;
-                $new_implementasi->tindakan_implementasi = 0;
-                $new_implementasi->save();
+                if($tindakan != null){
+                    $new_implementasi = new Form_Implementasi();
+                    $new_implementasi->id_pemeriksaan = $pemeriksaan->id;
+                    $new_implementasi->nama_implementasi = $tindakan;
+                    $new_implementasi->tindakan_implementasi = 0;
+                    $new_implementasi->save();
+                }
             }
                 DB::commit();
                 return response()->json([

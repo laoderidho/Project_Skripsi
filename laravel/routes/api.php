@@ -34,7 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
 
     Route::prefix('admin')->group(function () {
-
+        Route::post('/statistic', [ManajemenListController::class, 'chart']);
         Route::prefix('users')->group(function () {
             Route::post('/tambah', [UserController::class, 'addUser']);
             Route::post('/', [UserController::class, 'getUsers']);
@@ -197,7 +197,7 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
         });
 
         Route::post('/profile', [ProfileController::class, 'profile']);
-        Route::post('/statistic', [ManajemenListController::class, 'chart']);
+        Route::post('/my-pasien', [ManajemenListController::class, 'getDataPasien']);
     });
 });
 
