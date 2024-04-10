@@ -21,6 +21,7 @@ use App\Http\Controllers\Perawat\PerawatanController;
 use App\Http\Controllers\Perawat\StandarForm\LuaranFormController;
 use App\Http\Controllers\Perawat\StandarForm\ManajemenListController;
 use App\Http\Controllers\Perawat\StandarForm\EvaluasiController;
+use App\Http\Controllers\Perawat\ProfileController;
 
 //
 
@@ -33,7 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
 
     Route::prefix('admin')->group(function () {
-
+        Route::post('/statistic', [ManajemenListController::class, 'chart']);
         Route::prefix('users')->group(function () {
             Route::post('/tambah', [UserController::class, 'addUser']);
             Route::post('/', [UserController::class, 'getUsers']);
@@ -148,6 +149,7 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/get/{id_pemeriksaan}', [EvaluasiController::class, 'getLuaran']);
             Route::post('/penilaian-luaran', [EvaluasiController::class, 'PenilaianLuaran']);
             Route::post('/hasil-evaluasi/{id_pemeriksaan}', [EvaluasiController::class, 'resultEvaluasi']);
+            Route::post('/detail/{id_pemeriksaan}', [EvaluasiController::class, 'getDetailLuaran']);
         });
 
         Route::prefix('intervensi')->group(function () {
@@ -170,7 +172,6 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
             Route::post('/rawat-inap', [PasienController::class, 'filterStatusRawatInap']);
             Route::post('/detail/{id}', [PasienController::class, 'getDetail']);
             // Route::post('/delete/{id}', [PasienController::class, 'delete']);
-
         });
 
         Route::prefix('diagnostic')->group(function () {
@@ -193,6 +194,9 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
         Route::prefix('shift')->group(function () {
             Route::post('/', [ManajemenListController::class, 'getShift']);
         });
+
+        Route::post('/profile', [ProfileController::class, 'profile']);
+        Route::post('/my-pasien', [ManajemenListController::class, 'getDataPasien']);
     });
 });
 

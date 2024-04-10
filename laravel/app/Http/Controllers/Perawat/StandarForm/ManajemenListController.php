@@ -61,7 +61,8 @@ class ManajemenListController extends Controller
                 date_format(p.jam_pemberian_evaluasi, '%H:%i') as jam_pemberian_evaluasi,
                 p.id,
                 p.id_perawat,
-                us.nama_lengkap
+                us.nama_lengkap,
+                p.shift
                 FROM
                 pemeriksaan p
                 INNER JOIN perawatan pr ON pr.id = p.id_perawatan
@@ -71,8 +72,20 @@ class ManajemenListController extends Controller
 
             $displayDate = DB::select($displayDate);
 
+            $currentDate = date('d-m-Y');
+
+            $shift = date('H');
+
+            if($shift >= 7 && $shift < 14){
+                $shift = 1;
+            }elseif($shift >= 14 && $shift < 21){
+                $shift = 2;
+            }else{
+                $shift = 3;
+            }
+
             foreach($displayDate as $d){
-                if($perawat == $d->id_perawat){
+                if($perawat == $d->id_perawat && $d->tanggal_pemberian_diagnosa == $currentDate && $d->shift == $shift){
                     $d->access = true;
                 }else{
                     $d->access = false;
@@ -106,4 +119,53 @@ class ManajemenListController extends Controller
 
         return response()->json($date);
     }
+
+    public function chart()
+    {
+
+        $sum_pasien = DB::select("select count(*) as total_pasien from pasien")[0]->total_pasien;
+
+        $perawatan_sembuh = DB::select("select count(*) as total_sembuh from perawatan where status_pasien = 'sembuh' ")[0]->total_sembuh;
+
+        $perawatan_sakit = DB::select("select count(*) as total_sakit from perawatan where status_pasien = 'sakit'")[0]->total_sakit;
+
+        $perawatan = DB::select("select count(*) as total_perawatan from perawatan")[0]->total_perawatan;
+
+        $perawat = DB::select("select count(*) as total_perawat from perawat")[0]->total_perawat;
+
+        $pasien = DB::select("select count(*) as total_pasien from pasien")[0]->total_pasien;
+
+        return response()->json([
+            'sum_pasien' => $sum_pasien,
+            'perawatan_sembuh' => $perawatan_sembuh,
+            'perawatan_sakit' => $perawatan_sakit,
+            'perawatan' => $perawatan,
+            'perawat' => $perawat,
+            'pasien' => $pasien
+        ], 200);
+    }
+
+
+
+    public function getDataPasien(){
+        $users = Auth::user();
+        $users = $users->id;
+
+        $perawat = Perawat::where('id_user', $users)->first();
+        $perawat = $perawat->id;
+
+        $listPasien = "select p.nama_lengkap, pr.id, date_format(pem.jam_pemberian_diagnosa, '%d-%m-%Y') as tanggal_diagnosa, pem.shift
+                        from pasien p
+                        inner join perawatan pr on p.id = pr.id_pasien
+                        inner join pemeriksaan pem on pr.id = pem.id_perawatan
+                        where pem.id_perawat = 4 AND (pem.jam_pemberian_intervensi IS NULL or pem.jam_pemberian_implementasi IS NULL or pem.jam_penilaian_luaran IS NULL or pem.jam_pemberian_evaluasi IS NULL)
+                        AND DATE(pem.jam_pemberian_diagnosa) = CURDATE()";
+
+        $listPasien = DB::select($listPasien);
+
+        return response()->json([
+            'listPasien' => $listPasien
+        ]);
+    }
+
 }

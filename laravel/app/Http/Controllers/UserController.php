@@ -8,6 +8,9 @@ use App\Models\User;
 use App\Models\Admin\Perawat;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use App\Models\AdminLog;
+// auth
+use Illuminate\Support\Facades\Auth;
 
 
 class UserController extends Controller
@@ -101,6 +104,17 @@ class UserController extends Controller
             $this->perawat($user->id, $request->shift, $request->status);
         }
 
+        $users = Auth::user();
+        $users_name = $users->nama_lengkap;
+        $users_id = $users->id;
+
+        $log = new AdminLog();
+        $log->id_admin = $users_id;
+        $log->admin_name = $users_name;
+        $log->action = 'Add Admin';
+        $log->jam = now();
+        $log->save();
+
         return response()->json([
             'message' => 'Registration Success',
             'data' => $user,
@@ -123,9 +137,7 @@ class UserController extends Controller
                         'email',
                         'max:255',
                         Rule::unique('users')->ignore($user->id)],
-            'password' => 'required|string|max:20|',
             'role' => 'required|string|max:10',
-            'photo' => 'nullable|image|file|max:2048',
             'shift' => 'required_if:role,perawat',
             'status' => 'required_if:role,perawat',
         ]);
@@ -145,10 +157,6 @@ class UserController extends Controller
             $photoPath = null;
         }
 
-        if($request->role == 'perawat'){
-            $this->updatePerawat($user->id, $request->shift, $request->status);
-        }
-
         // Update data user dengan alamat foto
         $user->update([
             'nama_lengkap' => $request->nama_lengkap,
@@ -157,10 +165,14 @@ class UserController extends Controller
             'alamat' => $request->alamat,
             'no_telepon' => $request->no_telepon,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
             'role' => $request->role,
             'photo' => $photoPath,
         ]);
+
+        if($request->role == 'perawat'){
+            $this->updatePerawat($user->id, $request->shift, $request->status);
+        }
+
 
         return response()->json([
             'message' => 'Success',
@@ -195,6 +207,18 @@ class UserController extends Controller
         $user->delete();
 
 
+        $users = Auth::user();
+        $users_name = $users->nama_lengkap;
+        $users_id = $users->id;
+
+        $log = new AdminLog();
+        $log->id_admin = $users_id;
+        $log->admin_name = $users_name;
+        $log->action = 'delete Users';
+        $log->jam = now();
+        $log->save();
+
+
         return response()->json([
             'message' => 'Delete Success'
         ]);
@@ -210,7 +234,6 @@ class UserController extends Controller
         $perawat->status = $status;
 
         $perawat->save();
-
 
         return response()->json([
             'message' => 'Update Success',

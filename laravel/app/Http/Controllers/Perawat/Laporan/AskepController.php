@@ -32,10 +32,16 @@ class AskepController extends Controller
             $luaran = $luaran->detailAskepLuaran($value->id);
             $luaran = $luaran->getData();
 
+            $evaluasi = new EvaluasiController();
+            $evaluasi = $evaluasi->getDetailLuaran($value->id);
+            $evaluasi = $evaluasi->getData();
+
             $pemeriksaan[$key]->diagnosa = $diagnosa;
             $pemeriksaan[$key]->intervensi = $intervensi;
             $pemeriksaan[$key]->luaran = $luaran;
             $pemeriksaan[$key]->implementasi = $this->getImplementasiData($value->id);
+            $pemeriksaan[$key]->evaluasi = $evaluasi;
+
         }
         return response()->json([
             'status' => 'success',

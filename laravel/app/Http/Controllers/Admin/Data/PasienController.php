@@ -26,7 +26,7 @@ class PasienController extends Controller
         ]);
     }
 
-    
+
 
     public function addPasien(Request $request)
     {
@@ -215,7 +215,16 @@ class PasienController extends Controller
                     p.id,
                     p.nama_lengkap,
                     p.no_medical_record,
-                    pr.status_pasien
+                    pr.status_pasien,
+                    p.tanggal_lahir,
+                    p.nik,
+                    p.no_telepon,
+                    p.alamat,
+                    p.alergi,
+                    p.nama_asuransi,
+                    p.no_asuransi,
+                    p.jenis_kelamin,
+                    p.status_pernikahan
                 FROM
                     pasien AS p
                 JOIN

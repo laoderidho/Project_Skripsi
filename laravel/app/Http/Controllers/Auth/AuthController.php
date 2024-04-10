@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-   
+
 
     public function Login(Request $request)
      {
@@ -23,13 +23,15 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->firstOrFail();
 
         $role = $user->role;
+        $username = $user->nama_lengkap;
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'access_token'=> $token,
             'token_type'=> 'Bearer',
-            'role'=> $role
+            'role'=> $role,
+            'username'=> $username
         ]);
      }
 
