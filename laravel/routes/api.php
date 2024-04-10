@@ -197,7 +197,7 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
 });
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/login', [AuthController::class, 'viewLogin'])->name('login');
+Route::get('/login', [AuthController::class, 'login']);
 Route::post('/tambah', [UserController::class, 'addUser']);
 
 Route::get('/home', function () {
