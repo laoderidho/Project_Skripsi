@@ -120,27 +120,31 @@ class ManajemenListController extends Controller
         return response()->json($date);
     }
 
-    public function chart(){
+    public function chart()
+    {
 
-        $sum_pasien = "select count(*) as total_pasien from pasien";
-        $sum_pasien = DB::select($sum_pasien);
+        $sum_pasien = DB::select("select count(*) as total_pasien from pasien")[0]->total_pasien;
 
-        $perawatan_sembuh = "select count(*) as total_sembuh from perawatan where status_pasien = 'sembuh' ";
-        $perawatan_sembuh = DB::select($perawatan_sembuh);
+        $perawatan_sembuh = DB::select("select count(*) as total_sembuh from perawatan where status_pasien = 'sembuh' ")[0]->total_sembuh;
 
-        $perawatan_sakit = "select count(*) as total_sakit from perawatan where status_pasien = 'sakit'";
-        $perawatan_sakit = DB::select($perawatan_sakit);
+        $perawatan_sakit = DB::select("select count(*) as total_sakit from perawatan where status_pasien = 'sakit'")[0]->total_sakit;
 
-        $perawatan = "select count(*) as total_perawatan from perawatan";
-        $perawatan = DB::select($perawatan);
+        $perawatan = DB::select("select count(*) as total_perawatan from perawatan")[0]->total_perawatan;
+
+        $perawat = DB::select("select count(*) as total_perawat from perawat")[0]->total_perawat;
+
+        $pasien = DB::select("select count(*) as total_pasien from pasien")[0]->total_pasien;
 
         return response()->json([
             'sum_pasien' => $sum_pasien,
             'perawatan_sembuh' => $perawatan_sembuh,
             'perawatan_sakit' => $perawatan_sakit,
-            'perawatan' => $perawatan
+            'perawatan' => $perawatan,
+            'perawat' => $perawat,
+            'pasien' => $pasien
         ], 200);
     }
+
 
 
     public function getDataPasien(){
