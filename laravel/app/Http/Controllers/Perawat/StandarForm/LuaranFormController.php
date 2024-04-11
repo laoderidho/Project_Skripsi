@@ -82,7 +82,6 @@ class LuaranFormController extends Controller
         $validator = Validator::make($request->all(), [
             'nama_luaran' => 'required|string',
             'catatan_luaran' => 'nullable|string',
-            'nama'=>'required|string'
         ]);
 
         if ($validator->fails()) {
@@ -93,7 +92,6 @@ class LuaranFormController extends Controller
         }
         $pemeriksaan->jam_penilaian_luaran = Carbon::now();
         $pemeriksaan->catatan_luaran = $request->catatan_luaran;
-        $pemeriksaan->nama_luaran = $request->nama;
         $pemeriksaan->update();
 
         $nama_luaran = explode(',', $request->nama_luaran);

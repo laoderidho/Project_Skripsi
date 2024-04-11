@@ -260,30 +260,32 @@ class IntervensiController extends Controller
 
     public function deleteIntervensi($id)
     {
-
-        $intervensi = Intervensi::find($id);
-
-
         DB::beginTransaction();
 
         try {
-            DB::table('tindakan_intervensi')
-                ->where('id_intervensi', $id)
-                ->delete();
+            // Hapus terlebih dahulu baris dari tabel tindakan_intervensi yang terkait
+            DB::table('tindakan_intervensi')->where('id_intervensi', $id)->delete();
 
+            // Setelah itu, baru hapus baris dari tabel intervensi
+            $intervensi = Intervensi::find($id);
             $intervensi->delete();
 
             DB::commit();
+
+            return response()->json([
+                'message' => 'Intervensi successfully deleted',
+            ], 201);
+            
         } catch (\Exception $e) {
-            dd($e);
+            // Jika terjadi kesalahan, rollback transaksi dan tangkap pesan kesalahan
             DB::rollback();
+            return response()->json([
+                'error' => 'Failed to delete intervensi',
+                'message' => $e->getMessage(),
+            ], 500);
         }
-
-
-        return response()->json([
-            'message' => 'Intervensi successfully deleted',
-        ], 201);
     }
+
 
     private function intervensi($id_intervensi, $data_tindakan, $jenis_tindakan)
     {

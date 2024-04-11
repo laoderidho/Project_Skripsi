@@ -64,8 +64,7 @@ class AskepController extends Controller
     }
 
     private function getPemeriksaan($id){
-        $data = "select p.id, p.nama_intervensi,
-                p.nama_luaran, p.catatan_intervensi, p.catatan_evaluasi, p.catatan_luaran, p.catatan_implementasi, date_format(p.jam_pemberian_diagnosa, '%d-%m-%Y') as tanggal_pemeriksaan, date_format(p.jam_pemberian_diagnosa, '%H:%i') as jam_pemeriksaan,
+        $data = "select p.id, p.nama_luaran, p.catatan_intervensi, p.catatan_evaluasi, p.catatan_luaran, p.catatan_implementasi, date_format(p.jam_pemberian_diagnosa, '%d-%m-%Y') as tanggal_pemeriksaan, date_format(p.jam_pemberian_diagnosa, '%H:%i') as jam_pemeriksaan,
                 p.jam_pemberian_intervensi, p.jam_pemberian_implementasi, p.jam_penilaian_luaran, p.shift
                 from perawatan pr join pemeriksaan p
                 on pr.id = p.id_perawatan
