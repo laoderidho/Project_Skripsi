@@ -30,11 +30,23 @@ class ManajemenListController extends Controller
 
     public function listPemeriksaan($id){
 
-        $list = "SELECT distinct DATE_FORMAT(p.jam_pemberian_diagnosa, '%d-%m-%Y') as tanggal_pemeriksaan
-                FROM pemeriksaan p
-                INNER JOIN perawatan pr ON pr.id = p.id_perawatan
+        $list = "SELECT DISTINCT
+                    DATE_FORMAT(p.jam_pemberian_diagnosa, '%d-%m-%Y') AS tanggal_pemeriksaan,
+                    CASE DAYOFWEEK(p.jam_pemberian_diagnosa)
+                        WHEN 1 THEN 'Minggu'
+                        WHEN 2 THEN 'Senin'
+                        WHEN 3 THEN 'Selasa'
+                        WHEN 4 THEN 'Rabu'
+                        WHEN 5 THEN 'Kamis'
+                        WHEN 6 THEN 'Jumat'
+                        WHEN 7 THEN 'Sabtu'
+                    END AS hari
+                FROM
+                    pemeriksaan p
+                INNER JOIN
+                    perawatan pr ON pr.id = p.id_perawatan
                 WHERE
-                pr.id = $id";
+                    pr.id = $id";
 
         $list = DB::select($list);
 

@@ -8,7 +8,6 @@ use App\Models\User;
 use App\Models\Admin\Perawat;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
-use App\Models\AdminLog;
 // auth
 use Illuminate\Support\Facades\Auth;
 
@@ -104,17 +103,6 @@ class UserController extends Controller
             $this->perawat($user->id, $request->shift, $request->status);
         }
 
-        $users = Auth::user();
-        $users_name = $users->nama_lengkap;
-        $users_id = $users->id;
-
-        $log = new AdminLog();
-        $log->id_admin = $users_id;
-        $log->admin_name = $users_name;
-        $log->action = 'Add Admin';
-        $log->jam = now();
-        $log->save();
-
         return response()->json([
             'message' => 'Registration Success',
             'data' => $user,
@@ -167,6 +155,7 @@ class UserController extends Controller
             'email' => $request->email,
             'role' => $request->role,
             'photo' => $photoPath,
+            'status' => $request->status,
         ]);
 
         if($request->role == 'perawat'){
@@ -205,19 +194,6 @@ class UserController extends Controller
         }
 
         $user->delete();
-
-
-        $users = Auth::user();
-        $users_name = $users->nama_lengkap;
-        $users_id = $users->id;
-
-        $log = new AdminLog();
-        $log->id_admin = $users_id;
-        $log->admin_name = $users_name;
-        $log->action = 'delete Users';
-        $log->jam = now();
-        $log->save();
-
 
         return response()->json([
             'message' => 'Delete Success'

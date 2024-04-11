@@ -24,6 +24,13 @@ class AuthController extends Controller
 
         $role = $user->role;
         $username = $user->nama_lengkap;
+        $status = $user->status;
+
+        if($status == 0){
+            return response()->json([
+                'message'=> 'kamu telah di cekal, hubungi admin untuk informasi lebih lanjut'
+            ], 401);
+        }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
