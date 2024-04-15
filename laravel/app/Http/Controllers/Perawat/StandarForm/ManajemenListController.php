@@ -170,7 +170,7 @@ class ManajemenListController extends Controller
                         from pasien p
                         inner join perawatan pr on p.id = pr.id_pasien
                         inner join pemeriksaan pem on pr.id = pem.id_perawatan
-                        where pem.id_perawat = 4 AND (pem.jam_pemberian_intervensi IS NULL or pem.jam_pemberian_implementasi IS NULL or pem.jam_penilaian_luaran IS NULL or pem.jam_pemberian_evaluasi IS NULL)
+                        where pem.id_perawat = $perawat AND (pem.jam_pemberian_intervensi IS NULL or pem.jam_pemberian_implementasi IS NULL or pem.jam_penilaian_luaran IS NULL or pem.jam_pemberian_evaluasi IS NULL)
                         AND DATE(pem.jam_pemberian_diagnosa) = CURDATE()";
 
         $listPasien = DB::select($listPasien);

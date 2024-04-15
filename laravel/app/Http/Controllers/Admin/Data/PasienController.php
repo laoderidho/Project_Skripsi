@@ -338,7 +338,8 @@ class PasienController extends Controller
             $bed->status = 0;
             $bed->update();
 
-            $newBed = Bed::find($request->no_bed);
+            $no_bed = intval($request->no_bed);
+            $newBed = Bed::find($no_bed);
             $newBed->status = 1;
             $newBed->update();
 
