@@ -177,11 +177,11 @@ class DiagnosticController extends Controller
 
     public function getListDiagnostik($id)
     {
-        $results = DB::table('data_diagnostik')
-        ->select('id', DB::raw("DATE_FORMAT(updated_at, '%d/%m/%Y') AS updated_at"))
-        ->where('id_pasien', $id)
-        ->get();
+       $query = "select date_format(created_at, '%d-%m-%Y') AS updated_at, time_format(created_at, '%H:%I') as jam
+                from data_diagnostik
+                where id_pasien = $id";
 
+        $results = DB::select($query);
         return response()->json(['message' => 'Data Diagnostik berhasil ditemukan', 'data' => $results]);
     }
 }

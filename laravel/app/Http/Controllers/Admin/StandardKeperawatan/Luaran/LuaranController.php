@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Admin\Luaran;
+// models admin log
+use App\Models\AdminLog;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class LuaranController extends Controller
 {
@@ -38,6 +41,12 @@ class LuaranController extends Controller
 
         $luaran = new Luaran();
         $luaran->fill($request->all());
+
+        // models admin log
+        AdminLog::create([
+            'user_id' => Auth::user()->id,
+            'action' => 'Menambah luaran',
+        ]);
         $luaran->save();
 
         return response()->json(['message' => 'Luaran berhasil ditambahkan', 'data' => $luaran]);
@@ -60,6 +69,12 @@ class LuaranController extends Controller
             $luaran->fill($request->all());
             $luaran->save();
 
+            // models admin log
+            AdminLog::create([
+                'user_id' => Auth::user()->id,
+                'action' => 'Mengubah luaran',
+            ]);
+
             return response()->json(['message' => 'Luaran berhasil diperbarui', 'data' => $luaran]);
         } else {
             return response()->json(['message' => 'Luaran tidak ditemukan'], 404);
@@ -72,6 +87,12 @@ class LuaranController extends Controller
 
         if ($luaran) {
             $luaran->delete();
+
+            // models admin log
+            AdminLog::create([
+                'user_id' => Auth::user()->id,
+                'action' => 'Menghapus luaran',
+            ]);
             return response()->json(['message' => 'Luaran berhasil dihapus']);
         } else {
             return response()->json(['message' => 'Luaran tidak ditemukan'], 404);

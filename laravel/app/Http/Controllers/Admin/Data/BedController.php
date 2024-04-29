@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Admin\Bed;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use App\Models\AdminLog;
+use Illuminate\Support\Facades\Auth;
 
 class BedController extends Controller
 {
@@ -16,47 +18,6 @@ class BedController extends Controller
         $bed = Bed::all();
 
         return response()->json(['data' => $bed]);
-    }
-
-
-    public function getNamaFasilitas()
-    {
-        $bed = Bed::select('nama_fasilitas')->distinct()->get();
-
-        return response()->json(['data' => $bed]);
-    }
-
-    public function getJenisRuangan()
-    {
-        $bed = Bed::select('jenis_ruangan')->distinct()->get();
-
-        return response()->json(['data' => $bed]);
-    }
-
-    public function getLantai()
-    {
-        $bed = Bed::select('lantai')->distinct()->get();
-
-        return response()->json(['data' => $bed]);
-    }
-
-    public function filterJenisRuangan($namaFasilitas){
-        $jenisRuangan = Bed::select('jenis_ruangan')
-        ->where('nama_fasilitas', $namaFasilitas)
-        ->distinct()
-        ->pluck('jenis_ruangan');
-
-        return response()->json(['data' => $jenisRuangan]);
-    }
-
-    public function filterLantai($nama_fasilitas, $jenisRuangan){
-        $lantai = Bed::select('lantai')
-        ->where('nama_fasilitas', $nama_fasilitas)
-        ->where('jenis_ruangan', $jenisRuangan)
-        ->distinct()
-        ->pluck('lantai');
-
-        return response()->json(['data' => $lantai]);
     }
 
     public function filterBedWithAll($nama_fasilitas, $jenisRuangan, $lantai){
@@ -91,6 +52,12 @@ class BedController extends Controller
         $bed->status = 0;
         $bed->save();
 
+        AdminLog::create([
+            'user_id' => Auth::user()->id,
+            'action' => 'Menambah kamar',
+        ]);
+
+
         return response()->json(['message' => 'Data berhasil ditambahkan']);
     }
 
@@ -114,7 +81,7 @@ class BedController extends Controller
         $validator = Validator::make($request->all(), [
             'no_bed' => 'required|string|max:255',
             'lantai' => 'required|string|max:255',
-            'nama_fasilitas' => 'required|string|max:255',
+            'no_kamar' => 'required|string|max:255',
             'jenis_ruangan' => 'required|string|max:255'
         ]);
 
@@ -124,9 +91,15 @@ class BedController extends Controller
 
         $bed->no_bed = $request->input('no_bed');
         $bed->lantai = $request->input('lantai');
-        $bed->nama_fasilitas = $request->input('nama_fasilitas');
+        $bed->no_kamar = $request->input('no_kamar');
         $bed->jenis_ruangan = $request->input('jenis_ruangan');
         $bed->update();
+
+        AdminLog::create([
+            'user_id' => Auth::user()->id,
+            'action' => 'Mengupdate kamar',
+        ]);
+
 
         return response()->json(['message' => 'Data berhasil diubah']);
     }
@@ -143,6 +116,11 @@ class BedController extends Controller
         }
 
         $bed->delete();
+
+        AdminLog::create([
+            'user_id' => Auth::user()->id,
+            'action' => 'Menghapus kamar',
+        ]);
 
         return response()->json(['message' => 'Data berhasil dihapus']);
     }

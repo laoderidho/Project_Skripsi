@@ -10,6 +10,11 @@ use App\Models\Admin\TindakanIntervensi;
 use App\Models\Admin\KategoriTindakan;
 use Illuminate\Support\Facades\DB;
 
+// log admin
+use App\Models\AdminLog;
+// auth
+use Illuminate\Support\Facades\Auth;
+
 class IntervensiController extends Controller
 {
 
@@ -126,6 +131,11 @@ class IntervensiController extends Controller
                 }
             }
 
+            AdminLog::create([
+                'user_id' => Auth::user()->id,
+                'action' => 'Menambah Standar Intervensi',
+            ]);
+
             DB::commit();
         } catch (\Exception $e) {
             dd($e);
@@ -218,6 +228,11 @@ class IntervensiController extends Controller
                 }
             }
 
+            AdminLog::create([
+                'user_id' => Auth::user()->id,
+                'action' => 'Mengubah Standar Intervensi',
+            ]);
+
 
             DB::commit();
         } catch (\Exception $e) {
@@ -270,12 +285,18 @@ class IntervensiController extends Controller
             $intervensi = Intervensi::find($id);
             $intervensi->delete();
 
+            // Log kegiatan penghapusan intervensi
+            AdminLog::create([
+                'user_id' => Auth::user()->id,
+                'action' => 'Menghapus Standar Intervensi',
+            ]);
+
             DB::commit();
 
             return response()->json([
                 'message' => 'Intervensi successfully deleted',
             ], 201);
-            
+
         } catch (\Exception $e) {
             // Jika terjadi kesalahan, rollback transaksi dan tangkap pesan kesalahan
             DB::rollback();
