@@ -115,6 +115,11 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         });
 
         Route::post('/create', [PasienController::class, 'store']);
+
+        Route::prefix('laporan')->group(function () {
+            Route::post('/date-perawatan/{id}', [ManajemenListController::class, 'getDatePerawatan']);
+            Route::post('/askep/{id_perawatan}', [AskepController::class, 'getReportAskep']);
+        });
     });
 });
 
@@ -184,11 +189,6 @@ Route::middleware(['auth:sanctum', 'checkRole:perawat'])->group(function () {
         Route::prefix('listaskep')->group(function () {
             Route::post('/setname/{id}', [ManajemenListController::class, 'setNameWithPerawatan']);
             Route::post('/list-pemeriksaan/{id}', [ManajemenListController::class, 'listPemeriksaan']);
-        });
-
-        Route::prefix('laporan')->group(function () {
-            Route::post('/date-perawatan/{id}', [ManajemenListController::class, 'getDatePerawatan']);
-            Route::post('/askep/{id_perawatan}', [AskepController::class, 'getReportAskep']);
         });
 
         Route::prefix('shift')->group(function () {
