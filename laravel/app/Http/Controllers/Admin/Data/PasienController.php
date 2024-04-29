@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Perawat\RawatInap;
 use App\Models\Perawat\Perawatan;
 use App\Models\Admin\Bed;
+use App\Models\AdminLog;
 use Illuminate\Support\Facades\DB;
 
 class PasienController extends Controller
@@ -69,6 +70,12 @@ class PasienController extends Controller
 
         $date = date('H:i:s');
 
+
+        AdminLog::create([
+            'user_id' => $user,
+            'action' => 'Menambahkan Pasien',
+        ]);
+
         return response()->json([
             'message' => 'Pasien Added',
             'user' => $user,
@@ -81,6 +88,11 @@ class PasienController extends Controller
     {
         $pasien = Pasien::find($id);
         $pasien->delete();
+
+        AdminLog::create([
+            'user_id' => Auth::user()->id,
+            'action' => 'Menghapus Pasien',
+        ]);
 
         return response()->json([
             'message' => 'Pasien Deleted',
@@ -139,6 +151,11 @@ class PasienController extends Controller
 
         $pasien->update();
 
+        AdminLog::create([
+            'user_id' => Auth::user()->id,
+            'action' => 'Mengupdate Pasien',
+        ]);
+
         return response()->json([
             'message' => 'Pasien Updated',
             'data' => $pasien,
@@ -189,6 +206,12 @@ class PasienController extends Controller
             $perawatan->waktu_pencatatan = now();
             $perawatan->status_pasien = 'sakit';
             $perawatan->save();
+
+            AdminLog::create([
+                'user_id' => Auth::user()->id,
+                'action' => 'Menambah Rawat Inap Pasien',
+            ]);
+
 
             db::commit();
             return response()->json([
@@ -346,6 +369,12 @@ class PasienController extends Controller
             $perawatan->bed = $request->no_bed;
             $perawatan->update();
 
+            AdminLog::create([
+                'user_id' => Auth::user()->id,
+                'action' => 'Mengupdate Rawat Inap Pasien',
+            ]);
+
+
             db::commit();
 
             return response()->json([
@@ -385,6 +414,11 @@ class PasienController extends Controller
             $bed->status = 0;
             $bed->update();
 
+            AdminLog::create([
+                'user_id' => Auth::user()->id,
+                'action' => 'Menghapus Rawat Inap Pasien',
+            ]);
+
             db::commit();
 
             return response()->json([
@@ -421,6 +455,11 @@ class PasienController extends Controller
             $bed = Bed::find($perawatan->bed);
             $bed->status = 0;
             $bed->update();
+
+            AdminLog::create([
+                'user_id' => Auth::user()->id,
+                'action' => 'Menambahkan Pasien Sembuh',
+            ]);
             db::commit();
 
             return response()->json([

@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Models\Admin;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Bed extends Model
+class AdminLog extends Model
 {
     use HasFactory;
 
-    protected $table = 'beds';
+    protected $table = 'log_admin';
 
     protected $fillable = [
-        'no_bed',
-        'no_kamar',
-        'status'
+        'user_id',
+        'action',
     ];
 }

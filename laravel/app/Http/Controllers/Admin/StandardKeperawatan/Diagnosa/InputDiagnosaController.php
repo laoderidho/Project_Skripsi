@@ -12,6 +12,10 @@ use App\Models\Admin\JenisPenyebab;
 use App\Models\Admin\JenisGejala;
 use App\Models\Admin\KategoriGejala;
 use App\Models\Admin\Gejala;
+// modal admin log
+use App\Models\AdminLog;
+// auth
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class InputDiagnosaController extends Controller
@@ -76,7 +80,7 @@ class InputDiagnosaController extends Controller
                     $this->saveGejala($gejala_mayor_subjektif_item, 'Mayor', 'Subjektif', $diagnosaId);
                 }
             } else {
-    
+
             }
             // Untuk gejala_mayor_objektif
             $gejala_mayor_objektif = $request->input('gejala_mayor_objektif');
@@ -123,6 +127,12 @@ class InputDiagnosaController extends Controller
                     continue;
                 }
             }
+
+            AdminLog::create([
+                'user_id' => Auth::user()->id,
+                'action' => 'Menambah standar diagnosa',
+            ]);
+
             DB::commit();
         } catch (\Exception $e) {
             dd($e);
@@ -278,6 +288,12 @@ class InputDiagnosaController extends Controller
                 $this->updatePenyebab($penyebabDataArray, ucfirst($penyebabType), $diagnosaId);
             }
 
+            // update diagnosa logadmin
+            AdminLog::create([
+                'user_id' => Auth::user()->id,
+                'action' => 'Mengubah standar diagnosa',
+            ]);
+
             DB::commit();
         } catch (\Exception $e) {
             dd($e);
@@ -307,6 +323,12 @@ class InputDiagnosaController extends Controller
 
             // Hapus diagnosa
             $diagnosa->delete();
+
+            // Log aktivitas
+            AdminLog::create([
+                'user_id' => Auth::user()->id,
+                'action' => 'Menghapus standar diagnosa',
+            ]);
             DB::commit();
         } catch (\Exception $e) {
             dd($e);

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 // auth
 use Illuminate\Support\Facades\Auth;
+use App\Models\AdminLog;
 
 
 class UserController extends Controller
@@ -103,6 +104,12 @@ class UserController extends Controller
             $this->perawat($user->id, $request->shift, $request->status);
         }
 
+        // admin log
+        AdminLog::create([
+            'user_id' => Auth::user()->id,
+            'action' => 'Menambah user',
+        ]);
+
         return response()->json([
             'message' => 'Registration Success',
             'data' => $user,
@@ -163,6 +170,12 @@ class UserController extends Controller
         }
 
 
+        // admin log
+        AdminLog::create([
+            'user_id' => Auth::user()->id,
+            'action' => 'Mengupdate user',
+        ]);
+
         return response()->json([
             'message' => 'Success',
             'data' => $user,
@@ -194,6 +207,12 @@ class UserController extends Controller
         }
 
         $user->delete();
+
+        // admin log
+        AdminLog::create([
+            'user_id' => Auth::user()->id,
+            'action' => 'Menghapus user',
+        ]);
 
         return response()->json([
             'message' => 'Delete Success'
