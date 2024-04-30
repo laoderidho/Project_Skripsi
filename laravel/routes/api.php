@@ -22,6 +22,7 @@ use App\Http\Controllers\Perawat\StandarForm\LuaranFormController;
 use App\Http\Controllers\Perawat\StandarForm\ManajemenListController;
 use App\Http\Controllers\Perawat\StandarForm\EvaluasiController;
 use App\Http\Controllers\Perawat\ProfileController;
+use App\Http\Controllers\AmananessaController;
 
 //
 
@@ -119,6 +120,13 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         Route::prefix('laporan')->group(function () {
             Route::post('/date-perawatan/{id}', [ManajemenListController::class, 'getDatePerawatan']);
             Route::post('/askep/{id_perawatan}', [AskepController::class, 'getReportAskep']);
+        });
+
+
+        Route::prefix('amnanessa')->group(function () {
+            Route::post('/add/{id}', [AmananessaController::class, 'add']);
+            Route::post('/edit/{id}', [AmananessaController::class, 'edit']);
+            Route::post('/detail/{id}', [AmananessaController::class, 'detail']);
         });
     });
 });
