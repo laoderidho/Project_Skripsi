@@ -22,6 +22,7 @@ use App\Http\Controllers\Perawat\StandarForm\LuaranFormController;
 use App\Http\Controllers\Perawat\StandarForm\ManajemenListController;
 use App\Http\Controllers\Perawat\StandarForm\EvaluasiController;
 use App\Http\Controllers\Perawat\ProfileController;
+use App\Http\Controllers\AmananessaController;
 
 //
 
@@ -29,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/update-password', [AuthController::class, 'changePassword']);
+    Route::post('/amnanessa/detail/{id}', [AmananessaController::class, 'detail']);
 });
 
 Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
@@ -119,6 +121,12 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         Route::prefix('laporan')->group(function () {
             Route::post('/date-perawatan/{id}', [ManajemenListController::class, 'getDatePerawatan']);
             Route::post('/askep/{id_perawatan}', [AskepController::class, 'getReportAskep']);
+        });
+
+
+        Route::prefix('amnanessa')->group(function () {
+            Route::post('/add/{id}', [AmananessaController::class, 'add']);
+            Route::post('/edit/{id}', [AmananessaController::class, 'edit']);
         });
     });
 });

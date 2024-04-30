@@ -15,11 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_pasien')->constrained('pasien','id');
             $table->foreignId('id_perawat')->constrained('perawat','id');
-            $table->string('keluhan_utama', 1000)->nullable();
-            $table->string('riwayat_penyakit', 1000)->nullable();
-            $table->string('riwayat_alergi', 1000)->nullable();
-            $table->string('risiko_jatuh', 1000)->nullable();
-            $table->string('risiko_nyeri', 1000)->nullable();
             $table->string('suhu', 30)->nullable();
             $table->string('tekanan_darah', 255)->nullable();
             $table->integer('sistolik')->nullable();
@@ -32,9 +27,6 @@ return new class extends Migration
             $table->string('verbal', 255)->nullable();
             $table->string('pemeriksaan_fisik', 1000)->nullable();
             $table->timestamps();
-
-
-
         });
     }
 
