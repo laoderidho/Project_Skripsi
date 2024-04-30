@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/update-password', [AuthController::class, 'changePassword']);
+    Route::post('/amnanessa/detail/{id}', [AmananessaController::class, 'detail']);
 });
 
 Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
@@ -126,7 +127,6 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         Route::prefix('amnanessa')->group(function () {
             Route::post('/add/{id}', [AmananessaController::class, 'add']);
             Route::post('/edit/{id}', [AmananessaController::class, 'edit']);
-            Route::post('/detail/{id}', [AmananessaController::class, 'detail']);
         });
     });
 });
