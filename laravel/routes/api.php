@@ -64,9 +64,7 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
         }));
 
         Route::prefix('ruangan')->group((function () {
-            Route::post('/filter-bed/{nama_fasilitas}/{jenis_ruangan}/{lantai}', [BedController::class, 'filterBedWithAll']);
-            Route::post('/filter-lantai/{nama_fasilitas}/{jenis_ruangan}', [BedController::class, 'filterLantai']);
-            Route::post('/filter-ruangan/{nama_fasilitas}', [BedController::class, 'filterJenisRuangan']);
+            Route::post('/filter-bed/{no_kamar}', [BedController::class, 'filterBedWithAll']);
             Route::post('/nama-fasilitas', [BedController::class, 'getNamaFasilitas']);
             Route::post('/jenis-ruangan', [BedController::class, 'getJenisRuangan']);
             Route::post('/lantai', [BedController::class, 'getLantai']);
@@ -130,7 +128,7 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/edit/{id}', [AmananessaController::class, 'edit']);
         });
 
-        Route::post('/admin/log-admin', [AdminLogController::class, 'getDatalogAdmin']);
+        Route::post('/log-admin', [AdminLogController::class, 'getDatalogAdmin']);
     });
 });
 

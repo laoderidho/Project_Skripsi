@@ -12,8 +12,8 @@ class Bed extends Model
     protected $table = 'beds';
 
     protected $fillable = [
-        'no_bed',
         'no_kamar',
+        'no_bed',
         'status'
     ];
 }

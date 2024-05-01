@@ -20,12 +20,9 @@ class BedController extends Controller
         return response()->json(['data' => $bed]);
     }
 
-    public function filterBedWithAll($nama_fasilitas, $jenisRuangan, $lantai){
+    public function filterBedWithAll($no_kamar){
         $bed =Bed::select('id','no_bed')
-        ->where('nama_fasilitas', $nama_fasilitas)
-        ->where('jenis_ruangan', $jenisRuangan)
-        ->where('lantai', $lantai)
-        ->where('status', 0)
+        ->where('no_kamar', $no_kamar)
         ->get();
 
         return response()->json(['data' => $bed]);
@@ -34,10 +31,8 @@ class BedController extends Controller
     public function addBed(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'no_kamar' => 'required|string|max:255',
             'no_bed' => 'required|string|max:255',
-            'lantai' => 'required|string|max:255',
-            'nama_fasilitas' => 'required|string|max:255',
-            'jenis_ruangan' => 'required|string|max:255'
         ]);
 
         if ($validator->fails()) {
@@ -45,10 +40,8 @@ class BedController extends Controller
         }
 
         $bed = new Bed();
+        $bed->no_kamar = $request->input('no_kamar');
         $bed->no_bed = $request->input('no_bed');
-        $bed->lantai = $request->input('lantai');
-        $bed->nama_fasilitas = $request->input('nama_fasilitas');
-        $bed->jenis_ruangan = $request->input('jenis_ruangan');
         $bed->status = 0;
         $bed->save();
 
@@ -79,20 +72,16 @@ class BedController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'no_bed' => 'required|string|max:255',
-            'lantai' => 'required|string|max:255',
             'no_kamar' => 'required|string|max:255',
-            'jenis_ruangan' => 'required|string|max:255'
+            'no_bed' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
 
-        $bed->no_bed = $request->input('no_bed');
-        $bed->lantai = $request->input('lantai');
         $bed->no_kamar = $request->input('no_kamar');
-        $bed->jenis_ruangan = $request->input('jenis_ruangan');
+        $bed->no_bed = $request->input('no_bed');
         $bed->update();
 
         AdminLog::create([

@@ -313,7 +313,7 @@ class PasienController extends Controller
 
     public function pasienRawatInap()
     {
-        $pasien = "select p.id, ps.nama_lengkap, b.no_bed, p.tanggal_masuk, b.nama_fasilitas, b.jenis_ruangan, b.lantai
+        $pasien = "select p.id, ps.nama_lengkap, b.no_bed, p.tanggal_masuk, b.no_kamar
                     from pasien ps
                     join perawatan p on p.id_pasien = ps.id
                     join beds b on p.bed = b.id

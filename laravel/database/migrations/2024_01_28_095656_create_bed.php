@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('beds', function (Blueprint $table) {
             $table->id();
-            $table->string('no_bed');
             $table->string('no_kamar');
+            $table->string('no_bed');
             $table->boolean('status');
             $table->timestamps();
         });
