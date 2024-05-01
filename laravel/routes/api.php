@@ -23,6 +23,7 @@ use App\Http\Controllers\Perawat\StandarForm\ManajemenListController;
 use App\Http\Controllers\Perawat\StandarForm\EvaluasiController;
 use App\Http\Controllers\Perawat\ProfileController;
 use App\Http\Controllers\AmananessaController;
+use App\Http\Controllers\Admin\AdminLogController;
 
 //
 
@@ -128,6 +129,8 @@ Route::middleware(['auth:sanctum', 'checkRole:admin'])->group(function () {
             Route::post('/add/{id}', [AmananessaController::class, 'add']);
             Route::post('/edit/{id}', [AmananessaController::class, 'edit']);
         });
+
+        Route::post('/admin/log-admin', [AdminLogController::class, 'getDatalogAdmin']);
     });
 });
 

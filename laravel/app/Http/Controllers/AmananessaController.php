@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 
 // admin log model
 use App\Models\AdminLog;
+use Illuminate\Support\Facades\Auth;
 
 class AmananessaController extends Controller
 {
@@ -32,6 +33,12 @@ class AmananessaController extends Controller
         $amnanessa->risiko_jatuh = $request->risiko_jatuh;
         $amnanessa->risiko_nyeri = $request->risiko_nyeri;
         $amnanessa->save();
+
+        // admin log
+        $adminLog = new AdminLog();
+        $adminLog->id_user = Auth::user()->id;
+        $adminLog->action = 'Menambahkan data amnanessa';
+        $adminLog->save();
 
         return response()->json(['message' => 'Data berhasil disimpan', 'data' => $amnanessa], 200);
     }
@@ -60,6 +67,12 @@ class AmananessaController extends Controller
             $amnanessa->risiko_nyeri = $request->risiko_nyeri;
             $amnanessa->save();
 
+            // admin log
+            $adminLog = new AdminLog();
+            $adminLog->id_user = Auth::user()->id;
+            $adminLog->action = 'Mengubah data amnanessa';
+            $adminLog->save();
+
             return response()->json(['message' => 'Data berhasil diubah', 'data' => $amnanessa], 200);
         }
         return response()->json(['message' => 'Data tidak ditemukan', 'data' => null], 404);
@@ -68,6 +81,7 @@ class AmananessaController extends Controller
     // detail
     public function detail($id){
         $amnanessa = Amnanessa::find($id);
+
         if($amnanessa){
             return response()->json(['message' => 'Data berhasil ditemukan', 'data' => $amnanessa]);
         }
