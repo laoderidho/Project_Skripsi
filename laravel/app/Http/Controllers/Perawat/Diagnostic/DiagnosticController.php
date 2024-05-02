@@ -29,6 +29,7 @@ class DiagnosticController extends Controller
         }
 
         $validator = Validator::make($request->all(),[
+            'keluhan_tambahan' => 'nullable|string|max:255',
              'suhu'=> 'nullable|string|max:30',
              'tekanan_darah'=>'required|string',
              'kesadaran' => 'nullable|string|max:255',
@@ -53,6 +54,7 @@ class DiagnosticController extends Controller
         $diagnostic->id_perawat = $perawat;
 
          $properties = [
+            'keluhan_tambahan',
             'kesadaran',
             'suhu',
             'tekanan_darah',
@@ -101,6 +103,7 @@ class DiagnosticController extends Controller
          $validator = Validator::make($request->all(),[
             'id_pasien' => 'required|int',
             'id_perawat' => 'required|int',
+            'keluhan_tambahan'=> 'string|max:255',
              'keluhan_utama'=> 'json|max:255',
              'riwayat_penyakit'=>'string|max:255',
              'riwayat_alergi'=>'string|max:255',

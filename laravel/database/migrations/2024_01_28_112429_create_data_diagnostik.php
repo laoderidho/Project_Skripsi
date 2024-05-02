@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_pasien')->constrained('pasien','id');
             $table->foreignId('id_perawat')->constrained('perawat','id');
+            $table->string('keluhan_tambahan', 255)->nullable();
             $table->string('suhu', 30)->nullable();
             $table->string('tekanan_darah', 255)->nullable();
             $table->integer('sistolik')->nullable();
