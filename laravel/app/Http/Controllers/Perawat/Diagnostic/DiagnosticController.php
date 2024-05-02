@@ -167,7 +167,7 @@ class DiagnosticController extends Controller
 
     public function getListDiagnostik($id)
     {
-       $query = "select date_format(created_at, '%d-%m-%Y') AS updated_at, time_format(created_at, '%H:%I') as jam
+       $query = "select id, date_format(created_at, '%d-%m-%Y') AS updated_at, time_format(created_at, '%H:%I') as jam
                 from data_diagnostik
                 where id_pasien = $id";
 
